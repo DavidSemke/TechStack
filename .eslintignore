@@ -1,0 +1,4 @@
+/public/**
+!/public/*.js
+/views
+**/*.json

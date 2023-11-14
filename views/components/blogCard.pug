@@ -1,0 +1,16 @@
+mixin blogCard(blog, commentCount)
+  .blogCard
+    .blogStats 
+      +blogStat(blog.likes)
+      +blogStat(blog.dislikes)
+      +blogStat(commentCount)
+    .blogContent
+      .blogAuthor= blog.author.name
+      .blogTitle= blog.title
+      // Blog preview; show first 100 chars of non-heading text
+      .blogPreview= blog.content[0].content.substring(0, 100) + '...'
+
+mixin blogStat(stat)
+  .blogStat
+    .iconSmall 
+    .stat= stat

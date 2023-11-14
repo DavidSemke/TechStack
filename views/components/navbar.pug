@@ -1,0 +1,18 @@
+#navbar
+    div
+        a(href='/')
+            .siteName Tech Stack
+        .searchbar
+            .iconMedium
+            form
+                input(type='text', placeholder='Search Tech Stack')
+
+    div
+        if loggedIn
+            a(href='blogs/')
+                .iconMedium
+                div Write
+        else
+            button#login Login
+        
+        button#burger.iconMedium
