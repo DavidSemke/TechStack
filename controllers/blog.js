@@ -1,19 +1,20 @@
-const BlogModel = require("../models/Blog");
-const CommentModel = require("../models/comment");
+const Blog = require("../models/blog");
+const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 
 // Display list of all blogs
 exports.getBlogs = asyncHandler(async (req, res, next) => {
-    const allBlogs = await BlogModel
+    const allBlogs = await Blog
         .find()
         .sort({ likes: 'desc' })
         .exec();
     
-    res.render("blogList", {
-        title: "Blog List",
-        blogList: allBlogs
+    res.render("pages/blogList", {
+        title: "Published Blogs",
+        user: req.user,
+        blogs: allBlogs
   });
 });
   
@@ -21,8 +22,8 @@ exports.getBlogs = asyncHandler(async (req, res, next) => {
 exports.getBlog = asyncHandler(async (req, res, next) => {
   
     const [blog, comments] = await Promise.all([
-        BlogModel.findById(req.params.id).exec(),
-        CommentModel.find({ blog: req.params.id }).exec(),
+        Blog.findById(req.params.id).exec(),
+        Comment.find({ blog: req.params.id }).exec(),
     ]);
 
     if (blog === null) {
@@ -32,12 +33,20 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    res.render("blog", { ...blog, comments });
+    res.render(
+        "pages/blog", 
+        { 
+            title: blog.title,
+            user: req.user,
+            blog, 
+            comments
+        }
+    );
 });
   
 // Display blog create form
 exports.getBlogCreateForm = asyncHandler(async (req, res, next) => {
-  res.render("blogForm", { title: "Create Blog" });
+  res.render("pages/blogForm", { title: "Create Blog" });
 });
   
 // On blog create
@@ -49,7 +58,7 @@ exports.postBlog = [
     .withMessage("Blog must have a title.")
     .escape()
     .custom(asyncHandler(async (value) => {
-        return !(await BlogModel.findOne({ title: value }))
+        return !(await Blog.findOne({ title: value }))
     }))
     .withMessage('Blog title already exists.'),
   body("keywords")
@@ -71,22 +80,24 @@ exports.postBlog = [
 
     if (!errors.isEmpty()) {
       // Render errors
-      res.render("blogForm", {
+      res.render("pages/blogForm", {
         ...inputs,
         blogTitle: inputs.title,
         title: "Create Blog",
+        user: req.user,
         errors: errors.array(),
       });
 
       return;
-    } 
-    
-    const blog = new BlogModel({
+    }
+
+    const user = req.user
+    const blog = new Blog({
         ...inputs,
-
-        // get current user !!!!!!!!!!!!!!!!
-        // author: ...,
-
+        author: {
+            name: user.username,
+            profile_pic: user.profile_pic
+        },
         publish_date: null,
         likes: 0,
         dislikes: 0
@@ -99,46 +110,26 @@ exports.postBlog = [
   }),
 ];
 
-
-// Display blog delete form
-exports.getBlogDeleteForm = asyncHandler(async (req, res, next) => {
-    const blog = await BlogModel.findById(req.params.id).exec()
-
-    if (blog === null) {
-        res.redirect('/')
-    }
-
-    res.render(
-        "blogDeleteForm", 
-        { 
-            ...blog,
-            blogTitle: blog.title,
-            title: "Delete Blog"
-        }
-    )
-});
-
-
 // On blog delete
 exports.deleteBlog = asyncHandler(async (req, res, next) => {
-    await CommentModel.deleteMany({blog: req.params.id})
-    await BlogModel.findByIdAndRemove(req.params.id);
+    await Comment.deleteMany({blog: req.params.id})
+    await Blog.findByIdAndRemove(req.params.id);
     res.redirect("/");
 });
 
 // Display blog update form
 exports.getBlogUpdateForm = asyncHandler(async (req, res, next) => {
-    const blog = await BlogModel.findById(req.params.id).exec()
+    const blog = await Blog.findById(req.params.id).exec()
 
     if (blog === null) {
         res.redirect('/')
     }
 
-    res.render("blogForm", {
+    res.render("pages/blogForm", {
         ...blog,
         blogTitle: blog.title,
         title: "Update Blog",
-        errors: errors.array(),
+        user: req.user
     });
 });
     
@@ -151,11 +142,11 @@ exports.updateBlog = [
         .withMessage("Blog must have a title.")
         .escape()
         .custom(asyncHandler(async (value) => {
-            const blog = await BlogModel.findById(req.params.id).exec()
+            const blog = await Blog.findById(req.params.id).exec()
 
             return (
                 blog.title === value 
-                || !(await BlogModel.findOne({ title: value }))
+                || !(await Blog.findOne({ title: value }))
             )
         }))
         .withMessage('Blog title already exists.'),
@@ -178,28 +169,29 @@ exports.updateBlog = [
 
         if (!errors.isEmpty()) {
             // Render errors
-            res.render("blogForm", {
+            res.render("pages/blogForm", {
                 ...inputs,
                 blogTitle: inputs.title,
                 title: "Update Blog",
+                user: req.user,
                 errors: errors.array(),
             });
 
             return;
         }
         
-        const blog = new BlogModel({
+        const blog = new Blog({
             ...inputs,
-
-            // get current user !!!!!!!!!!!!!!!!
-            // author: ...,
-
+            author: {
+                name: user.username,
+                profile_pic: user.profile_pic
+            },
             publish_date: null,
             likes: 0,
             dislikes: 0
         });
 
-        await BlogModel.findOneAndReplace({_id: req.params.id}, blog);
+        await Blog.findOneAndReplace({_id: req.params.id}, blog);
 
         // view updated blog
         res.redirect(blog.url);

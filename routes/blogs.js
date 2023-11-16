@@ -1,26 +1,21 @@
 const express = require("express")
 const router = express.Router()
+const controller = require('../controllers/blog')
 
-
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Blogger" })
+router.get('/', function (req, res, next) { 
+    controller.getBlogs 
 })
 
+router.get("/create", function (req, res, next) {
+    controller.getBlogCreateForm
+})
+
+router.post("/create", function (req, res, next) {
+    controller.postBlog
+})
 
 router.get("/:id", function (req, res, next) {
-    res.render("index", { title: "Blogger" })
-})
-
-router.post("/", function (req, res, next) {
-    res.render("index", { title: "Blogger" })
-})
-
-router.put("/:id", function (req, res, next) {
-    res.render("index", { title: "Blogger" })
-})
-
-router.delete("/:id", function (req, res, next) {
-    res.render("index", { title: "Blogger" })
+    controller.getBlog
 })
 
 

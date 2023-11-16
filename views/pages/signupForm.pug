@@ -1,0 +1,16 @@
+extends ../layouts/root
+
+block content
+    h1 Sign Up
+    form(action="/signup" method="POST")
+        label(for="username") Username
+        input#username(
+            name="username" 
+            type="text" 
+            placeholder="username"
+            required 
+            autofocus 
+        )
+        label(for="password") Password
+        input#password(name="password" type="password")
+        button Sign Up

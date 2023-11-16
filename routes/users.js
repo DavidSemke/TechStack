@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router()
+const controller = require('../controllers/blog')
 
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource")
+router.get('/:username/profile', function (req, res, next) { 
+    controller.getBlogs 
 })
 
-router.get("/", bookController.index);
 
 module.exports = router

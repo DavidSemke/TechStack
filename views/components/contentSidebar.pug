@@ -1,0 +1,27 @@
+include actionItem
+
+// recent and suggested options not shown if user not logged in
+.sidebar
+    if !user
+        div
+            div Tech Stack
+            div A place for coders and tech enthusiasts
+
+        div
+            div Not a member?
+            button Sign Up
+    else 
+        .categories 
+            button Recent
+            button Suggested
+        ul.blogList
+            li
+                actionItem(
+                    'Blog 1', 
+                    '../../public/images/profileIcon.png'
+                )
+            li
+                actionItem(
+                    'Blog 2', 
+                    '../../public/images/profileIcon.png'
+                )

@@ -1,16 +1,17 @@
 mixin blogCard(blog, commentCount)
   .blogCard
     .blogStats 
-      +blogStat(blog.likes)
-      +blogStat(blog.dislikes)
-      +blogStat(commentCount)
+      +blogStat(blog.likes, '../../public/images/likeIcon.png')
+      +blogStat(blog.dislikes, '../../public/images/dislikeIcon.png')
+      +blogStat(commentCount, '../../public/images/commentIcon.png')
     .blogContent
       .blogAuthor= blog.author.name
       .blogTitle= blog.title
       // Blog preview; show first 100 chars of non-heading text
       .blogPreview= blog.content[0].content.substring(0, 100) + '...'
 
-mixin blogStat(stat)
+mixin blogStat(stat, img)
   .blogStat
-    .iconSmall 
+    .iconSmall
+      img(src=img)
     .stat= stat

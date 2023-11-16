@@ -1,0 +1,13 @@
+include siteIcon
+
+.navbar
+    div 
+        +siteIcon
+        div Draft by #{user.username}
+    div 
+        button.publish
+        button.account
+            img.avatar(
+                src='/public/images/profileIcon.png'
+            ) 
+    

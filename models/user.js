@@ -7,6 +7,11 @@ const UserSchema = new Schema({
   profile_pic: { data: Buffer, contentType: String }
 });
 
+// Virtual for user profile URL
+UserSchema.virtual("url").get(function () {
+  return `/users/${this.username}`;
+});
+
 
 exports.UserSchema = UserSchema
 exports.User = mongoose.model("User", UserSchema)

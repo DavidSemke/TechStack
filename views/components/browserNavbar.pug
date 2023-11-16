@@ -1,0 +1,27 @@
+include siteIcon
+
+.navbar
+    div
+        button.burger
+            .iconMedium
+                img(
+                    src='../../public/images/burgerIcon.png'
+                )
+        +siteIcon
+        .searchbar
+            .iconMedium
+                img(src='../../public/images/searchIcon.png')
+            form
+                input(type='text', placeholder='Search Tech Stack')
+    div 
+        if user
+            button.write
+                .iconMedium
+                    img(src='../../public/images/writeIcon.png')
+                span Write
+            button.account
+                img.avatar(
+                    src='../../public/images/profileIcon.png'
+                ) 
+        else 
+            button.login Login

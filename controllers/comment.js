@@ -1,12 +1,12 @@
-const BlogModel = require("../models/Blog");
-const CommentModel = require("../models/comment");
+const Blog = require("../models/blog");
+const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
   
 // Display comment create form
 exports.getCommentCreateForm = asyncHandler(async (req, res, next) => {
-  res.render("commentForm");
+  res.render("pages/commentForm");
 });
   
 // On comment create
@@ -28,7 +28,7 @@ exports.postComment = [
 
     if (!errors.isEmpty()) {
       // Render errors
-      res.render("commentForm ", {
+      res.render("pages/commentForm ", {
         content,
         errors: errors.array(),
       });
@@ -36,7 +36,7 @@ exports.postComment = [
       return;
     } 
     
-    const comment = new CommentModel({
+    const comment = new Comment({
         
         // get current user !!!!!!!!!!!!!!!!
         // author: ...,
@@ -55,19 +55,19 @@ exports.postComment = [
 
 // On comment delete
 exports.deleteComment = asyncHandler(async (req, res, next) => {
-    await CommentModel.findByIdAndRemove(req.params.id);
+    await Comment.findByIdAndRemove(req.params.id);
     res.redirect("/");
 });
 
 // Display comment update form
 exports.getCommentUpdateForm = asyncHandler(async (req, res, next) => {
-    const comment = await CommentModel.findById(req.params.id).exec()
+    const comment = await Comment.findById(req.params.id).exec()
 
     if (comment === null) {
         res.redirect('/')
     }
 
-    res.render("commentForm ", {
+    res.render("pages/commentForm ", {
         content: comment.content,
         errors: errors.array(),
     });
@@ -92,7 +92,7 @@ exports.updateComment = [
 
         if (!errors.isEmpty()) {
             // Render errors
-            res.render("commentForm ", {
+            res.render("pages/commentForm ", {
                 content,
                 errors: errors.array(),
             });
@@ -100,7 +100,7 @@ exports.updateComment = [
             return;
         }
         
-        const comment = new CommentModel({
+        const comment = new Comment({
             
             // get current user !!!!!!!!!!!!!!!!
             // author: ...,
@@ -112,7 +112,7 @@ exports.updateComment = [
             replies: []
         });
 
-        await CommentModel.findOneAndReplace(
+        await Comment.findOneAndReplace(
             {_id: req.params.id}, comment
         );
     }),
