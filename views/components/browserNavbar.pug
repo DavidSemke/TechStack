@@ -5,23 +5,23 @@ include siteIcon
         button.burger
             .iconMedium
                 img(
-                    src='../../public/images/burgerIcon.png'
+                    src='/images/burgerIcon.png'
                 )
         +siteIcon
         .searchbar
             .iconMedium
-                img(src='../../public/images/searchIcon.png')
+                img(src='/images/searchIcon.png')
             form
                 input(type='text', placeholder='Search Tech Stack')
     div 
         if user
             button.write
                 .iconMedium
-                    img(src='../../public/images/writeIcon.png')
+                    img(src='/images/writeIcon.png')
                 span Write
             button.account
                 img.avatar(
-                    src='../../public/images/profileIcon.png'
+                    src='/images/profileIcon.png'
                 ) 
         else 
             button.login Login

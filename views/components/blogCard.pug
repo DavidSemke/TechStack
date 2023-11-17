@@ -1,9 +1,9 @@
 mixin blogCard(blog, commentCount)
   .blogCard
     .blogStats 
-      +blogStat(blog.likes, '../../public/images/likeIcon.png')
-      +blogStat(blog.dislikes, '../../public/images/dislikeIcon.png')
-      +blogStat(commentCount, '../../public/images/commentIcon.png')
+      +blogStat(blog.likes, '/images/likeIcon.png')
+      +blogStat(blog.dislikes, '/images/dislikeIcon.png')
+      +blogStat(commentCount, '/images/commentIcon.png')
     .blogContent
       .blogAuthor= blog.author.name
       .blogTitle= blog.title

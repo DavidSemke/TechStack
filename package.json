@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www",
+    "watch:scss": "sass --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
+    "devstart": "npm run watch:scss & nodemon ./bin/www",
     "serverstart": "set DEBUG=$npm_package_name:* & npm run devstart"
   },
   "dependencies": {
@@ -30,6 +31,6 @@
     "eslint-plugin-n": "^16.2.0",
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "3.0.3",
-    "scss": "^0.2.4"
+    "sass": "^1.69.5"
   }
 }
