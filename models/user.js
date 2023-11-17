@@ -13,5 +13,4 @@ UserSchema.virtual("url").get(function () {
 });
 
 
-exports.UserSchema = UserSchema
-exports.User = mongoose.model("User", UserSchema)
+module.exports = mongoose.model("User", UserSchema)

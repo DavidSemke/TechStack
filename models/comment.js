@@ -14,7 +14,7 @@ const CommentSchema = new Schema({
   content: { type: String, maxLength: 300 },
   likes: { type: Number },
   dislikes: { type: Number },
-  replies: { type: [Schema.Types.ObjectId], ref: 'Comment' }
+  reply_to: { type: Schema.Types.ObjectId, ref: 'Comment' }
 });
 
 

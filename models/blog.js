@@ -11,7 +11,7 @@ const BlogSchema = new Schema({
     required: true 
   },
   publish_date: { type: Date },
-  keywords: { type: String },
+  keywords: { type: Array },
   content: { type: Array },
   likes: { type: Number, required: true },
   dislikes: { type: Number, required: true }
