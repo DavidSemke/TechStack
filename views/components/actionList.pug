@@ -1,0 +1,12 @@
+mixin actionList(...actionItems)
+    ul.action-list
+        each item in actionItems
+            +actionItem(item.label, item.icon)
+
+
+mixin actionItem(label, icon)
+    li.action-list__item
+        button.action-list__button
+            .action_list__icon
+                img(src=icon)
+            .action-list__label= label

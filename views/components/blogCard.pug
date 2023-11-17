@@ -1,17 +1,23 @@
-mixin blogCard(blog, commentCount)
-  .blogCard
-    .blogStats 
-      +blogStat(blog.likes, '/images/likeIcon.png')
-      +blogStat(blog.dislikes, '/images/dislikeIcon.png')
-      +blogStat(commentCount, '/images/commentIcon.png')
-    .blogContent
-      .blogAuthor= blog.author.name
-      .blogTitle= blog.title
-      // Blog preview; show first 100 chars of non-heading text
-      .blogPreview= blog.content[0].content.substring(0, 100) + '...'
+include statList
 
-mixin blogStat(stat, img)
-  .blogStat
-    .iconSmall
-      img(src=img)
-    .stat= stat
+mixin blogCard(blog, commentCount)
+  .blog-card
+    +statList(
+      {
+        'stat': blog.likes,
+        'icon': '/images/likeIcon.png'
+      },
+      {
+        'stat': blog.dislikes,
+        'icon': '/images/dislikeIcon.png'
+      },
+      {
+        'stat': blog.commentCount,
+        'icon': '/images/commentIcon.png'
+      }
+    )
+    .blog-card__overview
+      .blog-card__author= blog.author.name
+      .blog-card__title= blog.title
+      // Blog preview; show first 100 chars of non-heading text
+      .blog-card__preview= blog.content[0].content.substring(0, 100) + '...'

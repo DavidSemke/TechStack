@@ -2,9 +2,9 @@ extends ../layouts/root
 
 block content
     h1 Sign Up
-    form(action="/signup" method="POST")
+    form.logging-form(action="/signup" method="POST")
         label(for="username") Username
-        input#username(
+        input#username.logging-form__input(
             name="username" 
             type="text" 
             placeholder="username"
@@ -12,5 +12,7 @@ block content
             autofocus 
         )
         label(for="password") Password
-        input#password(name="password" type="password")
-        button Sign Up
+        input#password.logging-form__input(
+            name="password" type="password"
+        )
+        button.logging-form__submit Sign Up

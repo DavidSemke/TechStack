@@ -1,27 +1,27 @@
 include siteIcon
 
 .navbar
-    div
-        button.burger
-            .iconMedium
-                img(
-                    src='/images/burgerIcon.png'
-                )
+    .navbar__left
+        button.burger-button
+            img(
+                src='/images/burgerIcon.png'
+            )
         +siteIcon
         .searchbar
-            .iconMedium
+            .searchbar__icon
                 img(src='/images/searchIcon.png')
-            form
-                input(type='text', placeholder='Search Tech Stack')
-    div 
+            form.searchbar__form
+                input.searchbar__input(
+                    type='text', placeholder='Search Tech Stack'
+                )
+    .navbar__right 
         if user
-            button.write
-                .iconMedium
+            button.write-button
+                .write-button__icon
                     img(src='/images/writeIcon.png')
-                span Write
-            button.account
-                img.avatar(
-                    src='/images/profileIcon.png'
-                ) 
+                .write-button__label Write
+            button.account-button
+                .avatar
+                    img(src='/images/profileIcon.png')  
         else 
-            button.login Login
+            button.login-button Login

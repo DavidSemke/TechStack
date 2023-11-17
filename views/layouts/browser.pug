@@ -3,6 +3,8 @@ extends root
 block content
     include ../components/browserNavbar
     include ../components/contentSidebar
-    include ../components/accountSidebar
+
+    if user
+        include ../components/accountSidebar
 
     block page    

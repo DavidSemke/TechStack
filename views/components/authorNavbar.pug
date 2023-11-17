@@ -1,12 +1,12 @@
 include siteIcon
 
 .navbar
-    div 
+    .navbar__left
         +siteIcon
-        div Draft by #{user.username}
-    div 
-        button.publish
-        button.account
+        .navbar__message Draft by #{user.username}
+    .navbar__right 
+        button.navbar__button Publish
+        button.navbar__button
             img.avatar(
                 src='/images/profileIcon.png'
             ) 

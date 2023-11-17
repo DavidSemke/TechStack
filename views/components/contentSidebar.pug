@@ -1,27 +1,26 @@
-include actionItem
+include tabList
+include actionList
+
 
 // recent and suggested options not shown if user not logged in
-.sidebar
+.content-sidebar
     if !user
-        div
-            div Tech Stack
-            div A place for coders and tech enthusiasts
-
-        div
-            div Not a member?
-            button Sign Up
+        .site-overview
+            .site-overview__name Tech Stack
+            .site-overview__descrip A place for coders and tech enthusiasts
+        .signup-prompt
+            .signup-prompt__text Not a member?
+            button.signup-prompt__button Sign Up
     else 
-        .categories 
-            button Recent
-            button Suggested
-        ul.blogList
-            li
-                actionItem(
-                    'Blog 1', 
-                    '/images/profileIcon.png'
-                )
-            li
-                actionItem(
-                    'Blog 2', 
-                    '/images/profileIcon.png'
-                )
+        +tabList('Recent', 'Suggested')
+        +actionList(
+            {
+                'label': 'Blog 1',
+                'img': '/images/profileIcon.png'
+            },
+            {
+                'label': 'Blog 2',
+                'img': '/images/profileIcon.png'
+            }
+
+        )

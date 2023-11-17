@@ -1,0 +1,12 @@
+mixin statList(...statItems)
+    ul.stat-list
+        each item in statItems
+            +statItem(item.stat, item.img)
+
+
+mixin statItem(stat, img)
+    li.stat-list__item
+        .stat_list__img
+            img(src=img)
+        .stat-list__stat= stat
+            

@@ -1,17 +1,16 @@
-include actionItem
+include actionList
 
-.sidebar
+.account-sidebar
     .account-overview 
         .avatar Profile Pic
-        div #{'Username'}
-    ul.action-list 
-        li
-            actionItem(
-                'Your Profile', 
-                '/images/profileIcon.png'
-            )
-        li
-            actionItem(
-                'Logout', 
-                '/images/logoutIcon.png'
-            )
+        .username #{user.username}
+    +actionList(
+        {
+            'label': 'Your Profile',
+            'icon': '/images/profileIcon.png'
+        },
+        {
+            'label': 'Logout',
+            'icon': '/images/logoutIcon.png'
+        }
+    )
