@@ -1,4 +1,5 @@
 require('dotenv').config()
+const bcrypt = require('bcryptjs')
 const User = require("./models/user");
 const Blog = require("./models/blog");
 const Comment = require("./models/comment");
@@ -26,10 +27,23 @@ async function main() {
     mongoose.connection.close();
 }
 
+// uses password hashing
 async function userCreate(index, userData) {
-    const user = new User(userData);
-    await user.save();
-    users[index] = user;
+    bcrypt.hash(userData.password, 10, async (err, hash) => {
+        
+        if (err) {
+            console.log('An error occurred:')
+            console.log(err);
+            return
+        }
+
+        const user = new User({
+            username: userData.username,
+            password: hash
+        });
+        await user.save();
+        users[index] = user
+    });
 }
 
 async function blogCreate(index, blogData) {

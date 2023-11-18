@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs')
 const User = require("../models/user");
 const express = require("express")
 const router = express.Router()
@@ -8,19 +9,25 @@ router.get("/", function (req, res, next) {
 })
 
 router.post("/", async function (req, res, next) {
-    try {
-        const user = new User({
-          username: req.body.username,
-          password: req.body.password
-        });
+  bcrypt.hash(req.body.password, 10, async (err, hash) => {
+    if (err) {
+      return next(err);
+    }
 
-        await user.save();
-        
-        res.redirect("/");
+    try {
+      const user = new User({
+        username: req.body.username,
+        password: hash
+      });
+
+      await user.save();
+      
+      res.redirect("/");
     } 
     catch(err) {
-        return next(err);
+      return next(err);
     };
+  });
 })
 
 module.exports = router
