@@ -1,4 +1,6 @@
 require('dotenv').config()
+const liveReload = require("livereload")
+const connectLiveReload = require("connect-livereload")
 const createError = require("http-errors")
 const express = require("express")
 const path = require("path")
@@ -23,6 +25,17 @@ const app = express()
 /* View Engine Setup */
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
+
+/* Live Reload Setup */
+const liveReloadServer = liveReload.createServer()
+liveReloadServer.watch(path.join(__dirname, 'public'))
+liveReloadServer.server.once('connection', () => {
+  setTimeout(() => {
+    liveReloadServer.refresh('/')
+  }, 100)
+})
+
+app.use(connectLiveReload())
 
 /* Authentication Setup */
 app.use(session(
