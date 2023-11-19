@@ -1,7 +1,15 @@
-extends root 
+extends toolbars
 
-block content
-    include ../components/authorNavbar
+block navbar
+    .navbar__left 
+        include ../components/siteIcon
+        .navbar__message Draft by #{user.username}
+    .navbar__right 
+        button.navbar__button Publish
+        button.navbar__button
+            .avatar.icon-medium
+                img(src='/images/profileIcon.png') 
+    
+block sidebars
     include ../components/accountSidebar
-
     block page

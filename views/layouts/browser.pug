@@ -1,10 +1,28 @@
-extends root 
+extends toolbars
 
-block content
-    include ../components/browserNavbar
+block navbar
+    .navbar__left
+        button.burger-button 
+            .icon-medium
+                img(
+                    src='/images/burgerIcon.png'
+                )
+        include ../components/siteIcon
+    .navbar__center 
+        include ../components/searchbar
+    .navbar__right 
+        if user
+            button.write-button
+                .icon-small
+                    img(src='/images/writeIcon.png')
+                .write-button__label Write
+            button.account-button
+                .avatar.icon-medium
+                    img(src='/images/profileIcon.png')  
+        else 
+            button.login-button Login
+
+block sidebars
     include ../components/contentSidebar
-
-    if user
-        include ../components/accountSidebar
-
-    block page    
+    include ../components/accountSidebar
+    block page
