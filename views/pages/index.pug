@@ -3,12 +3,9 @@ include ../components/blogCard
 
 block page
   .blog-card-group
-    each blogCommentCountPair, index in blogCommentCountPairs
-      //only display up to 4 most popular blogs
+    each blog, index in blogs
+      // only display up to 4 most popular blogs
       if index == 4
         break
       
-      +blogCard(
-        blogCommentCountPairs[0],
-        blogCommentCountPairs[1]
-      )
+      +blogCard(blog)

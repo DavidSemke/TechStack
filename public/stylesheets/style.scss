@@ -1,12 +1,15 @@
 @use 'components/account-sidebar';
-@use 'components/content-sidebar';
-@use 'components/action-item';
-@use 'components/author-navbar';
-@use 'components/browser-navbar';
+@use 'components/action-list';
 @use 'components/blog-card';
+@use 'components/content-sidebar';
+@use 'components/searchbar';
+@use 'components/site-link';
+@use 'components/stat-list';
 @use 'globals/colors';
+@use 'globals/font-sizes' as fSizes;
 @use 'layouts/author';
 @use 'layouts/browser';
+@use 'layouts/toolbars';
 @use 'pages/index';
 
 
@@ -17,7 +20,6 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
-  background-color: colors.$bg0;
   color: colors.$text0;
 }
 
@@ -25,23 +27,31 @@ a {
   font-weight: 500;
   color: colors.$link;
   text-decoration: inherit;
+}
 
-  &:hover {
-    color: colors.$linkHover;
-  }
+a:hover {
+  color: colors.$linkHover;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: colors.$bg1;
 }
 
 button {
-  background-color: colors.$button;
-  border: none;
-
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  color: colors.$button;
+  border: 3px solid colors.$button;
+  background: none;
+  font-size: fSizes.$large;
+  
   &:hover {
-    background-color: colors.$buttonHover;
+    color: colors.$text0;
+    background-color: colors.$button;
   }
 }
 
@@ -57,17 +67,36 @@ h2 {
   font-size: 1.5rem;
 }
 
+img {
+  height: 100%;
+  width: 100%;
+}
+
 ul, ol {
   list-style-type: none;
   padding-left: 0;
+  margin: 0;
 }
 
-.iconSmall {
-  width: 1rem;
-  height: 1rem;
+.avatar {
+  border-radius: 50%;
 }
 
-.iconMedium {
-  width: 2rem;
+.icon-small {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.icon-medium {
   height: 2rem;
+  width: 2rem;
+}
+
+.signup-prompt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  font-size: fSizes.$large;
 }

@@ -13,7 +13,6 @@ exports.getBlogs = asyncHandler(async (req, res, next) => {
     
     res.render("pages/blogList", {
         title: "Published Blogs",
-        user: req.user,
         blogs: allBlogs
   });
 });
@@ -37,7 +36,6 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
         "pages/blog", 
         { 
             title: blog.title,
-            user: req.user,
             blog, 
             comments
         }
@@ -84,7 +82,6 @@ exports.postBlog = [
         ...inputs,
         blogTitle: inputs.title,
         title: "Create Blog",
-        user: req.user,
         errors: errors.array(),
       });
 
@@ -128,8 +125,7 @@ exports.getBlogUpdateForm = asyncHandler(async (req, res, next) => {
     res.render("pages/blogForm", {
         ...blog,
         blogTitle: blog.title,
-        title: "Update Blog",
-        user: req.user
+        title: "Update Blog"
     });
 });
     
@@ -173,8 +169,7 @@ exports.updateBlog = [
                 ...inputs,
                 blogTitle: inputs.title,
                 title: "Update Blog",
-                user: req.user,
-                errors: errors.array(),
+                errors: errors.array()
             });
 
             return;

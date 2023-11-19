@@ -1,0 +1,9 @@
+@use '../globals/font-sizes' as fSizes;
+
+.site-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: fSizes.$large;
+}

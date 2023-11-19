@@ -2,25 +2,25 @@ extends toolbars
 
 block navbar
     .navbar__left
-        button.burger-button 
+        button.navbar__burger-button 
             .icon-medium
                 img(
                     src='/images/burgerIcon.png'
                 )
-        include ../components/siteIcon
+        include ../components/siteLink
     .navbar__center 
         include ../components/searchbar
     .navbar__right 
         if user
-            button.write-button
+            button.navbar__write-button
                 .icon-small
                     img(src='/images/writeIcon.png')
                 .write-button__label Write
-            button.account-button
+            button.navbar__account-button
                 .avatar.icon-medium
                     img(src='/images/profileIcon.png')  
         else 
-            button.login-button Login
+            button.navbar__login-button Login
 
 block sidebars
     include ../components/contentSidebar

@@ -1,0 +1,32 @@
+@use '../globals/colors';
+@use '../globals/font-sizes' as fSizes;
+
+
+.searchbar {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding-bottom: 0.2rem;
+    padding-top: 0.2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 25px;
+    background-color: colors.$bg4;
+
+    &__form {
+        width: 100%;
+    }
+
+    &__input {
+        width: 100%;
+        font-size: fSizes.$large;
+        background: none;
+        border: none;
+        color: colors.$text0;
+        
+        &:focus {
+            outline: none;
+        }
+    }
+}
+

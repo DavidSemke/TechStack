@@ -1,16 +1,22 @@
 include actionList
 
-.account-sidebar
-    .account-overview 
-        .avatar Profile Pic
-        .username #{user.username}
-    +actionList(
-        {
-            'label': 'Your Profile',
-            'icon': '/images/profileIcon.png'
-        },
-        {
-            'label': 'Logout',
-            'icon': '/images/logoutIcon.png'
-        }
-    )
+.account-sidebar.sidebar
+    .sidebar__exit Close
+    if user
+        .account-overview 
+            .avatar Profile Pic
+            .username #{user.username}
+        +actionList(
+            {
+                'label': 'Your Profile',
+                'icon': '/images/profileIcon.png'
+            },
+            {
+                'label': 'Logout',
+                'icon': '/images/logoutIcon.png'
+            }
+        )
+    else 
+        .account-sidebar__signup-prompt.signup-prompt
+            .signup-prompt__text Not a member?
+            button.signup-prompt__button Sign Up

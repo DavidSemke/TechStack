@@ -18,8 +18,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     res.render(
         "pages/userProfile", 
         { 
-            title: `${req.user.username}'s Profile`,
-            user: req.user
+            title: `${req.user.username}'s Profile`
         }
     );
 });

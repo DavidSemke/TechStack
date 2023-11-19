@@ -5,11 +5,12 @@
   "scripts": {
     "start": "node ./bin/www",
     "set_debug": "set DEBUG=$npm_package_name:*",
-    "watch_node": "nodemon --ignore ./public",
+    "watch_node": "nodemon --ignore ./public --ext js,pug",
     "watch_scss": "sass --no-source-map --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
     "devstart": "npm run set_debug & concurrently \"npm run watch_node\" \"npm run watch_scss\""
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.3.1",

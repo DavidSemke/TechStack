@@ -1,18 +1,9 @@
-include tabList
 include actionList
 
-
-// recent and suggested options not shown if user not logged in
-.content-sidebar
-    if !user
-        .site-overview
-            .site-overview__name Tech Stack
-            .site-overview__descrip A place for coders and tech enthusiasts
-        .signup-prompt
-            .signup-prompt__text Not a member?
-            button.signup-prompt__button Sign Up
-    else 
-        +tabList('Recent', 'Suggested')
+.content-sidebar.sidebar
+    .sidebar__exit Close
+    .content-sidebar__section-heading Recent
+    .content-sidebar__section-body
         +actionList(
             {
                 'label': 'Blog 1',
@@ -22,5 +13,16 @@ include actionList
                 'label': 'Blog 2',
                 'img': '/images/profileIcon.png'
             }
-
+        )
+    .content-sidebar__section-heading Suggested
+    .content-sidebar__section-body
+        +actionList(
+            {
+                'label': 'Blog 1',
+                'img': '/images/profileIcon.png'
+            },
+            {
+                'label': 'Blog 2',
+                'img': '/images/profileIcon.png'
+            }
         )
