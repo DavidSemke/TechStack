@@ -1,5 +1,6 @@
 @use '../globals/colors';
 @use '../globals/font-sizes' as fSizes;
+@use '../globals/icon-sizes' as iSizes;
 
 
 .searchbar {
@@ -12,6 +13,10 @@
     padding-right: 1rem;
     border-radius: 25px;
     background-color: colors.$bg4;
+
+    &__icon {
+        height: iSizes.$small;
+    }
 
     &__form {
         width: 100%;

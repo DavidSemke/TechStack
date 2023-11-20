@@ -1,15 +1,21 @@
 extends toolbars
 
 block navbar
-    .navbar__left 
+    .navbar__left
+        button.burger-button 
+            .burger-button__icon
+                img(
+                    src='/images/burgerIcon.png'
+                )
         include ../components/siteIcon
         .navbar__message Draft by #{user.username}
     .navbar__right 
-        button.navbar__button Publish
-        button.navbar__button
-            .avatar.icon-medium
+        button.publish-button Publish
+        button.account-button
+            .account-button__icon.avatar
                 img(src='/images/profileIcon.png') 
     
 block sidebars
+    include ../components/contentSidebar
     include ../components/accountSidebar
     block page
