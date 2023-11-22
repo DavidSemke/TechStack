@@ -2,6 +2,7 @@
 
 .account-sidebar {
     right: 0;
+    border-left: 2px solid colors.$bg2;
 
     &__signup-prompt {
         height: 50%;

@@ -2,8 +2,9 @@
 @use 'components/action-list';
 @use 'components/blog-card';
 @use 'components/content-sidebar';
+@use 'components/icon-button';
+@use 'components/icon-link';
 @use 'components/searchbar';
-@use 'components/site-link';
 @use 'components/stat-list';
 @use 'globals/colors';
 @use 'globals/font-sizes' as fSizes;
@@ -21,17 +22,34 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
-  color: colors.$text0;
+  color: colors.$textLight;
 }
 
 a {
   font-weight: 500;
   color: colors.$link;
   text-decoration: inherit;
-}
 
-a:hover {
-  color: colors.$linkHover;
+  &:hover {
+    color: colors.$linkHover;
+  }
+
+  &.-button {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: colors.$buttonColorful;
+    border: 2px solid colors.$buttonColorful;
+    border-radius: 5px;
+    background: none;
+    font-size: fSizes.$large;
+    
+    &:hover {
+      color: colors.$textLight;
+      background-color: colors.$buttonColorful;
+    }
+  }
 }
 
 body {
@@ -41,17 +59,17 @@ body {
 }
 
 button {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  color: colors.$button;
-  border: 3px solid colors.$button;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: colors.$textLight;
+  border: 2px solid colors.$button;
+  border-radius: 5px;
   background: none;
-  font-size: fSizes.$large;
+  font-size: fSizes.$medium;
   
   &:hover {
-    color: colors.$text0;
     background-color: colors.$button;
   }
 }
@@ -79,37 +97,6 @@ ul, ol {
   margin: 0;
 }
 
-.avatar {
-  border-radius: 50%;
-}
-
-.account-button {
-  &__icon {
-    height: iSizes.$medium;
-    width: iSizes.$medium;
-  }
-}
-
-.burger-button {
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
-
-  &__icon {
-    height: iSizes.$medium;
-    width: iSizes.$medium;
-  }
-}
-
-.write-button {
-  &__icon {
-    height: iSizes.$small;
-    width: iSizes.$small;
-  }
-  
-}
-
 .signup-prompt {
   display: flex;
   flex-direction: column;
@@ -117,9 +104,4 @@ ul, ol {
   align-items: center;
   gap: 1rem;
   font-size: fSizes.$large;
-}
-
-.site-icon {
-  height: iSizes.$medium;
-  width: iSizes.$medium;
 }

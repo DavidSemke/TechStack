@@ -1,26 +1,25 @@
 extends toolbars
+include ../components/iconButton 
+include ../components/iconLink
 
 block navbar
     .navbar__left
-        button.burger-button 
-            .burger-button__icon
-                img(
-                    src='/images/burgerIcon.png'
-                )
-        include ../components/siteLink
+        +iconButton('/images/burgerIcon.png')(class='-burger')
+        +iconLink('/images/favicon.png', '/', 'Tech Stack')
     .navbar__center 
         include ../components/searchbar
     .navbar__right 
         if user
-            button.write-button
-                .write-button__icon
-                    img(src='/images/writeIcon.png')
-                .write-button__label Write
-            button.account-button
-                .account-button__icon.avatar
-                    img(src='/images/profileIcon.png')  
+            +iconLink(
+                '/images/writeIcon.png', 
+                `/users/${user.username}/blogs/new-blog`,
+                'Write'
+            )
+            +iconButton(
+                '/images/profileIcon.png'
+            )(class='-circle')
         else 
-            button.login-button Login
+            a(href='/login' class='-button') Login
 
 block sidebars
     include ../components/contentSidebar

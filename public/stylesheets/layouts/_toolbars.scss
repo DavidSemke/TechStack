@@ -1,4 +1,5 @@
 @use '../globals/colors';
+@use '../globals/icon-sizes' as iSizes;
 
 .navbar {
     display: flex;
@@ -7,7 +8,9 @@
     top: 0;
     padding: 1rem;
     height: 8vh;
+    min-height: 4rem;
     z-index: 1;
+    border-bottom: 2px solid colors.$bg2;
     background-color: colors.$bg0;
 
     &__left {
@@ -29,21 +32,25 @@
 }
 
 .page-container {
-    position: relative;
     margin: 0;
     min-height: 100vh;
 }
 
 .sidebar {
-    position: absolute;
+    position: fixed;
     height: 100%;
     width: 25%;
     padding: 1rem;
-    background-color: colors.$bg2;
-    border: 4px solid colors.$bg3;
+    background-color: colors.$bg0;
+    border-bottom: 2px solid colors.$bg2;
 
-    &__exit {
+    &__top {
         display: flex;
         justify-content: flex-end;
+    }
+
+    &__exit-icon {
+        height: iSizes.$medium;
+        width: iSizes.$medium;
     }
 }

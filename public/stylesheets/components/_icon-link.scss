@@ -1,9 +1,15 @@
 @use '../globals/font-sizes' as fSizes;
+@use '../globals/icon-sizes' as iSizes;
 
-.site-link {
+.icon-link {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
     font-size: fSizes.$large;
+
+    &__icon {
+        height: iSizes.$medium;
+        width: iSizes.$medium;
+    }
 }

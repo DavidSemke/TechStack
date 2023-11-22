@@ -12,7 +12,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 25px;
-    background-color: colors.$bg4;
+    background-color: colors.$bg3;
 
     &__icon {
         height: iSizes.$small;
@@ -27,11 +27,7 @@
         font-size: fSizes.$large;
         background: none;
         border: none;
-        color: colors.$text0;
-        
-        &:focus {
-            outline: none;
-        }
+        color: colors.$textLight;
     }
 }
 

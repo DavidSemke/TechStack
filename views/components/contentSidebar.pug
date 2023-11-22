@@ -1,21 +1,25 @@
 include actionList
+include iconButton
 
 .content-sidebar.sidebar
-    .sidebar__exit Close
-    .content-sidebar__section-heading Recent
-    .content-sidebar__section-body
+    .sidebar__top
+        +iconButton('/images/closeIcon.png')(class='-iconMedium')
+    .content-sidebar__heading Recent
+    .content-sidebar__section
         +actionList(
             {
-                'label': 'Blog 1',
-                'img': '/images/profileIcon.png'
+                'icon': '/images/profileIcon.png',
+                'href': '/blogs',
+                'label': 'Blog 1'     
             },
             {
-                'label': 'Blog 2',
-                'img': '/images/profileIcon.png'
+                'icon': '/images/profileIcon.png',
+                'href': '/blogs',
+                'label': 'Blog 1'
             }
-        )
-    .content-sidebar__section-heading Suggested
-    .content-sidebar__section-body
+        )(actionList={}, iconLink={})
+    .content-sidebar__heading Suggested
+    .content-sidebar__section
         +actionList(
             {
                 'label': 'Blog 1',

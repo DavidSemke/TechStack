@@ -4,21 +4,21 @@ mixin blogCard(blog)
   .blog-card
     +statList(
       {
-        'stat': blog.likes,
-        'icon': '/images/likeIcon.png'
+        'icon': '/images/likeIcon.png',
+        'stat': 0
       },
       {
-        'stat': blog.dislikes,
-        'icon': '/images/dislikeIcon.png'
+        'icon': '/images/dislikeIcon.png',
+        'stat': 0
       },
       {
-        'stat': blog.commentCount,
-        'icon': '/images/commentIcon.png'
+        'icon': '/images/commentIcon.png',
+        'stat': 0
       }
     )
     .blog-card__overview
-      .blog-card__author= blog.author
-      .blog-card__title= blog.title
+      .blog-card__author= 'Author'
+      .blog-card__title= 'Title'
       // Blog preview; show first 100 chars of non-heading text
       // [0].content.substring(0, 100) + '...'
-      .blog-card__preview= blog.content
+      .blog-card__preview= 'Content'

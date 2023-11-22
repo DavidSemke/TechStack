@@ -1,0 +1,6 @@
+mixin iconButton(icon, label=null)
+    button.icon-button&attributes(attributes)
+        .icon-button__icon
+            img(src=icon)
+        if label
+            .icon-button__label= label

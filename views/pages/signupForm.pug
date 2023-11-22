@@ -3,7 +3,7 @@ extends ../layouts/root
 block content
     h1 Sign Up
     form.logging-form(action="/signup" method="POST")
-        label(for="username") Username
+        label.logging-form__label(for="username") Username
         input#username.logging-form__input(
             name="username" 
             type="text" 
@@ -11,8 +11,12 @@ block content
             required 
             autofocus 
         )
-        label(for="password") Password
+        .input-error This is an input error.
+
+        label.logging-form__label(for="password") Password
         input#password.logging-form__input(
             name="password" type="password"
         )
+        .input-error This is an input error.
+        
         button.logging-form__submit Sign Up
