@@ -1,0 +1,24 @@
+@use '../globals/colors';
+@use '../globals/icon-sizes' as iSizes;
+@use '../globals/font-sizes' as fSizes;
+
+.stat-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 1rem;
+    border-right: 2px solid colors.$bg2;
+    font-size: fSizes.$small;
+
+    &__item {
+        display: flex;
+        gap: 0.1rem;
+    }
+    
+    &__icon {
+        height: iSizes.$small;
+        width: iSizes.$small;
+    }
+}

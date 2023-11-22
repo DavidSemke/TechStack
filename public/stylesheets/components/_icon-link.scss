@@ -12,4 +12,8 @@
         height: iSizes.$medium;
         width: iSizes.$medium;
     }
+
+    &.-left {
+        justify-content: flex-start;
+    }
 }

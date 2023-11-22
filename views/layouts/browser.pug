@@ -4,7 +4,9 @@ include ../components/iconLink
 
 block navbar
     .navbar__left
-        +iconButton('/images/burgerIcon.png')(class='-burger')
+        +iconButton(
+            '/images/burgerIcon.png'
+        )(class='-burger' id='navbar-burger-button')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
     .navbar__center 
         include ../components/searchbar
@@ -14,12 +16,13 @@ block navbar
                 '/images/writeIcon.png', 
                 `/users/${user.username}/blogs/new-blog`,
                 'Write'
-            )
-            +iconButton(
-                '/images/profileIcon.png'
-            )(class='-circle')
+            )(class='-button')
         else 
             a(href='/login' class='-button') Login
+        
+        +iconButton(
+            '/images/profileIcon.png'
+        )(class='-circle' id='navbar-account-button')
 
 block sidebars
     include ../components/contentSidebar

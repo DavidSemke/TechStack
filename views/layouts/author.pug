@@ -2,18 +2,19 @@ extends toolbars
 
 block navbar
     .navbar__left
-        button.burger-button 
-            .burger-button__icon
-                img(
-                    src='/images/burgerIcon.png'
-                )
-        include ../components/siteIcon
+        +iconButton(
+            '/images/burgerIcon.png'
+        )(class='-burger' id='navbar-burger-button')
+        +iconLink('/images/favicon.png', '/', 'Tech Stack')
         .navbar__message Draft by #{user.username}
-    .navbar__right 
-        button.publish-button Publish
-        button.account-button
-            .account-button__icon.avatar
-                img(src='/images/profileIcon.png') 
+    .navbar__right
+        .a(
+            href=`/users/${user.username}/blogs/publish-preview` 
+            class='-button'
+        ) Publish
+        +iconButton(
+            '/images/profileIcon.png'
+        )(class='-circle', id='navbar-account-button')
     
 block sidebars
     include ../components/contentSidebar

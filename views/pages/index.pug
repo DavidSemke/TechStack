@@ -2,10 +2,10 @@ extends ../layouts/browser
 include ../components/blogCard
 
 block page
-  .blog-card-group
-    each blog, index in blogs
-      // only display up to 4 most popular blogs
-      if index == 4
-        break
-      
-      +blogCard(blog)
+  - let i = 0
+  while i < 2
+    .blog-card-pair
+      - let start = i*2
+      each blog in blogs.slice(start, start+2)
+        +blogCard(blog)
+    - i+=1

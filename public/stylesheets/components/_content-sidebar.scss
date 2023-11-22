@@ -16,7 +16,7 @@
         margin-bottom: 1rem;
     }
 
-    &__section button {
-        font-size: fSizes.$small;
+    &.-closed {
+        display: none;
     }
 }

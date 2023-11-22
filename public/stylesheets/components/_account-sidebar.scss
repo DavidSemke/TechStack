@@ -7,4 +7,8 @@
     &__signup-prompt {
         height: 50%;
     }
+
+    &.-closed {
+        display: none;
+    }
 }

@@ -1,20 +1,20 @@
 include actionList
 include iconButton
 
-.account-sidebar.sidebar
+#account-sidebar.account-sidebar.sidebar.-closed
     .sidebar__top
-        +iconButton('/images/closeIcon.png')(class='-medium')
+        +iconButton('/images/closeIcon.png')(id='account-sidebar-close-button')
     if user
         .account-overview 
-            .avatar Profile Pic
-            .username= user.username
+            .account-overview__avatar Profile Pic
+            .account-overview__username= user.username
         +actionList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': `/users/${user.username}`,
                 'label': 'Your Profile'     
             }
-        )(actionList={}, iconLink={})
+        )(actionList=[], iconLink=[])
     else 
         .account-sidebar__signup-prompt.signup-prompt
             .signup-prompt__text Not a member?

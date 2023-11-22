@@ -22,17 +22,21 @@
 
     &__center {
         flex: 2;
+        margin-left: 2rem;
+        margin-right: 2rem;
     }
 
     &__right {
         flex: 1;
         display: flex;
+        align-items: center;
         justify-content: flex-end;
+        gap: 2rem;
     }
 }
 
 .page-container {
-    margin: 0;
+    overflow: auto;
     min-height: 100vh;
 }
 

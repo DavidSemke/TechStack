@@ -16,6 +16,9 @@
 
     &__icon {
         height: iSizes.$small;
+        width: iSizes.$small;
+        min-height: iSizes.$small;
+        min-width: iSizes.$small;
     }
 
     &__form {

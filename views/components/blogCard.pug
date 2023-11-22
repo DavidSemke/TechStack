@@ -17,8 +17,15 @@ mixin blogCard(blog)
       }
     )
     .blog-card__overview
-      .blog-card__author= 'Author'
-      .blog-card__title= 'Title'
+      .blog-card__author-date
+        .blog-card__author-details
+          .blog-card__avatar
+            img(src='/images/profileIcon.png')
+          .blog-card__username= 'James Games'
+        .blog-card__date 2020/12/10
+      h1.blog-card__title= 'The Itty Bitty Spider Fell Down the Stairs'
       // Blog preview; show first 100 chars of non-heading text
       // [0].content.substring(0, 100) + '...'
-      .blog-card__preview= 'Content'
+      p.blog-card__preview= "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it."
+      .blog-card__keywords-heading Keywords:
+      .blog-card__keywords= 'Tech | BigTech | ShinyTech | CoolTech | NewTech | FreshTech | SpicyTech | HeckTech | SteakTech | BreakTech'
