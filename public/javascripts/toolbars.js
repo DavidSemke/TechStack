@@ -1,25 +1,19 @@
-function addSidebarEventListeners(sidebarId, openElementId, closeElementId) {
+function addSidebarEventListeners(sidebarId, sidebarButtonId) {
     const sidebar = document.getElementById(sidebarId)
 
     if (!sidebar) {
         return
     }
 
-    const closeButton = document.getElementById(closeElementId)
-    const openButton = document.getElementById(openElementId)
+    const sidebarButton = document.getElementById(sidebarButtonId)
 
-    closeButton.addEventListener('click', () => {
-        console.log(sidebar.classList)
+    sidebarButton.addEventListener('click', () => {
         
         if (sidebar.classList.contains('-open')) {
             sidebar.classList.remove('-open')
             sidebar.classList.add('-closed')
         }
-    })
-
-    openButton.addEventListener('click', () => {
-        
-        if (sidebar.classList.contains('-closed')) {
+        else if (sidebar.classList.contains('-closed')) {
             sidebar.classList.remove('-closed')
             sidebar.classList.add('-open')
         }

@@ -4,11 +4,9 @@ import {
 
 addSidebarEventListeners(
     'account-sidebar', 
-    'navbar-account-button', 
-    'account-sidebar-close-button'
+    'navbar-account-button'
 )
 addSidebarEventListeners(
     'content-sidebar', 
-    'navbar-burger-button', 
-    'content-sidebar-close-button'
+    'navbar-burger-button'
 )

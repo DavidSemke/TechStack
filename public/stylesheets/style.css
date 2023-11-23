@@ -85,7 +85,6 @@
 .content-sidebar__heading {
   margin-bottom: 1rem;
   font-size: 1.2rem;
-  font-weight: 600;
   border-bottom: 2px solid rgb(36, 36, 36);
 }
 .content-sidebar__section {
@@ -253,13 +252,11 @@
   background-color: black;
   border-bottom: 2px solid rgb(36, 36, 36);
 }
-.sidebar__top {
-  display: flex;
-  justify-content: flex-end;
-}
-.sidebar__exit-icon {
-  height: 2rem;
-  width: 2rem;
+.sidebar__title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 4px solid rgb(36, 36, 36);
 }
 
 .blog-card-pair {

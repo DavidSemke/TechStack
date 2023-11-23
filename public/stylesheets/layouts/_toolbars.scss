@@ -1,4 +1,5 @@
 @use '../globals/colors';
+@use '../globals/font-sizes' as fSizes;
 @use '../globals/icon-sizes' as iSizes;
 
 .navbar {
@@ -48,13 +49,10 @@
     background-color: colors.$bg0;
     border-bottom: 2px solid colors.$bg2;
 
-    &__top {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    &__exit-icon {
-        height: iSizes.$medium;
-        width: iSizes.$medium;
+    &__title {
+        font-size: fSizes.$larger;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        border-bottom: 4px solid colors.$bg2;
     }
 }
