@@ -1,6 +1,6 @@
 extends toolbars
-include ../components/iconButton 
-include ../components/iconLink
+include ../components/icon/iconButton 
+include ../components/icon/iconLink
 
 block navbar
     .navbar__left
@@ -25,6 +25,6 @@ block navbar
         )(class='-circle' id='navbar-account-button')
 
 block sidebars
-    include ../components/contentSidebar
-    include ../components/accountSidebar
+    include ../components/toolbar/contentSidebar
+    include ../components/toolbar/accountSidebar
     block page

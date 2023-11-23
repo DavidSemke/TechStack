@@ -1,6 +1,6 @@
-@use '../globals/colors';
-@use '../globals/icon-sizes' as iSizes;
-@use '../globals/font-sizes' as fSizes;
+@use '../../globals/colors';
+@use '../../globals/icon-sizes' as iSizes;
+@use '../../globals/font-sizes' as fSizes;
 
 .stat-list {
     display: flex;
