@@ -1,0 +1,22 @@
+mixin loggingForm(action)
+    form.logging-form(action=action method="POST")
+        .logging-form__input-container    
+            label.logging-form__label(for="username") Username
+            input#username.logging-form__input(
+                name="username" 
+                type="text" 
+                required 
+            )
+        .logging-form__error This is an input error.
+        
+        .logging-form__input-container
+            label.logging-form__label(for="password") Password
+            input#password.logging-form__input(
+                name="password" type="password"
+            )
+        .logging-form__error This is an input error.
+
+        if block 
+            block
+        
+        button.logging-form__submit Submit

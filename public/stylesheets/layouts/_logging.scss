@@ -1,0 +1,22 @@
+@use '../globals/colors';
+
+.logging-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5%;
+        padding: 4rem;
+        border: 2px solid colors.$bg2;
+    }
+
+    &__heading {
+        margin-top: 0;
+    }
+}

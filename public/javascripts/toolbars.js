@@ -1,5 +1,10 @@
 function addSidebarEventListeners(sidebarId, openElementId, closeElementId) {
     const sidebar = document.getElementById(sidebarId)
+
+    if (!sidebar) {
+        return
+    }
+
     const closeButton = document.getElementById(closeElementId)
     const openButton = document.getElementById(openElementId)
 

@@ -4,6 +4,7 @@
 @use 'components/content-sidebar';
 @use 'components/icon-button';
 @use 'components/icon-link';
+@use 'components/logging-form';
 @use 'components/searchbar';
 @use 'components/stat-list';
 @use 'globals/colors';
@@ -11,8 +12,12 @@
 @use 'globals/icon-sizes' as iSizes;
 @use 'layouts/author';
 @use 'layouts/browser';
+@use 'layouts/logging';
 @use 'layouts/toolbars';
+@use 'pages/blog-form';
+@use 'pages/blog';
 @use 'pages/index';
+@use 'pages/user-profile';
 
 
 * {
@@ -54,6 +59,7 @@ a {
 
 body {
   margin: 0;
+  height: 100vh;
   min-height: 100vh;
   background-color: colors.$bg1;
 }

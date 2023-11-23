@@ -1,22 +1,6 @@
-extends ../layouts/root
+extends ../layouts/logging
+include ../components/loggingForm
 
-block content
-    h1 Login
-    form.logging-form(action="/login" method="POST")
-        label.logging-form__label(for="username") Username
-        input#username.logging-form__input(
-            name="username" 
-            type="text" 
-            placeholder="username"
-            required 
-            autofocus 
-        )
-        .input-error This is an input error.
-
-        label.logging-form__label(for="password") Password
-        input#password.logging-form__input(
-            name="password" type="password" required
-        )
-        .input-error This is an input error.
-        
-        button.logging-form__submit Login
+block loggingForm
+    h1.logging-page__heading Log In
+    +loggingForm('/login')
