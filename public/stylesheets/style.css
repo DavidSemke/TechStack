@@ -169,6 +169,30 @@
 .account-sidebar__signup-prompt {
   height: 50%;
 }
+.account-sidebar__overview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid rgb(36, 36, 36);
+}
+.account-sidebar__avatar {
+  height: 3rem;
+  width: 3rem;
+}
+.account-sidebar__username {
+  font-size: 1.4rem;
+}
+.account-sidebar__logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 2px solid rgb(36, 36, 36);
+  font-size: 1.2rem;
+}
 .account-sidebar.-closed {
   display: none;
 }

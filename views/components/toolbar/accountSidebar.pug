@@ -3,16 +3,19 @@ include ../list/actionList
 #account-sidebar.account-sidebar.sidebar.-closed
     .sidebar__title Account
     if user
-        .account-overview 
-            .account-overview__avatar Profile Pic
-            .account-overview__username= user.username
+        .account-sidebar__overview 
+            .account-sidebar__avatar
+                img(src='/images/profileIcon.png')
+            .account-sidebar__username= user.username
         +actionList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': `/users/${user.username}`,
                 'label': 'Your Profile'     
             }
-        )(actionList=[], iconLink=[])
+        )(actionList = [], iconLink = ['-left'])
+        .account-sidebar__logout
+            a(href='/logout') Logout
     else 
         .account-sidebar__signup-prompt.signup-prompt
             .signup-prompt__text Not a member?
