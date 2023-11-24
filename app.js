@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser")
 const logger = require("morgan")
 const session = require("express-session")
 const passport = require('./auth/passport.js')
+const flash = require('connect-flash')
 const mongoose = require("mongoose")
 
 /* MongoDB Setup */
@@ -46,6 +47,7 @@ app.use(session(
 ));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 /* Locals Setup */
 app.use((req, res, next) => {

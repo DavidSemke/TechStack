@@ -22,7 +22,7 @@ mixin loggingForm(action, inputs={}, errors=[])
                 required 
             )
         
-        if usernameErrors.length > 0
+        if usernameErrors.length
             .logging-form__error-container
                 each error in usernameErrors
                     .logging-form__error= error
@@ -36,11 +36,11 @@ mixin loggingForm(action, inputs={}, errors=[])
                 required
             )
         
-        if passwordErrors.length > 0
+        if passwordErrors.length
             .logging-form__error-container
                 each error in passwordErrors
                     .logging-form__error= error
-        else if loginErrors.length > 0
+        else if loginErrors.length
             .logging-form__error-container
                 each error in loginErrors
                     .logging-form__error= error

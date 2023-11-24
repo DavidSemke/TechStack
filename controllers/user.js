@@ -33,25 +33,27 @@ exports.postUser = [
         .withMessage("Username must have 6 to 30 characters.")
         .escape()
         .custom(asyncHandler(async (value) => {
-            return !(
-                await User
-                    .findOne({ username: value })
-                    .exec()
-            )
+            const userExists = await User
+                .findOne({ username: value })
+                .exec()
+
+            if (userExists) {
+                return Promise.reject()
+            }
         }))
         .withMessage('Username already exists.'),
     body("password")
         .trim()
         .isLength({ min: 8 })
         .withMessage("Password must have at least 8 characters.")
-        .custom(asyncHandler(async (value) => {
+        .custom((value) => {
             const containsNum = /\d/
             const containsSpecialChar = /[!@#$%^&*]/
             return (
                 containsNum.test(value) 
                 && containsSpecialChar.test(value)
             )
-        }))
+        })
         .withMessage(
             "Password must contain one of !@#$%^&* and a digit."
         )
