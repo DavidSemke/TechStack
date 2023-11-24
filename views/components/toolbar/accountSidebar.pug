@@ -1,4 +1,4 @@
-include ../list/actionList
+include ../list/linkList
 
 #account-sidebar.account-sidebar.sidebar.-closed
     .sidebar__title Account
@@ -7,13 +7,13 @@ include ../list/actionList
             .account-sidebar__avatar
                 img(src='/images/profileIcon.png')
             .account-sidebar__username= user.username
-        +actionList(
+        +linkList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': `/users/${user.username}`,
                 'label': 'Your Profile'     
             }
-        )(actionList = [], iconLink = ['-left'])
+        )(linkList = [], iconLink = ['-left'])
         .account-sidebar__logout
             a(href='/logout') Logout
     else 

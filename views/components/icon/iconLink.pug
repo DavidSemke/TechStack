@@ -2,5 +2,5 @@ mixin iconLink(icon, href, label=null)
     a(href=href).icon-link&attributes(attributes)
         .icon-link__icon
             img(src=icon)
-        if label
+        if label !== null
             .icon-link__label= label

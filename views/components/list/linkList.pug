@@ -1,9 +1,9 @@
 include ../icon/iconLink
 
-mixin actionList(...actionItems)
-    ul.action-list&attributes(attributes.actionList)
+mixin linkList(...actionItems)
+    ul.link-list&attributes(attributes.linkList)
         each item in actionItems
-            li.action-list__item
+            li.link-list__item
                 +iconLink(
                     item.icon, item.href, item.label
                 )(class=attributes.iconLink)

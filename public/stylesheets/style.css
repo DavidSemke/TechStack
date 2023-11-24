@@ -125,22 +125,10 @@
   justify-content: flex-start;
 }
 
-.action-list {
+.link-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-.action-list__button {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  border: none;
-  background-color: rgb(54, 54, 54);
-  border-radius: 10px;
-}
-.action-list__icon {
-  height: 2rem;
-  width: 2rem;
 }
 
 .stat-list {
