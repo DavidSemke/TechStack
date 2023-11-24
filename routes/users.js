@@ -1,6 +1,6 @@
+const controller = require('../controllers/user')
 const express = require("express")
 const router = express.Router()
-const controller = require('../controllers/user')
 
 // post user found in signup router
 

@@ -1,13 +1,7 @@
+const controller = require('../controllers/logout')
 const express = require("express")
 const router = express.Router()
 
-router.get("/", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/");
-    });
-});
+router.get("/", controller.getLogout);
 
 module.exports = router 

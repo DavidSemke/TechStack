@@ -1,17 +1,9 @@
-const userController = require('../controllers/user')
+const controller = require('../controllers/signup')
 const express = require("express")
 const router = express.Router()
 
+router.get("/", controller.getSignup)
 
-router.get("/", function (req, res, next) {
-  res.render(
-    "pages/signupForm", 
-    { 
-      title: "Sign Up"
-    }
-  )
-})
-
-router.post("/", userController.postUser)
+router.post("/", controller.postSignup)
 
 module.exports = router
