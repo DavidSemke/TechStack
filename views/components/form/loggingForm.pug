@@ -1,27 +1,51 @@
-mixin loggingForm(action, errors={})
+mixin loggingForm(action, inputs={}, errors=[]) 
+    - const usernameErrors = []
+    - const passwordErrors = []
+    - let loginErrors = []
+
+    if action === '/signup'
+        each error in errors 
+            if error.path === 'username'
+                - usernameErrors.push(error.msg)
+            else if error.path === 'password'
+                - passwordErrors.push(error.msg)
+    else 
+        - loginErrors = errors
+
     form.logging-form(action=action method="POST")
         .logging-form__input-container    
             label.logging-form__label(for="username") Username
             input#username.logging-form__input(
                 name="username" 
-                type="text" 
+                type="text"
+                value=inputs.username || ''
                 required 
             )
         
-        if errors.username
-            .logging-form__error= errors.username
+        if usernameErrors.length > 0
+            .logging-form__error-container
+                each error in usernameErrors
+                    .logging-form__error= error
         
         .logging-form__input-container
             label.logging-form__label(for="password") Password
             input#password.logging-form__input(
-                name="password" type="password"
+                name="password" 
+                type="password"
+                value=inputs.password || ''
+                required
             )
         
-        if errors.password 
-            .logging-form__error= errors.password
-        else if errors.login
-            .logging-form__error= errors.login
+        if passwordErrors.length > 0
+            .logging-form__error-container
+                each error in passwordErrors
+                    .logging-form__error= error
+        else if loginErrors.length > 0
+            .logging-form__error-container
+                each error in loginErrors
+                    .logging-form__error= error
 
+        // add more fields as desired
         if block 
             block
         

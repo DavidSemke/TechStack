@@ -55,7 +55,7 @@ exports.postComment = [
 
 // On comment delete
 exports.deleteComment = asyncHandler(async (req, res, next) => {
-    await Comment.findByIdAndRemove(req.params.id);
+    await Comment.findByIdAndRemove(req.params.id).exec();
     res.redirect("/");
 });
 
@@ -114,6 +114,6 @@ exports.updateComment = [
 
         await Comment.findOneAndReplace(
             {_id: req.params.id}, comment
-        );
+        ).exec();
     }),
 ];

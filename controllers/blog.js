@@ -2,20 +2,6 @@ const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-
-
-// Display list of all blogs
-exports.getBlogs = asyncHandler(async (req, res, next) => {
-    const allBlogs = await Blog
-        .find()
-        .sort({ likes: 'desc' })
-        .exec();
-    
-    res.render("pages/blogList", {
-        title: "Published Blogs",
-        blogs: allBlogs
-  });
-});
   
 // Display blog
 exports.getBlog = asyncHandler(async (req, res, next) => {
@@ -56,7 +42,7 @@ exports.postBlog = [
     .withMessage("Blog must have a title.")
     .escape()
     .custom(asyncHandler(async (value) => {
-        return !(await Blog.findOne({ title: value }))
+        return !(await Blog.findOne({ title: value }).exec())
     }))
     .withMessage('Blog title already exists.'),
   body("keywords")
@@ -109,8 +95,8 @@ exports.postBlog = [
 
 // On blog delete
 exports.deleteBlog = asyncHandler(async (req, res, next) => {
-    await Comment.deleteMany({blog: req.params.id})
-    await Blog.findByIdAndRemove(req.params.id);
+    await Comment.deleteMany({blog: req.params.id}).exec()
+    await Blog.findByIdAndRemove(req.params.id).exec()
     res.redirect("/");
 });
 
@@ -142,7 +128,7 @@ exports.updateBlog = [
 
             return (
                 blog.title === value 
-                || !(await Blog.findOne({ title: value }))
+                || !(await Blog.findOne({ title: value }).exec())
             )
         }))
         .withMessage('Blog title already exists.'),
@@ -186,7 +172,7 @@ exports.updateBlog = [
             dislikes: 0
         });
 
-        await Blog.findOneAndReplace({_id: req.params.id}, blog);
+        await Blog.findOneAndReplace({_id: req.params.id}, blog).exec();
 
         // view updated blog
         res.redirect(blog.url);

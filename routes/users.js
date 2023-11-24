@@ -1,10 +1,9 @@
 const express = require("express")
 const router = express.Router()
-const controller = require('../controllers/blog')
+const controller = require('../controllers/user')
 
-router.get('/:username/profile', function (req, res, next) { 
-    controller.getBlogs 
-})
+// post user found in signup router
 
+router.get('/:username', controller.getUser)
 
 module.exports = router

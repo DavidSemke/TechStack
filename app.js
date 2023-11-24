@@ -13,8 +13,7 @@ const mongoose = require("mongoose")
 /* MongoDB Setup */
 const connecter = process.env.MONGO_DB_CONNECT
 
-main().catch((err) => console.log(
-  err));
+main().catch((err) => console.log(err));
 
 async function main() {
   await mongoose.connect(connecter);
