@@ -4,6 +4,9 @@ mixin linkList(...actionItems)
     ul.link-list&attributes(attributes.linkList)
         each item in actionItems
             li.link-list__item
+                - item.label = item.label ?? null
                 +iconLink(
-                    item.icon, item.href, item.label
+                    item.icon, 
+                    item.href, 
+                    item.label
                 )(class=attributes.iconLink)

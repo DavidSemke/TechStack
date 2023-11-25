@@ -2,10 +2,11 @@ extends ../layouts/browser
 include ../components/card/blogCard
 
 block page
-  - let i = 0
-  while i < 2
-    .blog-card-pair
-      - let start = i*2
-      each blog in blogs.slice(start, start+2)
-        +blogCard(blog)
-    - i+=1
+  .index-page
+    - let i = 0
+    while i < 2
+      .blog-card-pair
+        - let start = i*2
+        each blog in blogs.slice(start, start+2)
+          +blogCard(blog)
+      - i+=1

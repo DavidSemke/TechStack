@@ -1,1 +1,38 @@
 extends ../layouts/browser 
+include ../components/list/buttonList
+
+block page
+    .blog-page
+        .blog
+            h1.blog__title= title
+            .blog__author-details
+                .blog__author-profile-pic
+                    //- if blog.author.profile_pic
+                    img(src='/images/profileIcon.png')
+                .blog__author-username= blog.author.name
+            .blog__date= blog.publish_date
+            +buttonList(
+                {
+                    'classId': 'blog-stat-like-button',
+                    'icon': '/images/likeIcon.png',
+                    'label': blog.likes
+                },
+                {
+                    'classId': 'blog-stat-dislike-button',
+                    'icon': '/images/dislikeIcon.png',
+                    'label': blog.dislikes
+                },
+                {
+                    'classId': 'blog-stat-comment-button',
+                    'icon': '/images/commentIcon.png',
+                    'label': comments.length
+                }
+            )
+            .blog__thumbnail Thumbnail 
+            .blog__content Content
+            .blog__like-dislike
+        .blog-card-container
+            .blog-card-pair More Blogs
+            .blog-card-pair More Blogs
+        .comment-container Comments
+        

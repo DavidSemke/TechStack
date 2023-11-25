@@ -1,3 +1,5 @@
+const passport = require('../auth/passport')
+
 exports.getLogin = (req, res, next) => {
     const inputs = {
         'username': req.session.username ?? '',

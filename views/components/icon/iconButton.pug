@@ -1,5 +1,5 @@
-mixin iconButton(icon, label=null)
-    button.icon-button&attributes(attributes)
+mixin iconButton(classId, icon, label=null)
+    button.icon-button(class=classId)&attributes(attributes)
         .icon-button__icon
             img(src=icon)
         if label !== null

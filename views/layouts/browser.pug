@@ -5,8 +5,9 @@ include ../components/icon/iconLink
 block navbar
     .navbar__left
         +iconButton(
+            'navbar-content-button',
             '/images/burgerIcon.png'
-        )(class='-burger' id='navbar-burger-button')
+        )(class='-burger')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
     .navbar__center 
         include ../components/form/searchbar
@@ -21,8 +22,9 @@ block navbar
             a(href='/login' class='-button') Login
         
         +iconButton(
+            'navbar-account-button',
             '/images/profileIcon.png'
-        )(class='-circle' id='navbar-account-button')
+        )(class='-circle')
 
 block sidebars
     include ../components/toolbar/contentSidebar

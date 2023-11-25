@@ -1,0 +1,15 @@
+.blog {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &__title {
+
+    }
+
+    &__author-details {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

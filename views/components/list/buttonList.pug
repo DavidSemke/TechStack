@@ -4,6 +4,9 @@ mixin buttonList(...buttonItems)
     ul.button-list&attributes(attributes.buttonList)
         each item in buttonItems
             li.button-list__item
+                - item.label = item.label ?? null
                 +iconButton(
-                    item.icon, item.label
+                    item.classId,
+                    item.icon,  
+                    item.label
                 )(class=attributes.iconButton)

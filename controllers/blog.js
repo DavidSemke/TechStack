@@ -6,17 +6,62 @@ const { body, validationResult } = require("express-validator");
 // Display blog
 exports.getBlog = asyncHandler(async (req, res, next) => {
   
-    const [blog, comments] = await Promise.all([
-        Blog.findById(req.params.id).exec(),
-        Comment.find({ blog: req.params.id }).exec(),
-    ]);
+    // const [blog, comments] = await Promise.all([
+    //     Blog.findById(req.params.id).exec(),
+    //     Comment.find({ blog: req.params.id }).exec(),
+    // ]);
 
-    if (blog === null) {
-        const err = new Error("Blog not found");
-        err.status = 404;
+    // if (blog === null) {
+    //     const err = new Error("Blog not found");
+    //     err.status = 404;
         
-        return next(err);
+    //     return next(err);
+    // }
+
+    const blog = {
+        'title': 'Latest Blog',
+        'author': {
+            'name': 'James Games'
+        },
+        'keywords': [],
+        'content': [],
+        'likes': 0,
+        'dislikes': 0,
+        'publish_date': '2020/12/12'
     }
+
+    const comments = [
+        {
+            'author': {
+                'name': 'JJ Man'
+            },
+            'publish_date': '2020/12/12',
+            'content': 'I like this',
+            'likes': 0,
+            'dislikes': 0,
+            'reply_to': null
+        },
+        {
+            'author': {
+                'name': 'Puny Goon'
+            },
+            'publish_date': '2020/12/13',
+            'content': 'I don\'t like this',
+            'likes': 0,
+            'dislikes': 0,
+            'reply_to': null
+        },
+        {
+            'author': {
+                'name': 'Trollmasterxd'
+            },
+            'publish_date': '2020/12/14',
+            'content': 'Captain America: Civil War',
+            'likes': 0,
+            'dislikes': 0,
+            'reply_to': null
+        }
+    ]
 
     res.render(
         "pages/blog", 

@@ -3,8 +3,9 @@ extends toolbars
 block navbar
     .navbar__left
         +iconButton(
+            'navbar-content-button',
             '/images/burgerIcon.png'
-        )(class='-burger' id='navbar-burger-button')
+        )(class='-burger')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
         .navbar__message Draft by #{user.username}
     .navbar__right
@@ -13,8 +14,9 @@ block navbar
             class='-button'
         ) Publish
         +iconButton(
+            'navbar-account-button',
             '/images/profileIcon.png'
-        )(class='-circle', id='navbar-account-button')
+        )(class='-circle')
     
 block sidebars
     include ../components/toolbar/contentSidebar

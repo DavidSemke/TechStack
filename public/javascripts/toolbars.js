@@ -1,11 +1,11 @@
-function addSidebarEventListeners(sidebarId, sidebarButtonId) {
-    const sidebar = document.getElementById(sidebarId)
+function addSidebarEventListeners(sidebarSelector, sidebarButtonSelector) {
+    const sidebar = document.querySelector(sidebarSelector)
 
     if (!sidebar) {
         return
     }
 
-    const sidebarButton = document.getElementById(sidebarButtonId)
+    const sidebarButton = document.querySelector(sidebarButtonSelector)
 
     sidebarButton.addEventListener('click', () => {
         

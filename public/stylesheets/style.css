@@ -271,6 +271,17 @@
   border-bottom: 4px solid rgb(36, 36, 36);
 }
 
+.blog {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.blog__author-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .blog-card-pair {
   display: flex;
   justify-content: center;

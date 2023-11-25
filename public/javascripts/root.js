@@ -3,10 +3,10 @@ import {
 } from './toolbars.js'
 
 addSidebarEventListeners(
-    'account-sidebar', 
-    'navbar-account-button'
+    '.account-sidebar', 
+    '.navbar-account-button'
 )
 addSidebarEventListeners(
-    'content-sidebar', 
-    'navbar-burger-button'
+    '.content-sidebar', 
+    '.navbar-content-button'
 )

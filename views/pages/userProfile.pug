@@ -1,43 +1,48 @@
 extends ../layouts/browser
-include ../components/list/actionList
+include ../components/list/linkList
 
 block page
-    .profile 
-        .profile__user-details
-            .profile__avatar.avatar
-                img(src='/images/profileIcon.png')
-            .profile__username= user.username
-            .profile__bio
-                .profile__heading Bio 
-                p.profile__section
-            .profile__favorite-topics
-            .profile__edit-button 
+    .profile-page
+        .profile
+            .profile__user-details
+                .profile__avatar
+                    img(src='/images/profileIcon.png')
+                .profile__username= user.username
+                .profile__bio
+                    .profile__heading Bio 
+                    p.profile__section
+                .profile__favorite-topics
+                .profile__edit-button 
 
-        .profile__browser-details
-            .profile__heading Recent Reads
-            .profile__section
-                +actionList(
-                    {
-                        'label': 'Blog 1',
-                        'icon': '/images/profileIcon.png'
-                    },
-                    {
-                        'label': 'Blog 2',
-                        'icon': '/images/profileIcon.png'
-                    }
-                )
-
-        if userBlogs
-            .profile__author-details
-                .profile__heading Blogs Written by #{user.username}
+            .profile__browser-details
+                .profile__heading Recent Reads
                 .profile__section
-                    +actionList(
+                    +linkList(
                         {
-                            'label': 'Blog 1',
-                            'icon': '/images/profileIcon.png'
+                            'icon': '/images/profileIcon.png',
+                            'href': `/`,
+                            'label': 'Blog 1' 
                         },
                         {
-                            'label': 'Blog 2',
-                            'icon': '/images/profileIcon.png'
+                            'icon': '/images/profileIcon.png',
+                            'href': `/`,
+                            'label': 'Blog 2' 
                         }
                     )
+
+            if userBlogs
+                .profile__author-details
+                    .profile__heading Blogs Written by #{user.username}
+                    .profile__section
+                        +linkList(
+                            {
+                            'icon': '/images/profileIcon.png',
+                            'href': `/`,
+                            'label': 'Blog 1' 
+                            },
+                            {
+                                'icon': '/images/profileIcon.png',
+                                'href': `/`,
+                                'label': 'Blog 2' 
+                            }
+                        )
