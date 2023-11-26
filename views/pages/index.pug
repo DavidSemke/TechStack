@@ -5,7 +5,7 @@ block page
   .index-page
     - let i = 0
     while i < 2
-      .blog-card-pair
+      .index-page__blog-card-pair.blog-card-pair
         - let start = i*2
         each blog in blogs.slice(start, start+2)
           +blogCard(blog)

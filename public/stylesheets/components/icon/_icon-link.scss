@@ -3,17 +3,45 @@
 
 .icon-link {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    font-size: fSizes.$large;
 
     &__icon {
         height: iSizes.$medium;
         width: iSizes.$medium;
     }
 
-    &.-left {
-        justify-content: flex-start;
+    &.-avatar {
+        .icon-link__icon {
+            border-radius: 50%;
+        }
+    }
+
+    &.-center {
+        justify-content: center;
+    }
+
+    &.-large {
+        
+        .icon-link__icon {
+            height: iSizes.$large;
+            width: iSizes.$large;
+        }
+
+        .icon-link__label {
+            font-size: fSizes.$large;
+        }
+    }
+
+    &.-larger {
+        
+        .icon-link__icon {
+            height: iSizes.$larger;
+            width: iSizes.$larger;
+        }
+
+        .icon-link__label {
+            font-size: fSizes.$larger;
+        }
     }
 }

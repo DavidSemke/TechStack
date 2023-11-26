@@ -1,0 +1,32 @@
+include ../list/buttonList
+
+mixin commentCard(comment) 
+    .comment-card&attributes(attributes)
+        .comment-card__author-date 
+            .comment-card__author-details
+                +iconLink(
+                    '/images/profileIcon.png',
+                    '#',
+                    comment.author.name
+                )
+            .comment-card__date= comment.publish_date
+        p.comment-card__content= comment.content
+        .comment-card__toolbar
+            +buttonList(
+                {
+                    'classId': `comment-like-button-${comment._id}`,
+                    'icon': '/images/likeIcon.png',
+                    'label': comment.likes
+                },
+                {
+                    'classId': `comment-dislike-button-${comment._id}`,
+                    'icon': '/images/dislikeIcon.png',
+                    'label': comment.dislikes
+                },
+                {
+                    'classId': `comment-view-replies-button-${comment._id}`,
+                    'icon': '/images/commentIcon.png',
+                    'label': 'Z'
+                }
+            )(iconButton='-row -small')
+            button(class=`comment-reply-button-${comment._id}`) Reply

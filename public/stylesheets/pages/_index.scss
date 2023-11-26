@@ -1,8 +1,5 @@
-.blog-card-pair {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4rem;
-    margin-top: 2rem;
+.index-page {
+    &__blog-card-pair {
+        margin-top: 2rem;
+    }
 }

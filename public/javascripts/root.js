@@ -1,12 +1,19 @@
-import { 
-    addSidebarEventListeners
-} from './toolbars.js'
+import { sidebarEventListeners } from './toolbars.js'
+import {
+    blogLikeButtonEventListeners,
+    blogDislikeButtonEventListeners,
+    blogCommentButtonEventListeners
+} from './blog.js'
 
-addSidebarEventListeners(
+sidebarEventListeners(
     '.account-sidebar', 
     '.navbar-account-button'
 )
-addSidebarEventListeners(
+sidebarEventListeners(
     '.content-sidebar', 
     '.navbar-content-button'
 )
+
+// blogLikeButtonEventListeners()
+// blogDislikeButtonEventListeners()
+// blogCommentButtonEventListeners()

@@ -1,38 +1,67 @@
 extends ../layouts/browser 
 include ../components/list/buttonList
+include ../components/icon/iconLink
+include ../components/card/blogCard
+include ../components/card/commentCard
 
 block page
     .blog-page
         .blog
             h1.blog__title= title
-            .blog__author-details
-                .blog__author-profile-pic
-                    //- if blog.author.profile_pic
-                    img(src='/images/profileIcon.png')
-                .blog__author-username= blog.author.name
-            .blog__date= blog.publish_date
-            +buttonList(
-                {
-                    'classId': 'blog-stat-like-button',
-                    'icon': '/images/likeIcon.png',
-                    'label': blog.likes
-                },
-                {
-                    'classId': 'blog-stat-dislike-button',
-                    'icon': '/images/dislikeIcon.png',
-                    'label': blog.dislikes
-                },
-                {
-                    'classId': 'blog-stat-comment-button',
-                    'icon': '/images/commentIcon.png',
-                    'label': comments.length
-                }
-            )
+            .blog__metadata
+                .blog__author-details
+                    +iconLink(
+                        '/images/profileIcon.png',
+                        '#',
+                        blog.author.name
+                    )(class='-larger')
+                .blog__stat-button-list
+                    +buttonList(
+                        {
+                            'classId': 'blog-like-button',
+                            'icon': '/images/likeIcon.png',
+                            'label': blog.likes
+                        },
+                        {
+                            'classId': 'blog-dislike-button',
+                            'icon': '/images/dislikeIcon.png',
+                            'label': blog.dislikes
+                        },
+                        {
+                            'classId': 'blog-comment-button',
+                            'icon': '/images/commentIcon.png',
+                            'label': blog.comments.length
+                        }
+                    )
+                .blog__date= `Published on ${blog.publish_date}`
+            
             .blog__thumbnail Thumbnail 
             .blog__content Content
-            .blog__like-dislike
-        .blog-card-container
-            .blog-card-pair More Blogs
-            .blog-card-pair More Blogs
-        .comment-container Comments
+            .blog__stat-button-list
+                +buttonList(
+                    {
+                        'classId': 'blog-like-button',
+                        'icon': '/images/likeIcon.png',
+                        'label': blog.likes
+                    },
+                    {
+                        'classId': 'blog-dislike-button',
+                        'icon': '/images/dislikeIcon.png',
+                        'label': blog.dislikes
+                    },
+                    {
+                        'classId': 'blog-comment-button',
+                        'icon': '/images/commentIcon.png',
+                        'label': blog.comments.length
+                    }
+                )
         
+        h2.blog-page__post-blog-heading More Blogs
+        .blog-card-pair
+            +blogCard(blog)(class='-small')
+            +blogCard(blog)(class='-small')
+        
+        h2.blog-page__post-blog-heading Comments
+        each comment in blog.comments
+            .blog-page__comment
+                +commentCard(comment)

@@ -1,15 +1,63 @@
-.blog {
+@use '../globals/colors';
+@use '../globals/icon-sizes' as iSizes;
+@use '../globals/font-sizes' as fSizes;
+
+.blog-page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 2rem;
+    width: 75%;
+    padding: 1rem;
+
+    &__post-blog-heading {
+        margin: 0;
+        font-size: fSizes.$xlarge;
+        border-bottom: 4px solid colors.$bg2;
+    }
+
+    &__comment {
+        padding-bottom: 1rem;
+        border-bottom: 2px solid colors.$bg2;
+    }
+}
+
+.blog {
 
     &__title {
+        margin: 0;
+        border-bottom: 6px solid colors.$bg2;
+        font-size: fSizes.$xxlarge;
+    }
 
+    &__metadata {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 4px solid colors.$bg2;
     }
 
     &__author-details {
+        flex: 1;
+        display: inline-block;
+    }
+
+    &__stat-button-list {
+        flex: 2;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    &__date {
+        flex: 1;
+        text-align: right;
+    }
+
+    &__thumbnail {
+        margin-right: auto;
+        margin-left: auto;
+        width: 75%;
     }
 }

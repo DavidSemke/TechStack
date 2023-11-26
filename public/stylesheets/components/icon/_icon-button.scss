@@ -11,8 +11,10 @@
         width: iSizes.$medium;
     }
 
-    &.-circle {
-        border-radius: 50%;
+    &.-avatar {
+        .icon-link__icon {
+            border-radius: 50%;
+        }
     }
 
     &.-burger {
@@ -22,10 +24,15 @@
         padding-right: 0.4rem;
     }
 
-    // &.-large-icon {
-    //     .icon-button__icon {
-    //         height: iSizes.$large;
-    //         width: iSizes.$large;
-    //     }
-    // }
+    &.-row {
+        display: flex;
+        gap: 0.1rem;
+    }
+
+    &.-small {
+        .icon-button__icon {
+            height: iSizes.$small;
+            width: iSizes.$small;
+        }
+    } 
 }

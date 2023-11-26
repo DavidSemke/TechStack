@@ -37,6 +37,8 @@
 }
 
 .page-container {
+    display: flex;
+    justify-content: center;
     overflow: auto;
     min-height: 100vh;
 }

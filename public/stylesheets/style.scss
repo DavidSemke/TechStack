@@ -1,8 +1,10 @@
 @use 'components/card/blog-card';
+@use 'components/card/comment-card';
 @use 'components/form/logging-form';
 @use 'components/form/searchbar';
 @use 'components/icon/icon-button';
 @use 'components/icon/icon-link';
+@use 'components/list/button-list';
 @use 'components/list/link-list';
 @use 'components/list/stat-list';
 @use 'components/toolbar/account-sidebar';
@@ -101,6 +103,14 @@ ul, ol {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
+}
+
+.blog-card-pair {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4rem;
 }
 
 .signup-prompt {
