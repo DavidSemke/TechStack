@@ -52,7 +52,7 @@ app.use(flash());
 /* Locals Setup */
 app.use((req, res, next) => {
   // for use in views
-  res.locals.user = req.user
+  res.locals.mainUser = req.user
   next()
 })
 

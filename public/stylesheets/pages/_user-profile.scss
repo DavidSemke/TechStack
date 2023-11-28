@@ -1,0 +1,65 @@
+@use '../globals/colors';
+@use '../globals/icon-sizes' as iSizes;
+@use '../globals/font-sizes' as fSizes;
+
+
+.profile-page {
+    width: 75%;
+    
+    &__heading {
+        text-align: center;
+    }
+}
+
+.profile {
+    display: flex;
+    gap: 4rem;
+
+    &__user-details {
+        flex: 1;
+        display: flex;
+        gap: 1rem;
+    }
+
+    &__primary-user-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__avatar {
+        height: iSizes.$xxlarge;
+        width: iSizes.$xxlarge;
+    }
+
+    &__username {
+        font-size: fSizes.$larger;
+        font-weight: bold;
+    }
+
+    &__heading {
+        margin-bottom: 1rem;
+        font-size: fSizes.$large;
+        font-weight: bold;
+        border-bottom: 2px solid colors.$bg2;
+    }
+
+    &__body {
+        margin: 0;
+        margin-bottom: 2rem;
+    }
+
+    &__edit {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__edit-button {
+        margin-top: 1rem;
+    }
+
+    &__author-browser-details {
+        flex: 1;
+        margin-right: 4rem;
+    }
+}
