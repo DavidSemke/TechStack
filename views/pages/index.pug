@@ -8,5 +8,6 @@ block page
       .index-page__blog-card-pair.blog-card-pair
         - let start = i*2
         each blog in blogs.slice(start, start+2)
-          +blogCard(blog)
+          a(href=blog.url)
+            +blogCard(blog)
       - i+=1

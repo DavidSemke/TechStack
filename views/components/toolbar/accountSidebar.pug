@@ -2,15 +2,15 @@ include ../list/linkList
 
 .account-sidebar.sidebar.-closed
     .sidebar__title Account
-    if user
+    if mainUser
         .account-sidebar__overview 
             .account-sidebar__avatar
                 img(src='/images/profileIcon.png')
-            .account-sidebar__username= user.username
+            .account-sidebar__username= mainUser.username
         +linkList(
             {
                 'icon': '/images/profileIcon.png',
-                'href': `/users/${user.username}`,
+                'href': `/users/${mainUser.username}`,
                 'label': 'Your Profile'     
             }
         )

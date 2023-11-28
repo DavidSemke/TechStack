@@ -7,10 +7,10 @@ block navbar
             '/images/burgerIcon.png'
         )(class='-burger')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
-        .navbar__message Draft by #{user.username}
+        .navbar__message Draft by #{mainUser.username}
     .navbar__right
         .a(
-            href=`/users/${user.username}/blogs/publish-preview` 
+            href=`/users/${mainUser.username}/blogs/publish-preview` 
             class='-button'
         ) Publish
         +iconButton(

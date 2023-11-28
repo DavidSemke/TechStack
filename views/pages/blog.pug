@@ -36,7 +36,7 @@ block page
                 .blog__date= `Published on ${blog.publish_date}`
             
             .blog__thumbnail Thumbnail 
-            .blog__content Content
+            .blog__content= blog.content
             .blog__stat-button-list
                 +buttonList(
                     {

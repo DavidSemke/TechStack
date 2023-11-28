@@ -3,46 +3,59 @@ include ../components/list/linkList
 
 block page
     .profile-page
+        h1.profile-page__heading= title
         .profile
             .profile__user-details
-                .profile__avatar
-                    img(src='/images/profileIcon.png')
-                .profile__username= user.username
-                .profile__bio
-                    .profile__heading Bio 
-                    p.profile__section
-                .profile__favorite-topics
-                .profile__edit-button 
-
-            .profile__browser-details
-                .profile__heading Recent Reads
-                .profile__section
-                    +linkList(
-                        {
-                            'icon': '/images/profileIcon.png',
-                            'href': `/`,
-                            'label': 'Blog 1' 
-                        },
-                        {
-                            'icon': '/images/profileIcon.png',
-                            'href': `/`,
-                            'label': 'Blog 2' 
-                        }
-                    )
-
-            if userBlogs
-                .profile__author-details
-                    .profile__heading Blogs Written by #{user.username}
-                    .profile__section
+                .profile__primary-user-details
+                    .profile__avatar
+                        img(src='/images/profileIcon.png')
+                    .profile__username= user.username
+                .profile__secondary-user-details
+                    .profile__bio
+                        .profile__heading Bio 
+                        p.profile__body= user.bio
+                    .profile__keywords
+                        .profile__heading Favorite Keywords
+                        p.profile__body= user.keywords.join(' | ')
+                    
+                    if isMainUser
+                        .profile__edit
+                            button.profile__edit-button Edit Profile
+            
+            .profile__author-browser-details
+                .profile__browser-details
+                    .profile__heading Recent Reads
+                    .profile__body
                         +linkList(
                             {
-                            'icon': '/images/profileIcon.png',
-                            'href': `/`,
-                            'label': 'Blog 1' 
+                                'icon': '/images/profileIcon.png',
+                                'href': `#`,
+                                'label': 'Blog 1' 
                             },
                             {
                                 'icon': '/images/profileIcon.png',
-                                'href': `/`,
+                                'href': `#`,
                                 'label': 'Blog 2' 
                             }
                         )
+                if user.blogs_written.length
+                    .profile__author-details
+                        - let heading = `Blogs Written by ${user.username}`
+                        
+                        if isMainUser
+                            - heading = 'Blogs Written by You'
+                        
+                        .profile__heading= heading
+                        .profile__body
+                            +linkList(
+                                {
+                                    'icon': '/images/profileIcon.png',
+                                    'href': `#`,
+                                    'label': 'Blog 1' 
+                                },
+                                {
+                                    'icon': '/images/profileIcon.png',
+                                    'href': `#`,
+                                    'label': 'Blog 2' 
+                                }
+                            )

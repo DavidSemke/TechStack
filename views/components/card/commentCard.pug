@@ -1,6 +1,6 @@
 include ../list/buttonList
 
-mixin commentCard(comment) 
+mixin commentCard(comment, isReply=false) 
     .comment-card&attributes(attributes)
         .comment-card__author-date 
             .comment-card__author-details
@@ -29,4 +29,7 @@ mixin commentCard(comment)
                     'label': 'Z'
                 }
             )(iconButton='-row -small')
-            button(class=`comment-reply-button-${comment._id}`) Reply
+
+            // prevent replying to a reply
+            if !isReply
+                button(class=`comment-reply-button-${comment._id}`) Reply

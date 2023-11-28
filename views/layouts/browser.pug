@@ -12,10 +12,10 @@ block navbar
     .navbar__center 
         include ../components/form/searchbar
     .navbar__right 
-        if user
+        if mainUser
             +iconLink(
                 '/images/writeIcon.png', 
-                `/users/${user.username}/blogs/new-blog`,
+                `/users/${mainUser.username}/blogs/new-blog`,
                 'Write'
             )(class='-button')
         else 

@@ -20,11 +20,9 @@ mixin blogCard(blog)
     .blog-card__overview
       .blog-card__author-date
         .blog-card__author-details
-          +iconLink(
-            '/images/profileIcon.png',
-            '#',
-            blog.author.name
-          )
+          .blog-card__avatar
+            img(src='/images/profileIcon.png')
+          .blog-card__username= blog.author.name
         .blog-card__date= blog.publish_date
       .blog-card__content-overview
         h1.blog-card__title= blog.title
