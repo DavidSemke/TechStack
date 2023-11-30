@@ -1,4 +1,6 @@
 extends toolbars
+include ../components/button/iconButton
+include ../components/link/iconLink
 
 block navbar
     .navbar__left
@@ -9,9 +11,9 @@ block navbar
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
         .navbar__message Draft by #{mainUser.username}
     .navbar__right
-        .a(
-            href=`/users/${mainUser.username}/blogs/publish-preview` 
-            class='-button'
+        button(
+            form='blog-form', 
+            class='-colorful'
         ) Publish
         +iconButton(
             'navbar-account-button',

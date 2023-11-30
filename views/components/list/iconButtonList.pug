@@ -1,9 +1,9 @@
 include ../icon/iconButton
 
-mixin buttonList(...buttonItems)
-    ul.button-list&attributes(attributes.buttonList)
+mixin iconButtonList(...buttonItems)
+    ul.icon-button-list&attributes(attributes.iconButtonList)
         each item in buttonItems
-            li.button-list__item
+            li.icon-button-list__item
                 - item.label = item.label ?? null
                 +iconButton(
                     item.classId,

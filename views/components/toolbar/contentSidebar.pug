@@ -1,10 +1,10 @@
-include ../list/linkList
+include ../list/iconLinkList
 
 .content-sidebar.sidebar.-closed
     .sidebar__title Content
     .content-sidebar__heading Recent
     .content-sidebar__section
-        +linkList(
+        +iconLinkList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': '/blogs',
@@ -15,10 +15,10 @@ include ../list/linkList
                 'href': '/blogs',
                 'label': 'Blog 2'
             }
-        )(linkList = [], iconLink = ['-left'])
+        )(iconLinkList = [], iconLink = ['-left'])
     .content-sidebar__heading Suggested
     .content-sidebar__section
-        +linkList(
+        +iconLinkList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': '/blogs',
@@ -29,4 +29,4 @@ include ../list/linkList
                 'href': '/blogs',
                 'label': 'Blog 2'
             }
-        )(linkList = [], iconLink = ['-left'])
+        )(iconLinkList = [], iconLink = ['-left'])

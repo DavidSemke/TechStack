@@ -1,5 +1,16 @@
 extends ../layouts/author
+include ../components/list/iconButtonList
 
 block page
     .blog-form-page
-        .blog-form-container
+        .blog-form-page__left
+            .blog-form-page__heading Draft
+            +iconButtonList()
+            //- item.classId,
+            //-         item.icon,  
+            //-         item.label
+            form#blog-form.blog-form(method='post') 
+                textarea#tinymce-app.tinymce-app
+        .blog-form-page__right
+            .blog-form-page__heading Preview
+            .blog-preview

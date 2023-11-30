@@ -2,7 +2,7 @@
 @use '../../globals/icon-sizes' as iSizes;
 @use '../../globals/font-sizes' as fSizes;
 
-.stat-list {
+.icon-list {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,12 +23,12 @@
     }
 
     &.-small {
-        .stat-list__icon {
+        .icon-list__icon {
             height: iSizes.$small;
             width: iSizes.$small;
         }
 
-        .stat-list__label {
+        .icon-list__label {
             font-size: fSizes.$small
         }
     }

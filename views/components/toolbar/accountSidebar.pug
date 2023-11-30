@@ -1,4 +1,4 @@
-include ../list/linkList
+include ../list/iconLinkList
 
 .account-sidebar.sidebar.-closed
     .sidebar__title Account
@@ -7,7 +7,7 @@ include ../list/linkList
             .account-sidebar__avatar
                 img(src='/images/profileIcon.png')
             .account-sidebar__username= mainUser.username
-        +linkList(
+        +iconLinkList(
             {
                 'icon': '/images/profileIcon.png',
                 'href': `/users/${mainUser.username}`,

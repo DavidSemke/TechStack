@@ -1,7 +1,0 @@
-mixin statList(...statItems)
-    ul.stat-list&attributes(attributes)
-        each item in statItems
-            li.stat-list__item
-                .stat-list__icon
-                    img(src=item.icon)
-                .stat-list__stat= item.stat

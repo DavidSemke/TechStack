@@ -1,6 +1,6 @@
 extends ../layouts/browser 
-include ../components/list/buttonList
-include ../components/icon/iconLink
+include ../components/list/iconButtonList
+include ../components/link/iconLink
 include ../components/card/blogCard
 include ../components/card/commentCard
 
@@ -16,7 +16,7 @@ block page
                         blog.author.name
                     )(class='-larger')
                 .blog__stat-button-list
-                    +buttonList(
+                    +iconButtonList(
                         {
                             'classId': 'blog-like-button',
                             'icon': '/images/likeIcon.png',
@@ -38,7 +38,7 @@ block page
             .blog__thumbnail Thumbnail 
             .blog__content= blog.content
             .blog__stat-button-list
-                +buttonList(
+                +iconButtonList(
                     {
                         'classId': 'blog-like-button',
                         'icon': '/images/likeIcon.png',

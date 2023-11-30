@@ -1,12 +1,12 @@
+@use 'components/button/icon-button';
 @use 'components/card/blog-card';
 @use 'components/card/comment-card';
 @use 'components/form/logging-form';
 @use 'components/form/searchbar';
-@use 'components/icon/icon-button';
-@use 'components/icon/icon-link';
-@use 'components/list/button-list';
-@use 'components/list/link-list';
-@use 'components/list/stat-list';
+@use 'components/link/icon-link';
+@use 'components/list/icon-button-list';
+@use 'components/list/icon-link-list';
+@use 'components/list/icon-list';
 @use 'components/toolbar/account-sidebar';
 @use 'components/toolbar/content-sidebar';
 @use 'globals/colors';
@@ -33,7 +33,6 @@
 }
 
 a {
-  font-weight: 500;
   color: colors.$link;
   text-decoration: inherit;
 
@@ -61,7 +60,6 @@ a {
 
 body {
   margin: 0;
-  height: 100vh;
   min-height: 100vh;
   background-color: colors.$bg1;
 }
@@ -75,10 +73,20 @@ button {
   border: 2px solid colors.$button;
   border-radius: 5px;
   background: none;
-  font-size: fSizes.$medium;
+  font-size: fSizes.$large;
   
   &:hover {
     background-color: colors.$button;
+  }
+
+  &.-colorful {
+    color: colors.$buttonColorful;
+    border: 2px solid colors.$buttonColorful;
+
+    &:hover {
+      color: colors.$textLight;
+      background-color: colors.$buttonColorful;
+    }
   }
 }
 

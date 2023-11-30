@@ -1,5 +1,5 @@
 extends ../layouts/browser
-include ../components/list/linkList
+include ../components/list/iconLinkList
 
 block page
     .profile-page
@@ -26,7 +26,10 @@ block page
                 .profile__browser-details
                     .profile__heading Recent Reads
                     .profile__body
-                        +linkList(
+                        +iconL
+                        components
+                        list
+                        iconL inkList(
                             {
                                 'icon': '/images/profileIcon.png',
                                 'href': `#`,
@@ -47,7 +50,10 @@ block page
                         
                         .profile__heading= heading
                         .profile__body
-                            +linkList(
+                            +iconL
+                            components
+                            list
+                            iconL inkList(
                                 {
                                     'icon': '/images/profileIcon.png',
                                     'href': `#`,

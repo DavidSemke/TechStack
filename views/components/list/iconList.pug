@@ -1,0 +1,8 @@
+mixin iconList(...iconItems)
+    ul.icon-list&attributes(attributes)
+        each item in iconItems
+            li.icon-list__item
+                .icon-list__icon
+                    img(src=item.icon)
+                if item.label
+                    .icon-list__label= item.label

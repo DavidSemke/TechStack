@@ -1,10 +1,6 @@
-.button-list {
+.icon-button-list {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 3rem;
-
-    &.-row-buttons {
-        display: flex;
-    }
 }

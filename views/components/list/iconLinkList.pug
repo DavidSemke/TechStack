@@ -1,9 +1,9 @@
-include ../icon/iconLink
+include ../link/iconLink
 
-mixin linkList(...actionItems)
-    ul.link-list&attributes(attributes.linkList)
+mixin iconLinkList(...actionItems)
+    ul.icon-link-list&attributes(attributes.iconLinkList)
         each item in actionItems
-            li.link-list__item
+            li.icon-link-list__item
                 - item.label = item.label ?? null
                 +iconLink(
                     item.icon, 
