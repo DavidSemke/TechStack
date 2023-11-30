@@ -1,0 +1,80 @@
+@use '../globals/font-sizes' as fSizes;
+
+.blog-form-page {
+    display: flex;
+    width: 80%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    &__left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__heading {
+        font-size: fSizes.$xlarge;
+        font-weight: bold;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid white;
+    }
+}
+
+.blog-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-top: 2px solid white;
+    padding-top: 1rem;
+
+    &__metadata {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        &.-hidden {
+            display: none;
+        }
+    }
+
+    &__content {
+        height: 100%;
+
+        &.-hidden {
+            display: none;
+        }
+    }
+}
+
+.tox.tox-tinymce {
+    min-height: 100%;
+}
+
+.blog-preview {
+    overflow: auto;
+    hyphens: auto;
+    width: 100%;
+    height: 100%;
+}

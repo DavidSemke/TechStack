@@ -4,6 +4,7 @@
 @use 'components/form/logging-form';
 @use 'components/form/searchbar';
 @use 'components/link/icon-link';
+@use 'components/list/button-list';
 @use 'components/list/icon-button-list';
 @use 'components/list/icon-link-list';
 @use 'components/list/icon-list';
@@ -87,6 +88,12 @@ button {
       color: colors.$textLight;
       background-color: colors.$buttonColorful;
     }
+  }
+
+  &.-tab {
+    border-radius: 0;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
   }
 }
 

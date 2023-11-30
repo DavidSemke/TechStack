@@ -40,8 +40,8 @@ function blogCommentButtonEventListeners() {
     button.addEventListener('click', () => {
         
     })
-
 }
+
 
 export {
     blogLikeButtonEventListeners,

@@ -24,7 +24,8 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "tinymce": "^6.8.0"
   },
   "devDependencies": {
     "connect-livereload": "^0.6.1",

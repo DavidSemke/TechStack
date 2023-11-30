@@ -3,13 +3,71 @@ const Blog = require("../models/blog");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
+const user = {
+    'username': 'John Doe',
+    'password': 'xdxdxd',
+    'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next blog on the best pizza places in town!',
+    'keywords': ['pizza', 'white', 'tennis'],
+    'blogs_recently_read': [
+        {
+            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
+            'author': {
+                'name': 'James Games'
+            },
+            'keywords': [
+                'Tech', 
+                'BigTech',
+                'ShinyTech',
+                'CoolTech',
+                'NewTech',
+                'FreshTech', 
+                'SpicyTech', 
+                'HeckTech',
+                'SteakTech', 
+                'BreakTech'
+            ],
+            'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
+            'likes': 0,
+            'dislikes': 0,
+            'publish_date': '2020/12/12',
+            'url': '#'
+        }
+    ],
+    'blogs_written': [
+        {
+            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
+            'author': {
+                'name': 'James Games'
+            },
+            'keywords': [
+                'Tech', 
+                'BigTech',
+                'ShinyTech',
+                'CoolTech',
+                'NewTech',
+                'FreshTech', 
+                'SpicyTech', 
+                'HeckTech',
+                'SteakTech', 
+                'BreakTech'
+            ],
+            'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
+            'likes': 0,
+            'dislikes': 0,
+            'publish_date': '2020/12/12',
+            'url': '#'
+        }
+    ]
+}
+
+// used to protect user-specific paths
 function checkAuthorization(req, res, next) {
     if (
         !req.user
         || req.user.username !== req.params.username
     ) {
         
-        const err = new Error("Cannot perform blog CRUD using a nonmatching account.");
+        const err = new Error("Cannot perform blog CRUD using another user's account.");
         err.status = 403;
         
         return next(err);
@@ -29,63 +87,6 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         
     //     return next(err);
     // }
-
-    const user = {
-        'username': 'John Doe',
-        'password': 'xdxdxd',
-        'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next blog on the best pizza places in town!',
-        'keywords': ['pizza', 'white', 'tennis'],
-        'blogs_recently_read': [
-            {
-                'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
-                'author': {
-                    'name': 'James Games'
-                },
-                'keywords': [
-                    'Tech', 
-                    'BigTech',
-                    'ShinyTech',
-                    'CoolTech',
-                    'NewTech',
-                    'FreshTech', 
-                    'SpicyTech', 
-                    'HeckTech',
-                    'SteakTech', 
-                    'BreakTech'
-                ],
-                'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
-                'likes': 0,
-                'dislikes': 0,
-                'publish_date': '2020/12/12',
-                'url': '#'
-            }
-        ],
-        'blogs_written': [
-            {
-                'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
-                'author': {
-                    'name': 'James Games'
-                },
-                'keywords': [
-                    'Tech', 
-                    'BigTech',
-                    'ShinyTech',
-                    'CoolTech',
-                    'NewTech',
-                    'FreshTech', 
-                    'SpicyTech', 
-                    'HeckTech',
-                    'SteakTech', 
-                    'BreakTech'
-                ],
-                'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
-                'likes': 0,
-                'dislikes': 0,
-                'publish_date': '2020/12/12',
-                'url': '#'
-            }
-        ]
-    }
 
     let title = `${user.username}'s Profile`
     let isMainUser = false
@@ -110,39 +111,27 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 // Display blog create form
 exports.getBlogCreateForm = [
-    checkAuthorization,
+    // checkAuthorization,
+
     asyncHandler(async (req, res, next) => {
-
-        if (
-            !req.user
-            || req.user.username !== req.params.username
-        ) {
-            
-            const err = new Error("Cannot create blog using another account.");
-            err.status = 403;
-            
-            return next(err);
-        }
-
-        res.render("pages/blogForm", { title: "Create Blog" });
+        
+        res.locals.mainUser = user //remove after done experiments
+        
+        res.render(
+            "pages/blogForm", 
+            { 
+                title: "Create Blog",
+                inputs: {},
+                errors: []
+            }
+        );
     })
 ]
     
 // On blog create
 exports.postBlog = [
     checkAuthorization,
-    function (req, res, next) {
-        if (
-            !req.user
-            || req.user.username !== req.params.username
-        ) {
-            
-            const err = new Error("Cannot create blog using another account.");
-            err.status = 403;
-            
-            return next(err);
-        }
-    },
+
     // Validate and sanitize
     body("title")
         .trim()
@@ -204,10 +193,10 @@ exports.postBlog = [
 // On blog delete
 exports.deleteBlog = [
     checkAuthorization,
-    asyncHandler(async (req, res, next) => {
 
-        await Comment.deleteMany({blog: req.params.id}).exec()
-        await Blog.findByIdAndRemove(req.params.id).exec()
+    asyncHandler(async (req, res, next) => {
+        await Comment.deleteMany({blog: req.params.blogId}).exec()
+        await Blog.findByIdAndRemove(req.params.blogId).exec()
         res.redirect("/");
     })
 ]
@@ -215,8 +204,9 @@ exports.deleteBlog = [
 // Display blog update form
 exports.getBlogUpdateForm = [
     checkAuthorization,
+
     asyncHandler(async (req, res, next) => {
-        const blog = await Blog.findById(req.params.id).exec()
+        const blog = await Blog.findById(req.params.blogId).exec()
     
         if (blog === null) {
             res.redirect('/')
@@ -233,6 +223,7 @@ exports.getBlogUpdateForm = [
 // On blog update
 exports.updateBlog = [
     checkAuthorization,
+
     // Validate and sanitize
     body("title")
         .trim()
@@ -240,7 +231,7 @@ exports.updateBlog = [
         .withMessage("Blog must have a title.")
         .escape()
         .custom(asyncHandler(async (value) => {
-            const blog = await Blog.findById(req.params.id).exec()
+            const blog = await Blog.findById(req.params.blogId).exec()
 
             return (
                 blog.title === value 
@@ -288,7 +279,7 @@ exports.updateBlog = [
             dislikes: 0
         });
 
-        await Blog.findOneAndReplace({_id: req.params.id}, blog).exec();
+        await Blog.findOneAndReplace({_id: req.params.blogId}, blog).exec();
 
         // view updated blog
         res.redirect(blog.url);

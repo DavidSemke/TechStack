@@ -1,16 +1,81 @@
 extends ../layouts/author
-include ../components/list/iconButtonList
+include ../components/list/buttonList
 
 block page
+    - const titleErrors = []
+    - const thumbnailErrors = []
+    - const keywordErrors = []
+    - const contentErrors = []
+
+    each error in errors 
+        if error.path === 'title'
+            - titleErrors.push(error.msg)
+        else if error.path === 'thumbnail'
+            - thumbnailErrors.push(error.msg)
+        else if error.path === 'keyword'
+            - keywordErrors.push(error.msg)
+        else if error.path === 'content'
+            - contentErrors.push(error.msg)
+
     .blog-form-page
         .blog-form-page__left
             .blog-form-page__heading Draft
-            +iconButtonList()
-            //- item.classId,
-            //-         item.icon,  
-            //-         item.label
-            form#blog-form.blog-form(method='post') 
-                textarea#tinymce-app.tinymce-app
+            .blog-form-page__body
+                +buttonList(
+                    {
+                        'classId': 'blog-form-metadata-tab',
+                        'label': 'Metadata'
+                    },
+                    {
+                        'classId': 'blog-form-content-tab',
+                        'label': 'Content'
+                    } 
+                )(button = '-tab')
+                form#blog-form.blog-form(method='post')
+                    .blog-form__metadata
+                        
+                        label.blog-form__label(for="title") Title
+                        input#title.blog-form__input(
+                            name='title' 
+                            type="text"
+                            value=inputs.username || ''
+                            required 
+                        )
+                        if titleErrors.length
+                            .blog-form__error-container
+                                each error in titleErrors
+                                    .blog-form__error= error
+                    
+                        label.blog-form__label(for="thumbnail") Thumbnail
+                        input#thumbnail.blog-form__input(
+                            name='thumbnail' 
+                            type="text"
+                            value=inputs.username || ''
+                            required 
+                        )
+                        if thumbnailErrors.length
+                            .blog-form__error-container
+                                each error in thumbnailErrors
+                                    .blog-form__error= error
+                    
+                        label.blog-form__label(for="keywords") Keywords
+                        input#keywords.blog-form__input(
+                            name='keywords' 
+                            type="text"
+                            value=inputs.username || ''
+                            required 
+                        )
+                        if keywordErrors.length
+                            .blog-form__error-container
+                                each error in keywordErrors
+                                    .blog-form__error= error
+                    .blog-form__content.-hidden
+                        textarea#tinymce-app.tinymce-app
+                        if contentErrors.length
+                            .blog-form__error-container
+                                each error in contentErrors
+                                    .blog-form__error= error
         .blog-form-page__right
             .blog-form-page__heading Preview
-            .blog-preview
+            .blog-form-page__body
+                .blog-preview

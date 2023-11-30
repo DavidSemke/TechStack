@@ -1,9 +1,15 @@
 import { sidebarEventListeners } from './toolbars.js'
+// import {
+//     blogLikeButtonEventListeners,
+//     blogDislikeButtonEventListeners,
+//     blogCommentButtonEventListeners
+// } from './blog.js'
 import {
-    blogLikeButtonEventListeners,
-    blogDislikeButtonEventListeners,
-    blogCommentButtonEventListeners
-} from './blog.js'
+    blogFormTabEventListeners
+} from './blogForm.js'
+import {
+    initializeTinyMCE
+} from './tinyMCEConfig.js'
 
 sidebarEventListeners(
     '.account-sidebar', 
@@ -13,6 +19,10 @@ sidebarEventListeners(
     '.content-sidebar', 
     '.navbar-content-button'
 )
+
+blogFormTabEventListeners()
+
+initializeTinyMCE('#tinymce-app')
 
 // blogLikeButtonEventListeners()
 // blogDislikeButtonEventListeners()

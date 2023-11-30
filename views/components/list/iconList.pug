@@ -4,5 +4,5 @@ mixin iconList(...iconItems)
             li.icon-list__item
                 .icon-list__icon
                     img(src=item.icon)
-                if item.label
+                if item.label != null
                     .icon-list__label= item.label

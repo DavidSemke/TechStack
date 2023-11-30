@@ -56,14 +56,16 @@ app.use((req, res, next) => {
   next()
 })
 
-/* Dev Setup */
-app.use(logger("dev"))
-
 /* Miscellaneous Setup */
+app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, "public")))
+app.use(
+  '/tinymce', 
+  express.static(path.join(__dirname, 'node_modules', 'tinymce'))
+);
 
 /* Route Setup */
 const indexRouter = require("./routes/index")
