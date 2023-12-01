@@ -1,5 +1,6 @@
 extends ../layouts/author
 include ../components/list/buttonList
+include ../components/form/formInput
 
 block page
     - const titleErrors = []
@@ -30,45 +31,28 @@ block page
                         'classId': 'blog-form-content-tab',
                         'label': 'Content'
                     } 
-                )(button = '-tab')
+                )(button='-tab')
                 form#blog-form.blog-form(method='post')
                     .blog-form__metadata
-                        
-                        label.blog-form__label(for="title") Title
-                        input#title.blog-form__input(
-                            name='title' 
-                            type="text"
-                            value=inputs.username || ''
-                            required 
-                        )
-                        if titleErrors.length
-                            .blog-form__error-container
-                                each error in titleErrors
-                                    .blog-form__error= error
-                    
-                        label.blog-form__label(for="thumbnail") Thumbnail
-                        input#thumbnail.blog-form__input(
-                            name='thumbnail' 
-                            type="text"
-                            value=inputs.username || ''
-                            required 
-                        )
-                        if thumbnailErrors.length
-                            .blog-form__error-container
-                                each error in thumbnailErrors
-                                    .blog-form__error= error
-                    
-                        label.blog-form__label(for="keywords") Keywords
-                        input#keywords.blog-form__input(
-                            name='keywords' 
-                            type="text"
-                            value=inputs.username || ''
-                            required 
-                        )
-                        if keywordErrors.length
-                            .blog-form__error-container
-                                each error in keywordErrors
-                                    .blog-form__error= error
+                        +formInput(
+                            'title',
+                            'text',
+                            inputs.username || '',
+                            titleErrors
+                        )(input={'required': ''})
+                        +formInput(
+                            'thumbnail',
+                            'file',
+                            inputs.thumbnail || '',
+                            thumbnailErrors
+                        )(input={'required': ''})
+                        +formInput(
+                            'keywords',
+                            'text',
+                            inputs.keywords || '',
+                            keywordErrors
+                        )(input={'required': ''})
+
                     .blog-form__content.-hidden
                         textarea#tinymce-app.tinymce-app
                         if contentErrors.length
@@ -79,3 +63,5 @@ block page
             .blog-form-page__heading Preview
             .blog-form-page__body
                 .blog-preview
+                    .blog-preview__metadata 
+                    .blog-preview__content

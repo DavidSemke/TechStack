@@ -1,3 +1,5 @@
+include formInput
+
 mixin loggingForm(action, inputs={}, errors=[]) 
     - const usernameErrors = []
     - const passwordErrors = []
@@ -12,38 +14,19 @@ mixin loggingForm(action, inputs={}, errors=[])
     else 
         - loginErrors = errors
 
-    form.logging-form(action=action method="POST")
-        .logging-form__input-container    
-            label.logging-form__label(for="username") Username
-            input#username.logging-form__input(
-                name="username" 
-                type="text"
-                value=inputs.username || ''
-                required 
-            )
-        
-        if usernameErrors.length
-            .logging-form__error-container
-                each error in usernameErrors
-                    .logging-form__error= error
-        
-        .logging-form__input-container
-            label.logging-form__label(for="password") Password
-            input#password.logging-form__input(
-                name="password" 
-                type="password"
-                value=inputs.password || ''
-                required
-            )
-        
-        if passwordErrors.length
-            .logging-form__error-container
-                each error in passwordErrors
-                    .logging-form__error= error
-        else if loginErrors.length
-            .logging-form__error-container
-                each error in loginErrors
-                    .logging-form__error= error
+    form.logging-form(action=action method="post")
+        +formInput(
+            'username',
+            'text',
+            inputs.username || '',
+            usernameErrors
+        )(input={'required': ''})
+        +formInput(
+            'password',
+            'password',
+            inputs.password || '',
+            passwordErrors.length ? passwordErrors : loginErrors
+        )(input={'required': ''})
 
         // add more fields as desired
         if block 

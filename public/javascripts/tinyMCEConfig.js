@@ -17,13 +17,13 @@ function initializeTinyMCE(selector) {
                 
                 // if updating, import html to be updated and setcontent
     
-                const preview = document.querySelector('.blog-preview')
+                const preview = document.querySelector('.blog-preview__content')
                 preview.innerHTML = editor.getContent()
             })
     
     
             editor.on('change', () => {
-                const preview = document.querySelector('.blog-preview')
+                const preview = document.querySelector('.blog-preview__content')
                 preview.innerHTML = editor.getContent()
             })
         }

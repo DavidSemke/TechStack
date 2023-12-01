@@ -1,0 +1,15 @@
+mixin formInput(name, type, value, errors)
+    .form-input&attributes(attributes.formInput)
+        label.form-input__label(
+            for=name
+        )= name[0].toUpperCase() + name.slice(1)
+        input.form-input__input(
+            id=name
+            name=name 
+            type=type
+            value=value
+        )&attributes(attributes.input)
+        if errors.length
+            .form-input__error-container
+                each error in errors
+                    .form-input__error= error

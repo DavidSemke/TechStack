@@ -1,0 +1,10 @@
+.form-input {
+    &__input {
+        margin-left: 1rem;
+    }
+
+    &__error {
+        color: red;
+        font-weight: bold;
+    }
+}
