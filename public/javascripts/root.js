@@ -12,6 +12,8 @@ import {
     initializeTinyMCE
 } from './tinyMCEConfig.js'
 
+console.log(backendData)
+
 sidebarEventListeners(
     '.account-sidebar', 
     '.navbar-account-button'
@@ -24,15 +26,8 @@ sidebarEventListeners(
 blogFormTabEventListeners()
 blogFormMetadataEventListeners()
 
-const textarea = document.getElementById('tinymce-app')
-console.log(textarea)
-console.log(textarea.innerText)
-console.log(textarea.innerHTML)
-console.log(textarea.value)
-
 initializeTinyMCE('#tinymce-app')
 
 // blogLikeButtonEventListeners()
 // blogDislikeButtonEventListeners()
 // blogCommentButtonEventListeners()
-

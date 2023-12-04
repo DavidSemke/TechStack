@@ -1,3 +1,5 @@
+import {decode} from '../html-entities.js';
+
 function initializeTinyMCE(selector) {
     const tinyMCEElement = document.querySelector(selector)
 
@@ -5,10 +7,9 @@ function initializeTinyMCE(selector) {
         return
     }
 
-    const textarea = document.getElementById('tinymce-app')
-    const initialContent = textarea.innerText
-    console.log(textarea)
-    console.log(textarea.innerText)
+    // Variable backendData is data provided by backend for rendering
+    // See root.pug for the script that defines it 
+    const initialContent = ''//decode(backendData.inputs.content)
     
     tinymce.init({
         selector: selector,
