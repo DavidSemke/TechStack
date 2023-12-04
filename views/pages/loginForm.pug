@@ -2,5 +2,7 @@ extends ../layouts/logging
 include ../components/form/loggingForm
 
 block loggingForm
+    - const {inputs, errors} = data
+    
     h1.logging-page__heading Log In
     +loggingForm('/login', inputs, errors)

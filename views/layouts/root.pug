@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title= title
+    title= data.title
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(
@@ -10,6 +10,8 @@ html(lang="en")
     )
     link(rel='icon' type='image/x-icon' href='/images/favicon.png')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script. 
+      const backendData = !{JSON.stringify(data)};
     script(defer type='module' src='/tinymce/tinymce.min.js')
     script(defer type='module' src='/javascripts/tinyMCEConfig.js')
     script(defer type='module' src='/javascripts/root.js')

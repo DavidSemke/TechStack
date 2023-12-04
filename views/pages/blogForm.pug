@@ -4,6 +4,8 @@ include ../components/form/formInput
 include ../components/form/formTextarea
 
 block page
+    - const {inputs, errors} = data
+
     - const titleErrors = []
     - const thumbnailErrors = []
     - const keywordErrors = []

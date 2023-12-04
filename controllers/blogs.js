@@ -81,13 +81,12 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
 
     blog.comments = comments
 
-    res.render(
-        "pages/blog", 
-        { 
-            title: blog.title,
-            blog
-        }
-    );
+    const data = {
+        title: blog.title,
+        blog
+    }
+
+    res.render("pages/blog", { data });
 });
 
 // Display comment create form
@@ -97,7 +96,7 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
     
 // On comment create
 exports.postComment = [
-    // Validate and sanitize
+    
     body("content")
         .trim()
         .isLength({ min: 1, max: 300 })
@@ -107,19 +106,19 @@ exports.postComment = [
         )
         .escape(),
 
-    // Process request
+    
     asyncHandler(async (req, res, next) => {
         const content = req.body.content
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            // Render errors
-            res.render("pages/commentForm ", {
+            const data = {
                 content,
-                errors: errors.array(),
-            });
+                errors: errors.array()
+            }
 
-            return;
+            
+            res.render("pages/commentForm ", { data })
         } 
     
         const comment = new Comment({
@@ -161,7 +160,7 @@ exports.postComment = [
     
 // On comment update
 // exports.updateComment = [
-//     // Validate and sanitize
+//     
 //     body("content")
 //         .trim()
 //         .isLength({ min: 1, max: 300 })
@@ -171,13 +170,13 @@ exports.postComment = [
 //         )
 //         .escape(),
 
-//     // Process request
+//     
 //     asyncHandler(async (req, res, next) => {
 //         const content = req.body.content
 //         const errors = validationResult(req);
 
 //         if (!errors.isEmpty()) {
-//             // Render errors
+//             
 //             res.render("pages/commentForm ", {
 //                 content,
 //                 errors: errors.array(),

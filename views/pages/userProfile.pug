@@ -2,6 +2,8 @@ extends ../layouts/browser
 include ../components/list/iconLinkList
 
 block page
+    - const {title, user, isMainUser} = data
+    
     .profile-page
         h1.profile-page__heading= title
         .profile

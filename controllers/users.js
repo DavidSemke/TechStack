@@ -101,14 +101,13 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         isMainUser = true
     }
 
-    res.render(
-        "pages/userProfile", 
-        { 
-            title,
-            user,
-            isMainUser
-        }
-    );
+    const data = {
+        title,
+        user,
+        isMainUser
+    }
+
+    res.render("pages/userProfile", { data });
 });
 
 // Display blog create form
@@ -117,15 +116,14 @@ exports.getBlogCreateForm = [
 
     asyncHandler(async (req, res, next) => {
         res.locals.mainUser = user
+
+        const data = {
+            title: "Create Blog",
+            inputs: {},
+            errors: []
+        }
         
-        res.render(
-            "pages/blogForm", 
-            { 
-                title: "Create Blog",
-                inputs: {},
-                errors: []
-            }
-        );
+        res.render("pages/blogForm",  { data })
     })
 ]
     
@@ -133,7 +131,7 @@ exports.getBlogCreateForm = [
 exports.postBlog = [
     // checkAuthorization,
 
-    // Validate and sanitize
+    
     // Thumbnail image processed after body middleware
     body("title")
         .trim()
@@ -152,6 +150,8 @@ exports.postBlog = [
         })
         .withMessage('Must have 1 to 10 keywords.')
         .escape(),
+    body('content')
+        .escape(),
     body("word-count")
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -160,7 +160,7 @@ exports.postBlog = [
         })
         .withMessage("Blog must be 500 to 3000 words."),
 
-    // Process request
+    
     asyncHandler(async (req, res, next) => {
         res.locals.mainUser = user
 
@@ -203,12 +203,13 @@ exports.postBlog = [
         errors.push(...nonFileErrors)
 
         if (errors.length) {
-            // Render errors
-            res.render("pages/blogForm", {
+            const data = {
                 title: "Create Blog",
-                inputs,
-                errors
-            });
+                inputs: inputs,
+                errors: errors
+            }
+            
+            res.render("pages/blogForm", { data });
 
             return
         }
@@ -255,12 +256,20 @@ exports.getBlogUpdateForm = [
         if (blog === null) {
             res.redirect('/')
         }
+
+        // need to decode content, since it will be escaped!!!!!!!!!!!!!!!!!!
+
+        const data = {
+            title: 'Update Blog',
+            inputs: {
+                title: blog.title,
+                keywords: blog.keywords,
+                content: blog.content
+            },
+            errors: []
+        }
     
-        res.render("pages/blogForm", {
-            ...blog,
-            blogTitle: blog.title,
-            title: "Update Blog"
-        });
+        res.render("pages/blogForm", { data });
     })
 ]
     
@@ -268,7 +277,6 @@ exports.getBlogUpdateForm = [
 exports.updateBlog = [
     checkAuthorization,
 
-    // Validate and sanitize
     body("title")
         .trim()
         .isLength({ min: 1, max: 100 })
@@ -291,7 +299,6 @@ exports.updateBlog = [
         .trim()
         .escape(),
 
-    // Process request
     asyncHandler(async (req, res, next) => {
         const inputs = {
             title: req.body.title,
@@ -301,13 +308,13 @@ exports.updateBlog = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            // Render errors
-            res.render("pages/blogForm", {
-                ...inputs,
-                blogTitle: inputs.title,
-                title: "Update Blog",
+            const data = {
+                title: 'Update Blog',
+                inputs,
                 errors: errors.array()
-            });
+            }
+            
+            res.render("pages/blogForm", { data });
 
             return;
         }

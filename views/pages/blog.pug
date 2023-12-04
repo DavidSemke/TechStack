@@ -5,6 +5,8 @@ include ../components/card/blogCard
 include ../components/card/commentCard
 
 block page
+    - const {title, blog} = data
+
     .blog-page
         .blog
             h1.blog__title= title

@@ -2,6 +2,8 @@ extends ../layouts/browser
 include ../components/card/blogCard
 
 block page
+  - const {blogs} = data
+
   .index-page
     - let i = 0
     while i < 2

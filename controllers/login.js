@@ -13,20 +13,19 @@ exports.getLogin = (req, res, next) => {
       && req.session.flash.error
       && req.session.flash.error.length
     ) {
-    // In the event of password and username being wrong,
-    // two identical error messages could appear.
-    // This ensures only one is considered.
-    errors = [req.session.flash.error[0]]
+      // In the event of password and username being wrong,
+      // two identical error messages could appear.
+      // This ensures only one is considered.
+      errors = [req.session.flash.error[0]]
     }
 
-    res.render(
-    "pages/loginForm", 
-    { 
-        title: "Log In",
-        inputs: inputs,
-        errors: errors
+    const data = {
+      title: "Log In",
+      inputs: inputs,
+      errors: errors
     }
-    )
+
+    res.render("pages/loginForm", { data })
 }
 
 exports.postLogin = [

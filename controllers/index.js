@@ -46,12 +46,11 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
     }
 
     blog.comments = ['a', 'b']
+
+    const data = {
+        title: "Tech Stack",
+        blogs: [blog, blog]
+    }
     
-    res.render(
-        "pages/index", 
-        { 
-            title: "Tech Stack",
-            blogs: [blog, blog]
-        }
-    )
+    res.render("pages/index", { data })
 })

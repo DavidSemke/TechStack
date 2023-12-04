@@ -4,12 +4,10 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
-    res.render(
-        "pages/signupForm", 
-        { 
-            title: "Sign Up"
-        }
-    )
+    const data = {
+        title: "Sign Up"
+    }
+    res.render("pages/signupForm", { data })
 })
 
 exports.postSignup = [
@@ -53,12 +51,14 @@ exports.postSignup = [
         const errors = validationResult(req);
         
         if (!errors.isEmpty()) {
-          // Render errors
-          res.render("pages/signupForm", {
-            title: 'Sign Up',
-            inputs: inputs,
-            errors: errors.array(),
-          });
+            const data = {
+                title: 'Sign Up',
+                inputs: inputs,
+                errors: errors.array(),
+            }
+
+          
+          res.render("pages/signupForm", { data })
         
           return;
         }
