@@ -9,9 +9,9 @@ exports.getLogin = (req, res, next) => {
     let errors = []
 
     if (
-    req.session.flash 
-    && req.session.flash.error
-    && req.session.flash.error.length
+      req.session.flash 
+      && req.session.flash.error
+      && req.session.flash.error.length
     ) {
     // In the event of password and username being wrong,
     // two identical error messages could appear.

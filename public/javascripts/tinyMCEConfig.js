@@ -4,6 +4,11 @@ function initializeTinyMCE(selector) {
     if (!tinyMCEElement) {
         return
     }
+
+    const textarea = document.getElementById('tinymce-app')
+    const initialContent = textarea.innerText
+    console.log(textarea)
+    console.log(textarea.innerText)
     
     tinymce.init({
         selector: selector,
@@ -13,18 +18,20 @@ function initializeTinyMCE(selector) {
         promotion: false,
         setup: (editor) => {
             editor.on('init', () => {
-                
-                
-                // if updating, import html to be updated and setcontent
-    
+                editor.setContent(initialContent)
                 const preview = document.querySelector('.blog-preview__content')
                 preview.innerHTML = editor.getContent()
             })
     
-    
             editor.on('change', () => {
+                editor.save()
                 const preview = document.querySelector('.blog-preview__content')
                 preview.innerHTML = editor.getContent()
+            })
+
+            editor.on('submit', () => {
+                const wordCountInput = document.getElementById('word-count')
+                wordCountInput.value = editor.plugins.wordcount.getCount()
             })
         }
     });

@@ -1,6 +1,7 @@
 extends ../layouts/author
 include ../components/list/buttonList
 include ../components/form/formInput
+include ../components/form/formTextarea
 
 block page
     - const titleErrors = []
@@ -13,9 +14,9 @@ block page
             - titleErrors.push(error.msg)
         else if error.path === 'thumbnail'
             - thumbnailErrors.push(error.msg)
-        else if error.path === 'keyword'
+        else if error.path === 'keywords'
             - keywordErrors.push(error.msg)
-        else if error.path === 'content'
+        else if error.path === 'content' || error.path === 'word-count'
             - contentErrors.push(error.msg)
 
     .blog-form-page
@@ -32,18 +33,22 @@ block page
                         'label': 'Content'
                     } 
                 )(button='-tab')
-                form#blog-form.blog-form(method='post')
+                form#blog-form.blog-form(
+                    action=`/users/${mainUser.username}/blogs`
+                    method='post' 
+                    enctype='multipart/form-data'
+                )
                     .blog-form__metadata
                         +formInput(
                             'title',
                             'text',
-                            inputs.username || '',
+                            inputs.title || '',
                             titleErrors
                         )(input={'required': ''})
                         +formInput(
                             'thumbnail',
                             'file',
-                            inputs.thumbnail || '',
+                            '',
                             thumbnailErrors
                         )(input={'required': ''})
                         +formInput(
@@ -54,14 +59,27 @@ block page
                         )(input={'required': ''})
 
                     .blog-form__content.-hidden
-                        textarea#tinymce-app.tinymce-app
-                        if contentErrors.length
-                            .blog-form__error-container
-                                each error in contentErrors
-                                    .blog-form__error= error
+                        +formTextarea(
+                            'content',
+                            inputs.content || '',
+                            contentErrors
+                        )(
+                            textarea={
+                                'id': 'tinymce-app',
+                                'class': 'tinymce-app'
+                            }
+                        )
+                        input#word-count.blog-form__hidden(
+                            name='word-count'
+                            type='hidden'
+                        )
+
         .blog-form-page__right
             .blog-form-page__heading Preview
             .blog-form-page__body
                 .blog-preview
-                    .blog-preview__metadata 
+                    .blog-preview__metadata
+                        .blog-preview__title
+                        .blog-preview__thumbnail
+                            img
                     .blog-preview__content

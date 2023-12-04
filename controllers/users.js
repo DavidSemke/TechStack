@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 const user = {
-    'username': 'John Doe',
+    'username': 'JohnDoe',
     'password': 'xdxdxd',
     'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next blog on the best pizza places in town!',
     'keywords': ['pizza', 'white', 'tennis'],
@@ -67,7 +67,9 @@ function checkAuthorization(req, res, next) {
         || req.user.username !== req.params.username
     ) {
         
-        const err = new Error("Cannot perform blog CRUD using another user's account.");
+        const err = new Error(
+            "Cannot perform blog CRUD using another user's account."
+        );
         err.status = 403;
         
         return next(err);
@@ -114,8 +116,7 @@ exports.getBlogCreateForm = [
     // checkAuthorization,
 
     asyncHandler(async (req, res, next) => {
-        
-        res.locals.mainUser = user //remove after done experiments
+        res.locals.mainUser = user
         
         res.render(
             "pages/blogForm", 
@@ -130,64 +131,107 @@ exports.getBlogCreateForm = [
     
 // On blog create
 exports.postBlog = [
-    checkAuthorization,
+    // checkAuthorization,
 
     // Validate and sanitize
+    // Thumbnail image processed after body middleware
     body("title")
         .trim()
-        .isLength({ min: 1, max: 100 })
-        .withMessage("Blog must have a title.")
-        .escape()
-        .custom(asyncHandler(async (value) => {
-            return !(await Blog.findOne({ title: value }).exec())
-        }))
-        .withMessage('Blog title already exists.'),
+        .isLength({ min: 60, max: 100 })
+        .withMessage("Title must have 60 to 100 characters.")
+        .escape(),
     body("keywords")
-        .optional({ values: "falsy" })
         .trim()
+        .custom((value) => {
+            const wordCount = value
+                .split(' ')
+                .filter(x => x)
+                .length
+            
+            return !(wordCount < 1 || wordCount > 10)
+        })
+        .withMessage('Must have 1 to 10 keywords.')
         .escape(),
-    body("content")
-        .trim()
-        .escape(),
+    body("word-count")
+        .custom((value) => {
+            let wordCount = parseInt(value)
+            
+            return !(wordCount < 500 || wordCount > 3000)
+        })
+        .withMessage("Blog must be 500 to 3000 words."),
 
     // Process request
     asyncHandler(async (req, res, next) => {
+        res.locals.mainUser = user
+
+        const errors = []
+
+        if (req.invalidFileType) {
+            errors.push(
+                {
+                    'path': 'thumbnail',
+                    'msg': 'File must be jpeg, jpg, png, or gif.'
+                }
+            )
+        }
+        else if (req.fileLimitError) {
+            errors.push(
+                {
+                    'path': 'thumbnail',
+                    'msg': req.fileLimitError.message + '.'
+                }
+            )
+        }
+        else if (!req.file) {
+            errors.push(
+                {
+                    'path': 'thumbnail',
+                    'msg': 'File is invalid. Choose another.'
+                }
+            )
+        }
+
+        // Cannot repopulate thumbnail input with file, so it is
+        // omitted here 
         const inputs = {
             title: req.body.title,
             keywords: req.body.keywords,
             content: req.body.content
         }
-        const errors = validationResult(req);
 
-        if (!errors.isEmpty()) {
-        // Render errors
-        res.render("pages/blogForm", {
-            ...inputs,
-            blogTitle: inputs.title,
-            title: "Create Blog",
-            errors: errors.array(),
-        });
+        const nonFileErrors = validationResult(req).array()
+        errors.push(...nonFileErrors)
 
-        return;
+        if (errors.length) {
+            // Render errors
+            res.render("pages/blogForm", {
+                title: "Create Blog",
+                inputs,
+                errors
+            });
+
+            return
         }
 
-        const user = req.user
-        const blog = new Blog({
-            ...inputs,
-            author: {
-                name: user.username,
-                profile_pic: user.profile_pic
-            },
-            publish_date: null,
-            likes: 0,
-            dislikes: 0
-        });
+        res.redirect('#');
 
-        await blog.save();
+        // const user = req.user
+        // const blog = new Blog({
+        //     ...inputs,
+        //     author: {
+        //         name: user.username,
+        //         profile_pic: user.profile_pic
+        //     },
+        //     publish_date: null,
+        //     likes: 0,
+        //     dislikes: 0
+        // });
 
-        // view new blog
-        res.redirect(blog.url);
-    }),
+        // await blog.save();
+
+        // // view new blog
+        // res.redirect(blog.url);
+    }) 
 ];
 
 // On blog delete

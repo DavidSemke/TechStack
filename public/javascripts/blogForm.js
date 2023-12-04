@@ -34,6 +34,38 @@ function blogFormTabEventListeners() {
     })
 }
 
+function blogFormMetadataEventListeners() {
+    const metadata = document.querySelector(
+        '.blog-form__metadata'
+    )
+
+    if (!metadata) {
+        return
+    }
+
+    const titlePreview = document.querySelector(
+        '.blog-preview__title'
+    )
+    const titleInput = document.getElementById('title')
+    titlePreview.textContent = titleInput.value
+
+    titleInput.addEventListener('change', () => {
+        titlePreview.textContent = titleInput.value
+    })
+
+    const thumbnailPreview = document.querySelector(
+        '.blog-preview__thumbnail > img'
+    )
+    const thumbnailInput = document.getElementById('thumbnail')
+    thumbnailPreview.src = thumbnailInput.value
+
+    thumbnailInput.addEventListener('change', () => {
+        thumbnailPreview.src = thumbnailInput.value
+    })
+
+}
+
 export {
-    blogFormTabEventListeners
+    blogFormTabEventListeners,
+    blogFormMetadataEventListeners
 }

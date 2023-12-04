@@ -1,23 +1,60 @@
 const controller = require('../controllers/users')
 const express = require("express")
 const router = express.Router()
+const upload = require('../upload/multer')
 
-router.get('/:username', controller.getUser)
+router.get(
+    '/:username', 
+    controller.getUser
+)
 
-// router.get('/:username/blogs', controller.getBlogs)
+// router.get(
+//     '/:username/blogs', 
+//     controller.getBlogs
+// )
 
-router.get('/:username/blogs/new-blog', controller.getBlogCreateForm)
+router.post(
+    '/:username/blogs',
+    upload.single('thumbnail'),
+    // catch possible multer limit error
+    function (err, req, res, next) {
+        if (err) {
+            req.fileLimitError = err
+        }
 
-router.post('/:username/blogs', controller.postBlog)
+        next()
+    },
+    controller.postBlog
+)
 
-router.get('/:username/blogs/:blogId', controller.getBlogUpdateForm)
+router.get(
+    '/:username/blogs/new-blog',
+    controller.getBlogCreateForm
+)
 
-router.put('/:username/blogs/:blogId', controller.updateBlog)
+router.get(
+    '/:username/blogs/:blogId', 
+    controller.getBlogUpdateForm
+)
 
-router.delete('/:username/blogs/:blogId', controller.deleteBlog)
+router.put(
+    '/:username/blogs/:blogId', 
+    controller.updateBlog
+)
 
-// router.get('/:username/blogs/:blogId/comments', controller.getComments)
+router.delete(
+    '/:username/blogs/:blogId', 
+    controller.deleteBlog
+)
 
-// router.delete('/:username/blogs/:blogId/comments/:commentId', controller.deleteComment)
+// router.get(
+//     '/:username/blogs/:blogId/comments', 
+//     controller.getComments
+// )
+
+// router.delete(
+//     '/:username/blogs/:blogId/comments/:commentId', 
+//     controller.deleteComment
+// )
 
 module.exports = router

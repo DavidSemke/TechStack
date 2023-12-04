@@ -1,0 +1,14 @@
+mixin formTextarea(name, value, errors)
+    .form-textarea&attributes(attributes.formTextarea)
+        label.form-textarea__label(
+            for=name
+        )= name[0].toUpperCase() + name.slice(1)
+        textarea.form-textarea__textarea(
+            id=name
+            name=name 
+            value=value
+        )&attributes(attributes.textarea)
+        if errors.length
+            .form-textarea__error-container
+                each error in errors
+                    .form-textarea__error= error
