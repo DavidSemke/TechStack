@@ -17,6 +17,7 @@ function initializeTinyMCE(selector) {
         menubar: 'file edit view insert table tools help',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | numlist bullist',
         promotion: false,
+        image_file_types: 'jpeg,jpg,png,webp,gif',
         setup: (editor) => {
             editor.on('init', () => {
                 editor.setContent(initialContent)

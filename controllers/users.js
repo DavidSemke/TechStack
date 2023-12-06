@@ -166,11 +166,11 @@ exports.postBlog = [
 
         const errors = []
 
-        if (req.invalidFileType) {
+        if (req.fileTypeError) {
             errors.push(
                 {
                     'path': 'thumbnail',
-                    'msg': 'File must be jpeg, jpg, png, or gif.'
+                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
                 }
             )
         }

@@ -15,11 +15,11 @@ const upload = multer(
         storage: storage,
         limits: {
             parts: 20,
-            fileSize: 5000000 //limit image size to 5MB
+            fileSize: 1000000 // limit image size to 1MB
         },
         fileFilter: (req, file, cb) => {
-            const filetypes = /jpeg|jpg|png|gif/
-            const mimetypes = /image\/(jpeg|png|gif)/
+            const filetypes = /jpeg|jpg|png|webp|gif/
+            const mimetypes = /image\/(jpeg|png|webp|gif)/
 
             const validFileType = filetypes.test(
                 path.extname(file.originalname).toLowerCase()
@@ -27,11 +27,11 @@ const upload = multer(
             const validMimeType = mimetypes.test(file.mimetype)
 
             if (validFileType && validMimeType) {
-                req.invalidFileType = false
+                req.fileTypeError = false
                 return cb(null, true)
             }
             else {
-                req.invalidFileType = true
+                req.fileTypeError = true
                 return cb(null, false)
             }
         }

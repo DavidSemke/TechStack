@@ -6,13 +6,12 @@ import { sidebarEventListeners } from './toolbars.js'
 // } from './blog.js'
 import {
     blogFormTabEventListeners,
-    blogFormMetadataEventListeners
+    blogFormMetadataEventListeners,
+    blogFormSizing
 } from './blogForm.js'
 import {
     initializeTinyMCE
 } from './tinyMCEConfig.js'
-
-console.log(backendData)
 
 sidebarEventListeners(
     '.account-sidebar', 
@@ -25,6 +24,7 @@ sidebarEventListeners(
 
 blogFormTabEventListeners()
 blogFormMetadataEventListeners()
+blogFormSizing()
 
 initializeTinyMCE('#tinymce-app')
 

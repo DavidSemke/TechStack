@@ -382,23 +382,24 @@
 
 .blog-form-page {
   display: flex;
+  align-items: flex-start;
   width: 80%;
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
 .blog-form-page__left {
   flex: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
 .blog-form-page__right {
   flex: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
@@ -414,12 +415,10 @@
   width: 100%;
   padding: 1rem;
   border: 2px solid white;
+  overflow: auto;
 }
 
 .blog-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   height: 100%;
   width: 100%;
   border-top: 2px solid white;
@@ -462,18 +461,23 @@
   font-weight: bold;
 }
 .blog-preview__thumbnail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60%;
   aspect-ratio: 4/3;
   margin-left: auto;
   margin-right: auto;
+  border: 2px dashed white;
+  font-size: 1.2rem;
 }
 .blog-preview__metadata {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-.blog-preview__content {
-  overflow: auto;
+.blog-preview__content img {
+  width: 60%;
 }
 
 .blog-page {
