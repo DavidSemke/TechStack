@@ -56,18 +56,37 @@ app.use((req, res, next) => {
   next()
 })
 
-/* TinyMCE Setup */
-app.use(
-  '/tinymce', 
-  express.static(path.join(__dirname, 'node_modules', 'tinymce'))
-);
-
 /* Miscellaneous Setup */
 app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, "public")))
+
+/* Static Setup */
+app.use(
+  express.static(path.join(
+    __dirname, 
+    "public"
+  ))
+)
+app.use(
+  '/tinymce', 
+  express.static(path.join(
+    __dirname, 
+    'node_modules', 
+    'tinymce'
+  ))
+);
+app.use(
+  '/entities',
+  express.static(path.join(
+    __dirname, 
+    'node_modules', 
+    'entities',
+    'lib',
+    'esm'
+  ))
+)
 
 /* Route Setup */
 const indexRouter = require("./routes/index")
