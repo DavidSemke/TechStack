@@ -1,4 +1,5 @@
 require('dotenv').config()
+const helmet = require('helmet')
 const liveReload = require("livereload")
 const connectLiveReload = require("connect-livereload")
 const createError = require("http-errors")
@@ -21,6 +22,9 @@ async function main() {
 }
 
 const app = express()
+
+/* Security Setup */
+app.use(helmet())
 
 /* View Engine Setup */
 app.set("views", path.join(__dirname, "views"))
