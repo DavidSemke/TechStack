@@ -52,18 +52,24 @@ function blogFormMetadataEventListeners() {
     titleInput.addEventListener('change', () => {
         titlePreview.textContent = titleInput.value
     })
-
 }
 
 function blogFormSizing() {
     const leftBody = document.querySelector('.blog-form-page__left .blog-form-page__body')
     const rightBody = document.querySelector('.blog-form-page__right .blog-form-page__body')
     rightBody.style.maxHeight = leftBody.offsetHeight + 'px'
-    console.log(rightBody.style.maxHeight)
+    rightBody.style.maxWidth = leftBody.offsetWidth + 'px'
+}
+
+// Function blogFormSizing must be called before function 
+// blogFormMetadataEventListeners
+// Therefore, this function providing the correct ordering is exported 
+function blogFormSetup() {
+    blogFormSizing()
+    blogFormTabEventListeners()
+    blogFormMetadataEventListeners()
 }
 
 export {
-    blogFormTabEventListeners,
-    blogFormMetadataEventListeners,
-    blogFormSizing
+    blogFormSetup
 }

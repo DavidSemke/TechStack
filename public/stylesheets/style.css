@@ -408,14 +408,14 @@
   font-weight: bold;
 }
 .blog-form-page__body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   height: 100%;
   width: 100%;
   padding: 1rem;
   border: 2px solid white;
-  overflow: auto;
+}
+.blog-form-page__right > .blog-form-page__body {
+  overflow-y: auto;
+  overflow-wrap: break-word;
 }
 
 .blog-form {
@@ -451,7 +451,6 @@
 .blog-preview {
   display: flex;
   flex-direction: column;
-  hyphens: auto;
   gap: 1rem;
   width: 100%;
   height: 100%;
