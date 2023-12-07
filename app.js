@@ -1,5 +1,6 @@
 require('dotenv').config()
 const helmet = require('helmet')
+const crypto = require('crypto')
 const liveReload = require("livereload")
 const connectLiveReload = require("connect-livereload")
 const createError = require("http-errors")
@@ -24,7 +25,31 @@ async function main() {
 const app = express()
 
 /* Security Setup */
-app.use(helmet())
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'", 
+          "'unsafe-inline'",
+          "http://localhost:35729"
+        ],
+        connectSrc: ["'self'", "ws://localhost:35729"]
+      }
+    }
+  })
+)
+//set CSP with nonce
+// app.use((req, res, next) => {
+//   const nonce = crypto.randomBytes(16).toString('base64');
+//   res.setHeader(
+//     'Content-Security-Policy', 
+//     `script-src * 'unsafe-inline'`
+//   );
+//   res.locals.nonce = nonce;
+//   next();
+// })
 
 /* View Engine Setup */
 app.set("views", path.join(__dirname, "views"))
@@ -46,16 +71,18 @@ app.use(session(
   { 
     secret: process.env.SESSION_SECRET, 
     resave: false, 
-    saveUninitialized: true 
+    saveUninitialized: true,
+    cookie: {
+      sameSite: 'lax'
+    }
   }
 ));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-/* Locals Setup */
+// add user local
 app.use((req, res, next) => {
-  // for use in views
   res.locals.mainUser = req.user
   next()
 })

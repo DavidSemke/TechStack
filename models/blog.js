@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const BlogSchema = new Schema({
-  title: { type: String, required: true, maxLength: 100 },
+  title: { type: String, required: true },
+  thumbnail: { data: Buffer, contentType: String },
   author: { 
     type: new Schema({
       name: { type: String, required: true },
@@ -12,9 +13,9 @@ const BlogSchema = new Schema({
   },
   publish_date: { type: Date },
   keywords: { type: Array },
-  content: { type: Array },
-  likes: { type: Number, required: true },
-  dislikes: { type: Number, required: true }
+  content: { type: String },
+  likes: { type: Number },
+  dislikes: { type: Number }
 });
 
 // Virtual for blog URL

@@ -2,6 +2,8 @@ const User = require("../models/user");
 const Blog = require("../models/blog");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const fs = require('fs')
+const path = require('path')
 
 const user = {
     'username': 'JohnDoe',
@@ -110,11 +112,17 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     res.render("pages/userProfile", { data });
 });
 
+exports.getBlogs = [
+    // getAuthorization,
+
+
+]
+
 // Display blog create form
 exports.getBlogCreateForm = [
     // checkAuthorization,
 
-    asyncHandler(async (req, res, next) => {
+    function (req, res, next) {
         res.locals.mainUser = user
 
         const data = {
@@ -124,7 +132,7 @@ exports.getBlogCreateForm = [
         }
         
         res.render("pages/blogForm",  { data })
-    })
+    }
 ]
     
 // On blog create
@@ -214,24 +222,36 @@ exports.postBlog = [
             return
         }
 
-        res.redirect('#');
-
         // const user = req.user
-        // const blog = new Blog({
-        //     ...inputs,
-        //     author: {
-        //         name: user.username,
-        //         profile_pic: user.profile_pic
-        //     },
-        //     publish_date: null,
-        //     likes: 0,
-        //     dislikes: 0
-        // });
+        const blog = new Blog({
+            title: inputs.title,
+            thumbnail: {
+                data: fs.readFileSync(
+                    path.join(
+                        process.cwd(),
+                        'upload',
+                        'files',
+                        req.file.filename
+                    )
+                ),
+                contentType: req.file.mimetype
+            },
+            author: {
+                name: user.username,
+                profile_pic: user.profile_pic ?? null
+            },
+            publish_date: Date.now(),
+            keywords: inputs.keywords.split(' '),
+            content: inputs.content,
+            likes: 0,
+            dislikes: 0
+        });
 
-        // await blog.save();
+        await blog.save();
 
-        // // view new blog
+        // view new blog
         // res.redirect(blog.url);
+        res.redirect('/')
     }) 
 ];
 
