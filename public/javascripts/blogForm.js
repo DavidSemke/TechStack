@@ -1,13 +1,4 @@
 function blogFormTabEventListeners() {
-    const metadataTab = document.querySelector(
-        '.blog-form-metadata-tab'
-    )
-
-    // check one tab to make sure page is correct
-    if (!metadataTab) {
-        return
-    }
-
     const metadata = document.querySelector(
         '.blog-form__metadata'
     )
@@ -35,14 +26,6 @@ function blogFormTabEventListeners() {
 }
 
 function blogFormMetadataEventListeners() {
-    const metadata = document.querySelector(
-        '.blog-form__metadata'
-    )
-
-    if (!metadata) {
-        return
-    }
-
     const titlePreview = document.querySelector(
         '.blog-preview__title'
     )
@@ -65,6 +48,15 @@ function blogFormSizing() {
 // blogFormMetadataEventListeners
 // Therefore, this function providing the correct ordering is exported 
 function blogFormSetup() {
+    const blogFormPage = document.querySelector(
+        '.blog-form-page'
+    )
+
+    // check one tab to make sure page is correct
+    if (!blogFormPage) {
+        return
+    }
+
     blogFormSizing()
     blogFormTabEventListeners()
     blogFormMetadataEventListeners()
