@@ -4,63 +4,8 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
-
-const user = {
-    'username': 'JohnDoe',
-    'password': 'xdxdxd',
-    'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next blog on the best pizza places in town!',
-    'keywords': ['pizza', 'white', 'tennis'],
-    'blogs_recently_read': [
-        {
-            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
-            'author': {
-                'name': 'James Games'
-            },
-            'keywords': [
-                'Tech', 
-                'BigTech',
-                'ShinyTech',
-                'CoolTech',
-                'NewTech',
-                'FreshTech', 
-                'SpicyTech', 
-                'HeckTech',
-                'SteakTech', 
-                'BreakTech'
-            ],
-            'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
-            'likes': 0,
-            'dislikes': 0,
-            'publish_date': '2020/12/12',
-            'url': '#'
-        }
-    ],
-    'blogs_written': [
-        {
-            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
-            'author': {
-                'name': 'James Games'
-            },
-            'keywords': [
-                'Tech', 
-                'BigTech',
-                'ShinyTech',
-                'CoolTech',
-                'NewTech',
-                'FreshTech', 
-                'SpicyTech', 
-                'HeckTech',
-                'SteakTech', 
-                'BreakTech'
-            ],
-            'content': "Let me tell you a story about an itty bitty spider that fell down the stairs. It was a Wednesday. I think I had spaghetti on Wednesday, meatballs and everything. I should have spaghetti more often, but then it wouldn't be as special, you know? Also Mom only makes her special sauce once and a while, and the spaghetti simply is not the same without it.",
-            'likes': 0,
-            'dislikes': 0,
-            'publish_date': '2020/12/12',
-            'url': '#'
-        }
-    ]
-}
+// for testing
+const user = require('../test/mocks/users.js')
 
 // used to protect user-specific paths
 function checkAuthorization(req, res, next) {
@@ -79,7 +24,7 @@ function checkAuthorization(req, res, next) {
 }
 
 // Display user profile
-// Usernames are unique, and so are used as ids
+// Usernames are unique, and so they are used as ids
 exports.getUser = asyncHandler(async (req, res, next) => {
     // const user = await User
     //     .find({username: req.params.username})
@@ -103,7 +48,6 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     //     isMainUser = true
     // }
 
-    res.locals.mainUser = user
     title = 'Your Profile'
     isMainUser = true
 
@@ -129,7 +73,6 @@ exports.getBlogCreateForm = [
     // checkAuthorization,
 
     function (req, res, next) {
-        res.locals.mainUser = user
 
         const data = {
             title: "Create Blog",
@@ -263,7 +206,7 @@ exports.postBlog = [
 
 // On blog delete
 exports.deleteBlog = [
-    checkAuthorization,
+    // checkAuthorization,
 
     asyncHandler(async (req, res, next) => {
         await Comment.deleteMany({blog: req.params.blogId}).exec()
@@ -274,7 +217,7 @@ exports.deleteBlog = [
 
 // Display blog update form
 exports.getBlogUpdateForm = [
-    checkAuthorization,
+    // checkAuthorization,
 
     asyncHandler(async (req, res, next) => {
         const blog = await Blog.findById(req.params.blogId).exec()
@@ -301,7 +244,7 @@ exports.getBlogUpdateForm = [
     
 // On blog update
 exports.updateBlog = [
-    checkAuthorization,
+    // checkAuthorization,
 
     body("title")
         .trim()

@@ -12,6 +12,8 @@ const session = require("express-session")
 const passport = require('./auth/passport.js')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
+// for testing
+const loggedInUser = require('../test/mocks/users.js')
 
 /* MongoDB Setup */
 const connecter = process.env.MONGO_DB_CONNECT
@@ -83,7 +85,8 @@ app.use(flash());
 
 // add user local
 app.use((req, res, next) => {
-  res.locals.mainUser = req.user
+  // res.locals.mainUser = req.user
+  res.locals.mainUser = loggedInUser
   next()
 })
 
