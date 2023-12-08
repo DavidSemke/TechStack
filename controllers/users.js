@@ -92,21 +92,27 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     //     return next(err);
     // }
 
-    let title = `${user.username}'s Profile`
-    let isMainUser = false
+    // let title = `${user.username}'s Profile`
+    // let isMainUser = false
 
-    if (
-        req.user 
-        && user.username === req.user.username
-    ) {
-        title = 'Your Profile'
-        isMainUser = true
-    }
+    // if (
+    //     req.user 
+    //     && user.username === req.user.username
+    // ) {
+    //     title = 'Your Profile'
+    //     isMainUser = true
+    // }
+
+    res.locals.mainUser = user
+    title = 'Your Profile'
+    isMainUser = true
 
     const data = {
         title,
         user,
-        isMainUser
+        isMainUser,
+        inputs: {},
+        errors: []
     }
 
     res.render("pages/userProfile", { data });

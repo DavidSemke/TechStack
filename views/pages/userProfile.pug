@@ -1,8 +1,26 @@
 extends ../layouts/browser
 include ../components/list/iconLinkList
+include ../components/form/formInput
+include ../components/form/formTextarea
+include ../components/list/buttonList
 
 block page
-    - const {title, user, isMainUser} = data
+    - const {title, user, isMainUser, inputs, errors} = data
+
+    - const profilePicErrors = []
+    - const usernameErrors = []
+    - const bioErrors = []
+    - const keywordErrors = []
+
+    each error in errors 
+        if error.path === 'profile-pic'
+            - profilePicErrors.push(error.msg)
+        else if error.path === 'username'
+            - usernameErrors.push(error.msg)
+        else if error.path === 'bio'
+            - biorrors.push(error.msg)
+        else if error.path === 'keywords'
+            - keywordErrors.push(error.msg)
     
     .profile-page
         h1.profile-page__heading= title
@@ -23,7 +41,50 @@ block page
                     if isMainUser
                         .profile__edit
                             button.profile__edit-button Edit Profile
-            
+                if isMainUser
+                    form.profile-form.-hidden(
+                        action=`/users/${mainUser.username}`
+                        method='post' 
+                        enctype='multipart/form-data'
+                    )
+                        +formInput(
+                            'profile-pic',
+                            'file',
+                            '',
+                            profilePicErrors
+                        )
+                        +formInput(
+                            'username',
+                            'text',
+                            inputs.username || '',
+                            usernameErrors
+                        )
+                        +formTextarea(
+                            'bio',
+                            inputs.bio || '',
+                            bioErrors
+                        )(
+                            textarea={
+                                'rows': '5'
+                            }
+                        )
+                        +formTextarea(
+                            'keywords',
+                            inputs.keywords || '',
+                            keywordErrors
+                        )(
+                            textarea={
+                                'rows': '2'
+                            }
+                        )
+                        .profile-form__buttons
+                            button.profile-form__submit(
+                                type='submit'
+                            ) Submit
+                            button.profile-form__cancel(
+                                type='button'
+                            ) Cancel
+
             .profile__author-browser-details
                 .profile__browser-details
                     .profile__heading Recent Reads

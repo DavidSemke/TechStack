@@ -1,10 +1,6 @@
 import { sidebarEventListeners } from './toolbars.js'
-// import {
-//     blogLikeButtonEventListeners,
-//     blogDislikeButtonEventListeners,
-//     blogCommentButtonEventListeners
-// } from './blog.js'
 import { blogFormSetup } from './blogForm.js'
+import { profileFormSetup } from './userProfile.js'
 import { initializeTinyMCE } from './tinyMCEConfig.js'
 
 sidebarEventListeners(
@@ -17,9 +13,6 @@ sidebarEventListeners(
 )
 
 blogFormSetup()
-
 initializeTinyMCE('#tinymce-app')
 
-// blogLikeButtonEventListeners()
-// blogDislikeButtonEventListeners()
-// blogCommentButtonEventListeners()
+profileFormSetup()

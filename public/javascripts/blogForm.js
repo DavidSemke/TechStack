@@ -6,6 +6,10 @@ function blogFormTabEventListeners() {
         '.blog-form__content'
     )
 
+    const metadataTab = document.querySelector(
+        '.blog-form-metadata-tab'
+    )
+
     metadataTab.addEventListener('click', () => {
         if (metadata.classList.contains('-hidden')) {
             content.classList.add('-hidden')
