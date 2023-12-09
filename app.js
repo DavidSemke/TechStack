@@ -13,7 +13,7 @@ const passport = require('./auth/passport.js')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
 // for testing
-const loggedInUser = require('../test/mocks/users.js')
+const loggedInUser = require('./test/mocks/users.js')
 
 /* MongoDB Setup */
 const connecter = process.env.MONGO_DB_CONNECT

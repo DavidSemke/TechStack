@@ -1,6 +1,7 @@
 const controller = require('../controllers/users')
 const express = require("express")
 const router = express.Router()
+const multer = require('multer')
 const upload = require('../upload/multer')
 
 router.get(
@@ -18,11 +19,17 @@ router.post(
     upload.single('thumbnail'),
     // catch possible multer limit error
     function (err, req, res, next) {
-        if (err) {
-            req.fileLimitError = err
+        if (!err) {
+            return next()
         }
 
-        next()
+        if (err instanceof multer.MulterError) {
+            req.fileLimitError = err
+            next()
+        }
+        else {
+            next(err)
+        }
     },
     controller.postBlog
 )

@@ -198,8 +198,20 @@ exports.postBlog = [
 
         await blog.save();
 
-        // view new blog
-        // res.redirect(blog.url);
+        fs.unlink(
+            path.join(
+                process.cwd(),
+                'upload',
+                'files',
+                req.file.filename
+            ),
+            (err) => {
+                if (err) {
+                    throw err
+                }
+            }
+        )
+        
         res.redirect('/')
     }) 
 ];
