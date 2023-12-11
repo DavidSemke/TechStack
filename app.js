@@ -13,7 +13,7 @@ const passport = require('./auth/passport.js')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
 // for testing
-const loggedInUser = require('./test/mocks/users.js')
+const User = require("./models/user");
 
 /* MongoDB Setup */
 const connecter = process.env.MONGO_DB_CONNECT
@@ -79,14 +79,31 @@ app.use(session(
     }
   }
 ));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+/* FOR TESTING - AUTOLOGIN */
+app.use(async (req, res, next) => {
+  const autologUser = await User
+    .findOne({ username: 'aaaaaa' }).exec();
+
+
+  req.login(autologUser, (err) => {
+    if (err) {
+        return next(err)
+    }
+
+    return
+  })
+  
+  next()
+})
+
 // add user local
 app.use((req, res, next) => {
-  // res.locals.mainUser = req.user
-  res.locals.mainUser = loggedInUser
+  res.locals.mainUser = req.user
   next()
 })
 
@@ -95,6 +112,7 @@ app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+
 
 /* Static Setup */
 app.use(

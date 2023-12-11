@@ -22,70 +22,90 @@ block page
         else if error.path === 'keywords'
             - keywordErrors.push(error.msg)
     
+    - let updatingProfile = false 
+    if Object.keys(inputs).length
+        - updatingProfile = true
+    
     .profile-page
         h1.profile-page__heading= title
         .profile
-            .profile__user-details
-                .profile__primary-user-details
-                    .profile__avatar
-                        img(src='/images/profileIcon.png')
-                    .profile__username= user.username
-                .profile__secondary-user-details
-                    .profile__bio
-                        .profile__heading Bio 
-                        p.profile__body= user.bio
-                    .profile__keywords
-                        .profile__heading Favorite Keywords
-                        p.profile__body= user.keywords.join(' | ')
+            .profile__primary
+                .profile__avatar
                     
-                    if isMainUser
-                        .profile__edit
-                            button.profile__edit-button Edit Profile
-                if isMainUser
-                    form.profile-form.-hidden(
-                        action=`/users/${mainUser.username}`
-                        method='post' 
-                        enctype='multipart/form-data'
-                    )
-                        +formInput(
-                            'profile-pic',
-                            'file',
-                            '',
-                            profilePicErrors
-                        )
-                        +formInput(
-                            'username',
-                            'text',
-                            inputs.username || '',
-                            usernameErrors
-                        )
-                        +formTextarea(
-                            'bio',
-                            inputs.bio || '',
-                            bioErrors
-                        )(
-                            textarea={
-                                'rows': '5'
-                            }
-                        )
-                        +formTextarea(
-                            'keywords',
-                            inputs.keywords || '',
-                            keywordErrors
-                        )(
-                            textarea={
-                                'rows': '2'
-                            }
-                        )
-                        .profile-form__buttons
-                            button.profile-form__submit(
-                                type='submit'
-                            ) Submit
-                            button.profile-form__cancel(
-                                type='button'
-                            ) Cancel
+                    if user.profile_pic
+                        - const pic = user.profile_pic
+                        - const base64 = Buffer.from(pic.data).toString('base64')
+                        - const dataUri = `data:${pic.contentType};base64,${base64}`
+                        img(src=dataUri)
+                    else
+                        img(src='/images/profileIcon.png')
 
-            .profile__author-browser-details
+                .profile__username= user.username
+            .profile__secondary(
+                class= updatingProfile ? '-hidden' : ''
+            )
+                .profile__bio
+                    .profile__heading Bio 
+                    p.profile__body= user.bio || 'None'
+                .profile__keywords
+                    .profile__heading Favorite Keywords
+                    
+                    - let keywords = 'None'
+                    if user.keywords && user.keywords.length
+                        - keywords = user.keywords.join(' | ')
+                    
+                    p.profile__body= keywords
+                
+                if isMainUser
+                    .profile__edit
+                        button.profile__edit-button Edit Profile
+            
+            if isMainUser
+                form.profile-form(
+                    action=`/users/${mainUser.username}`
+                    method='post' 
+                    enctype='multipart/form-data'
+                    class= updatingProfile ? '' : '-hidden'
+                )
+                    +formInput(
+                        'profile-pic',
+                        'file',
+                        '',
+                        profilePicErrors
+                    )
+                    +formInput(
+                        'username',
+                        'text',
+                        inputs.username || mainUser.username,
+                        usernameErrors
+                    )
+                    +formTextarea(
+                        'bio',
+                        inputs.bio || mainUser.bio,
+                        bioErrors
+                    )(
+                        textarea={
+                            'rows': '5'
+                        }
+                    )
+                    +formTextarea(
+                        'keywords',
+                        inputs.keywords || mainUser.keywords,
+                        keywordErrors
+                    )(
+                        textarea={
+                            'rows': '2'
+                        }
+                    )
+                    .profile-form__buttons
+                        button.profile-form__submit(
+                            type='submit'
+                        ) Submit
+                        button.profile-form__cancel(
+                            type='button'
+                        ) Cancel
+
+            .profile__tertiary
                 .profile__browser-details
                     .profile__heading Recent Reads
                     .profile__body
@@ -101,7 +121,8 @@ block page
                                 'label': 'Blog 2' 
                             }
                         )
-                if user.blogs_written.length
+                
+                if user.blogs_written && user.blogs_written.length
                     .profile__author-details
                         - let heading = `Blogs Written by ${user.username}`
                         

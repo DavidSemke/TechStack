@@ -4,52 +4,31 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
-// for testing
-const user = require('../test/mocks/users.js')
-
-// used to protect user-specific paths
-function checkAuthorization(req, res, next) {
-    if (
-        !req.user
-        || req.user.username !== req.params.username
-    ) {
-        
-        const err = new Error(
-            "Cannot perform blog CRUD using another user's account."
-        );
-        err.status = 403;
-        
-        return next(err);
-    }
-}
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
 exports.getUser = asyncHandler(async (req, res, next) => {
-    // const user = await User
-    //     .find({username: req.params.username})
-    //     .exec()
+    const user = await User
+        .findOne({username: req.params.username})
+        .exec()
 
-    // if (user === null) {
-    //     const err = new Error("User not found");
-    //     err.status = 404;
+    if (user === null) {
+        const err = new Error("User not found");
+        err.status = 404;
         
-    //     return next(err);
-    // }
+        return next(err);
+    }
 
-    // let title = `${user.username}'s Profile`
-    // let isMainUser = false
+    let title = `${user.username}'s Profile`
+    let isMainUser = false
 
-    // if (
-    //     req.user 
-    //     && user.username === req.user.username
-    // ) {
-    //     title = 'Your Profile'
-    //     isMainUser = true
-    // }
-
-    title = 'Your Profile'
-    isMainUser = true
+    if (
+        req.user 
+        && user.username === req.user.username
+    ) {
+        title = 'Your Profile'
+        isMainUser = true
+    }
 
     const data = {
         title,
@@ -62,6 +41,152 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     res.render("pages/userProfile", { data });
 });
 
+exports.updateUser = [
+    // files processed after body middleware
+    body("username")
+        .trim()
+        .isLength({ min: 6, max: 30 })
+        .withMessage("Username must have 6 to 30 characters.")
+        .escape()
+        .custom(asyncHandler(async (value, { req }) => {
+            const user = await User
+                .findOne({ username: value })
+                .exec()
+
+            if (user && req.user.username !== value) {
+                return Promise.reject()
+            }
+        }))
+        .withMessage('Username already exists.'),
+    body("bio")
+        .trim()
+        .isLength({ min: 0, max: 300 })
+        .withMessage("Bio cannot have more than 300 characters.")
+        .escape(),
+    body("keywords")
+        .trim()
+        .custom((value) => {
+            const wordCount = value
+                .split(' ')
+                .filter(x => x)
+                .length
+            
+            return wordCount <= 10
+        })
+        .withMessage('Cannot have more than 10 keywords.')
+        .escape(),
+    
+    asyncHandler(async (req, res, next) => {
+        const errors = []
+
+        if (req.fileTypeError) {
+            errors.push( 
+                {
+                    'path': 'profile-pic',
+                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
+                }
+            )
+        }
+        else if (req.fileLimitError) {
+            errors.push(
+                {
+                    'path': 'profile-pic',
+                    'msg': req.fileLimitError.message + '.'
+                }
+            )
+        }
+
+        // Cannot repopulate profile-pic input with file, so it is
+        // omitted here 
+        const inputs = {
+            username: req.body.username,
+            bio: req.body.bio,
+            keywords: req.body.keywords,
+        }
+
+        const nonFileErrors = validationResult(req).array()
+        errors.push(...nonFileErrors)
+
+        if (errors.length) {
+            const data = {
+                title: "Your Profile",
+                user: req.user,
+                isMainUser: true,
+                inputs: inputs,
+                errors: errors
+            }
+            
+            res.render("pages/userProfile", { data });
+
+            return
+        }
+
+        const filter = {
+            username: req.user.username
+        }
+        const update = {
+            username: inputs.username
+        }
+
+        if (inputs.bio) {
+            update.bio = inputs.bio
+        }
+
+        if (inputs.keywords) {
+            update.keywords = inputs.keywords.split(' ')
+        }
+        
+        // add new profile pic to update if uploaded
+        if (req.file) {
+            update.profile_pic = {
+                data: fs.readFileSync(
+                    path.join(
+                        process.cwd(),
+                        'upload',
+                        'files',
+                        req.file.filename
+                    )
+                ),
+                contentType: req.file.mimetype
+            }
+
+            // delete uploaded profile pic
+            fs.unlink(
+                path.join(
+                    process.cwd(),
+                    'upload',
+                    'files',
+                    req.file.filename
+                ),
+                (err) => {
+                    if (err) {
+                        return next(err)
+                    }
+                }
+            )
+        }
+
+        const updatedUser = await User.findOneAndUpdate(filter, update)
+        
+        // log out old user version and log in new user version
+        req.logout((err) => {
+            if (err) {
+                return next(err);
+            }
+        });
+        req.login(updatedUser, (err) => {
+            if (err) {
+                return next(err)
+            }
+
+            return
+        })
+
+        res.redirect('back')
+    })
+]
+
+
 exports.getBlogs = [
     // getAuthorization,
 
@@ -70,8 +195,6 @@ exports.getBlogs = [
 
 // Display blog create form
 exports.getBlogCreateForm = [
-    // checkAuthorization,
-
     function (req, res, next) {
 
         const data = {
@@ -86,10 +209,7 @@ exports.getBlogCreateForm = [
     
 // On blog create
 exports.postBlog = [
-    // checkAuthorization,
-
-    
-    // Thumbnail image processed after body middleware
+    // files processed after body middleware
     body("title")
         .trim()
         .isLength({ min: 60, max: 100 })
@@ -119,12 +239,11 @@ exports.postBlog = [
 
     
     asyncHandler(async (req, res, next) => {
-        res.locals.mainUser = user
 
         const errors = []
 
         if (req.fileTypeError) {
-            errors.push(
+            errors.push( 
                 {
                     'path': 'thumbnail',
                     'msg': 'File must be jpeg, jpg, png, webp, or gif.'
@@ -136,14 +255,6 @@ exports.postBlog = [
                 {
                     'path': 'thumbnail',
                     'msg': req.fileLimitError.message + '.'
-                }
-            )
-        }
-        else if (!req.file) {
-            errors.push(
-                {
-                    'path': 'thumbnail',
-                    'msg': 'File is invalid. Choose another.'
                 }
             )
         }
@@ -218,7 +329,6 @@ exports.postBlog = [
 
 // On blog delete
 exports.deleteBlog = [
-    // checkAuthorization,
 
     asyncHandler(async (req, res, next) => {
         await Comment.deleteMany({blog: req.params.blogId}).exec()
@@ -229,7 +339,6 @@ exports.deleteBlog = [
 
 // Display blog update form
 exports.getBlogUpdateForm = [
-    // checkAuthorization,
 
     asyncHandler(async (req, res, next) => {
         const blog = await Blog.findById(req.params.blogId).exec()
@@ -256,7 +365,6 @@ exports.getBlogUpdateForm = [
     
 // On blog update
 exports.updateBlog = [
-    // checkAuthorization,
 
     body("title")
         .trim()

@@ -1,8 +1,8 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
-const User = require("./models/user");
-const Blog = require("./models/blog");
-const Comment = require("./models/comment");
+const User = require("../models/user");
+const Blog = require("../models/blog");
+const Comment = require("../models/comment");
 const path = require('path')
 const fs = require('fs')
 

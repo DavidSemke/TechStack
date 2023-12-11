@@ -5,9 +5,8 @@ mixin formTextarea(name, value, errors)
         )= name[0].toUpperCase() + name.slice(1)
         textarea.form-textarea__textarea(
             id=name
-            name=name 
-            value=value
-        )&attributes(attributes.textarea)
+            name=name
+        )&attributes(attributes.textarea)= value
         if errors.length
             .form-textarea__error-container
                 each error in errors

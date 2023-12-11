@@ -1,7 +1,7 @@
 .form-input {
-    &__input {
-        margin-left: 1rem;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
     &__error {
         margin-top: 1rem;
