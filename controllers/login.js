@@ -1,4 +1,4 @@
-const passport = require('../auth/passport')
+const passport = require('../utils/auth')
 
 exports.getLogin = (req, res, next) => {
     const inputs = {

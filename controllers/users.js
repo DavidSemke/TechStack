@@ -30,6 +30,16 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         isMainUser = true
     }
 
+    
+
+    // decode to avoid secondary encoding
+    const rawData = {
+        title: decodeHTML(title),
+        user:
+
+    }
+
+
     const data = {
         title,
         user,
@@ -47,7 +57,6 @@ exports.updateUser = [
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
-        .escape()
         .custom(asyncHandler(async (value, { req }) => {
             const user = await User
                 .findOne({ username: value })
@@ -61,8 +70,7 @@ exports.updateUser = [
     body("bio")
         .trim()
         .isLength({ min: 0, max: 300 })
-        .withMessage("Bio cannot have more than 300 characters.")
-        .escape(),
+        .withMessage("Bio cannot have more than 300 characters."),
     body("keywords")
         .trim()
         .custom((value) => {
@@ -73,8 +81,7 @@ exports.updateUser = [
             
             return wordCount <= 10
         })
-        .withMessage('Cannot have more than 10 keywords.')
-        .escape(),
+        .withMessage('Cannot have more than 10 keywords.'),
     
     asyncHandler(async (req, res, next) => {
         const errors = []

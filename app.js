@@ -9,7 +9,7 @@ const path = require("path")
 const cookieParser = require("cookie-parser")
 const logger = require("morgan")
 const session = require("express-session")
-const passport = require('./auth/passport.js')
+const passport = require('./utils/auth')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
 // for testing

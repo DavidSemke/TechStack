@@ -2,7 +2,7 @@ const controller = require('../controllers/users')
 const express = require("express")
 const router = express.Router()
 const multer = require('multer')
-const upload = require('../upload/multer')
+const upload = require('../utils/upload')
 
 function checkAuthorization(req, res, next) {
     if (
