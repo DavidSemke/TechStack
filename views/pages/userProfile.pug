@@ -62,7 +62,6 @@ block page
             
             if isMainUser
                 form.profile-form(
-                    action=`/users/${mainUser.username}`
                     method='post' 
                     enctype='multipart/form-data'
                     class= updatingProfile ? '' : '-hidden'
@@ -90,7 +89,7 @@ block page
                     )
                     +formTextarea(
                         'keywords',
-                        inputs.keywords || mainUser.keywords,
+                        inputs.keywords || mainUser.keywords.join(' '),
                         keywordErrors
                     )(
                         textarea={

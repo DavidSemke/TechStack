@@ -85,21 +85,19 @@ app.use(passport.session());
 app.use(flash());
 
 /* FOR TESTING - AUTOLOGIN */
-app.use(async (req, res, next) => {
-  const autologUser = await User
-    .findOne({ username: 'aaaaaa' }).exec();
+// app.use(async (req, res, next) => {
+//   const autologUser = await User
+//     .findOne({ username: 'aaaaaa0' })
+//     .exec();
 
-
-  req.login(autologUser, (err) => {
-    if (err) {
-        return next(err)
-    }
-
-    return
-  })
+//   req.login(autologUser, (err) => {
+//     if (err) {
+//         return next(err)
+//     }
+//   })
   
-  next()
-})
+//   next()
+// })
 
 // add user local
 app.use((req, res, next) => {

@@ -68,13 +68,10 @@ function profileFormSetup() {
         })
             .then(res => {
                 if (!res.ok) {
-                    throw new Error(`HTTP error; status: ${res.status}`)
+                    throw new Error(`HTTP error - Status: ${res.status}`)
                 }
-                return res.json()
-            })
-            .then(backendData => {
-                console.log('Update successful:', backendData);
-                
+
+                window.location.href = res.url
             })
             .catch(error => {
                 throw error

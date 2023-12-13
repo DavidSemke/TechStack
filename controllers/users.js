@@ -166,23 +166,11 @@ exports.updateUser = [
             )
         }
 
-        const updatedUser = await User.findOneAndUpdate(filter, update)
-        
-        // log out old user version and log in new user version
-        req.logout((err) => {
-            if (err) {
-                return next(err);
-            }
-        });
-        req.login(updatedUser, (err) => {
-            if (err) {
-                return next(err)
-            }
+        const updatedUser = await User.findOneAndUpdate(
+            filter, update, { new: true }
+        )
 
-            return
-        })
-
-        res.redirect('back')
+        res.redirect(303, `/users/${updatedUser.username}`)
     })
 ]
 
