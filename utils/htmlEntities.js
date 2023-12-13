@@ -1,29 +1,35 @@
 const entities = require('entities')
 
-function decodeObject(obj) {
+function decodeObject(obj, filter=null) {
     for (const [key, value] of Object.entries(obj)) {
+
+        if (filter !== null && !filter(key, value)) {
+            continue
+        }
+        
         if (typeof value === 'string') {
             obj[key] = entities.decodeHTML(value)
         }
         else if (typeof value === 'object' && value !== null) {
-            obj[key] = decodeObject(value)
+            decodeObject(value, filter)
         }
     }
-
-    return obj
 }
 
-function encodeObject(obj) {
+function encodeObject(obj, filter=null) {
     for (const [key, value] of Object.entries(obj)) {
+
+        if (filter !== null && !filter(key, value)) {
+            continue
+        }
+        
         if (typeof value === 'string') {
             obj[key] = entities.encodeHTML(value)
         }
         else if (typeof value === 'object' && value !== null) {
-            obj[key] = encodeObject(value)
+            encodeObject(value, filter)
         }
     }
-
-    return obj
 }
 
 module.exports = {
