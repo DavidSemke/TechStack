@@ -2,12 +2,16 @@ const User = require("../models/user");
 const bcrypt = require('bcryptjs')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const ents = require('../utils/htmlEntities')
+const _ = require('lodash')
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
     const data = {
         title: "Sign Up"
     }
-    res.render("pages/signupForm", { data })
+    const safeData = _.cloneDeep(data)
+
+    res.render("pages/signupForm", { data, safeData })
 })
 
 exports.postSignup = [
@@ -15,10 +19,12 @@ exports.postSignup = [
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
-        .escape()
         .custom(asyncHandler(async (value) => {
+            const filter = { username: value }
+            ents.encodeObject(filter)
+
             const userExists = await User
-                .findOne({ username: value })
+                .findOne(filter)
                 .exec()
 
             if (userExists) {
@@ -40,8 +46,7 @@ exports.postSignup = [
         })
         .withMessage(
             "Password must contain one of !@#$%^&* and a digit."
-        )
-        .escape(),
+        ),
     
     asyncHandler(async (req, res, next) => {
         const inputs = {
@@ -56,30 +61,35 @@ exports.postSignup = [
                 inputs: inputs,
                 errors: errors.array(),
             }
-
+            const safeData = _.cloneDeep(data)
+            ents.encodeObject(safeData)
           
-          res.render("pages/signupForm", { data })
+          res.render("pages/signupForm", { data, safeData })
         
           return;
         }
 
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
             if (err) {
-              return;
+              return next(err);
             }
         
             try {
-              const user = new User({
-                username: req.body.username,
-                password: hash
-              });
-        
-              await user.save();
-              
-              res.redirect("/");
+                const userData = {
+                    username: req.body.username,
+                    password: hash
+                }
+                ents.encodeObject(
+                    userData,
+                    (key, value) => key === 'username'
+                )
+                const user = new User(userData);
+                await user.save();
+
+                res.redirect("/");
             } 
             catch(err) {
-              return;
+                return next(err);
             };
         });
     }),

@@ -4,6 +4,8 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
+const ents = require('../utils/htmlEntities')
+const _ = require('lodash')
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -29,26 +31,21 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         title = 'Your Profile'
         isMainUser = true
     }
-
     
-
-    // decode to avoid secondary encoding
-    const rawData = {
-        title: decodeHTML(title),
-        user:
-
-    }
-
-
-    const data = {
+    const safeData = {
         title,
         user,
         isMainUser,
         inputs: {},
         errors: []
     }
+    const data = _.cloneDeep(safeData)
+    ents.decodeObject(
+        data,
+        (key, value) => key !== 'profile_pic'
+    )
 
-    res.render("pages/userProfile", { data });
+    res.render("pages/userProfile", { data, safeData });
 });
 
 exports.updateUser = [
@@ -58,8 +55,11 @@ exports.updateUser = [
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
         .custom(asyncHandler(async (value, { req }) => {
+            const filter = { username: value }
+            ents.encodeObject(filter)
+
             const user = await User
-                .findOne({ username: value })
+                .findOne(filter)
                 .exec()
 
             if (user && req.user.username !== value) {
@@ -115,15 +115,24 @@ exports.updateUser = [
         errors.push(...nonFileErrors)
 
         if (errors.length) {
+            const rawUser = _.cloneDeep(req.user)
+            ents.decodeObject(
+                rawUser,
+                (key, value) => key !== 'profile_pic'
+            )
+
             const data = {
                 title: "Your Profile",
-                user: req.user,
+                user: rawUser,
                 isMainUser: true,
                 inputs: inputs,
                 errors: errors
             }
+
+            const safeData = _.cloneDeep(data)
+            ents.encodeObject(safeData)
             
-            res.render("pages/userProfile", { data });
+            res.render("pages/userProfile", { data, safeData });
 
             return
         }
@@ -192,13 +201,14 @@ exports.getBlogs = [
 exports.getBlogCreateForm = [
     function (req, res, next) {
 
-        const data = {
+        const safeData = {
             title: "Create Blog",
             inputs: {},
             errors: []
         }
+        const data = _.cloneDeep(safeData)
         
-        res.render("pages/blogForm",  { data })
+        res.render("pages/blogForm",  { data, safeData })
     }
 ]
     
@@ -208,8 +218,7 @@ exports.postBlog = [
     body("title")
         .trim()
         .isLength({ min: 60, max: 100 })
-        .withMessage("Title must have 60 to 100 characters.")
-        .escape(),
+        .withMessage("Title must have 60 to 100 characters."),
     body("keywords")
         .trim()
         .custom((value) => {
@@ -220,10 +229,7 @@ exports.postBlog = [
             
             return !(wordCount < 1 || wordCount > 10)
         })
-        .withMessage('Must have 1 to 10 keywords.')
-        .escape(),
-    body('content')
-        .escape(),
+        .withMessage('Must have 1 to 10 keywords.'),
     body("word-count")
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -232,9 +238,7 @@ exports.postBlog = [
         })
         .withMessage("Blog must be 500 to 3000 words."),
 
-    
     asyncHandler(async (req, res, next) => {
-
         const errors = []
 
         if (req.fileTypeError) {
@@ -271,11 +275,15 @@ exports.postBlog = [
                 inputs: inputs,
                 errors: errors
             }
+            const safeData = _.cloneDeep(data)
+            ents.encodeObject(safeData)
             
-            res.render("pages/blogForm", { data });
+            res.render("pages/blogForm", { data, safeData });
 
             return
         }
+
+        ents.encodeObject(inputs)
 
         // const user = req.user
         const blog = new Blog({
@@ -292,8 +300,8 @@ exports.postBlog = [
                 contentType: req.file.mimetype
             },
             author: {
-                name: user.username,
-                profile_pic: user.profile_pic ?? null
+                name: req.user.username,
+                profile_pic: req.user.profile_pic ?? null
             },
             publish_date: Date.now(),
             keywords: inputs.keywords.split(' '),
@@ -318,7 +326,7 @@ exports.postBlog = [
             }
         )
         
-        res.redirect('/')
+        res.redirect(blog.url)
     }) 
 ];
 
@@ -339,12 +347,13 @@ exports.getBlogUpdateForm = [
         const blog = await Blog.findById(req.params.blogId).exec()
     
         if (blog === null) {
-            res.redirect('/')
+            const err = new Error("Blog not found");
+            err.status = 404;
+            
+            return next(err);
         }
 
-        // need to decode content, since it will be escaped!!!!!!!!!!!!!!!!!!
-
-        const data = {
+        const safeData = {
             title: 'Update Blog',
             inputs: {
                 title: blog.title,
@@ -353,70 +362,127 @@ exports.getBlogUpdateForm = [
             },
             errors: []
         }
+        const data = _.cloneDeep(safeData)
+        ents.decodeObject(data)
     
-        res.render("pages/blogForm", { data });
+        res.render("pages/blogForm", { data, safeData });
     })
 ]
     
 // On blog update
 exports.updateBlog = [
-
+    // files processed after body middleware
     body("title")
         .trim()
-        .isLength({ min: 1, max: 100 })
-        .withMessage("Blog must have a title.")
-        .escape()
-        .custom(asyncHandler(async (value) => {
-            const blog = await Blog.findById(req.params.blogId).exec()
-
-            return (
-                blog.title === value 
-                || !(await Blog.findOne({ title: value }).exec())
-            )
-        }))
-        .withMessage('Blog title already exists.'),
+        .isLength({ min: 60, max: 100 })
+        .withMessage("Title must have 60 to 100 characters."),
     body("keywords")
-        .optional({ values: "falsy" })
         .trim()
-        .escape(),
-    body("content")
-        .trim()
-        .escape(),
-
+        .custom((value) => {
+            const wordCount = value
+                .split(' ')
+                .filter(x => x)
+                .length
+            
+            return !(wordCount < 1 || wordCount > 10)
+        })
+        .withMessage('Must have 1 to 10 keywords.'),
+    body("word-count")
+        .custom((value) => {
+            let wordCount = parseInt(value)
+            
+            return !(wordCount < 500 || wordCount > 3000)
+        })
+        .withMessage("Blog must be 500 to 3000 words."),
+        
     asyncHandler(async (req, res, next) => {
+        const errors = []
+
+        if (req.fileTypeError) {
+            errors.push( 
+                {
+                    'path': 'thumbnail',
+                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
+                }
+            )
+        }
+        else if (req.fileLimitError) {
+            errors.push(
+                {
+                    'path': 'thumbnail',
+                    'msg': req.fileLimitError.message + '.'
+                }
+            )
+        }
+
+        // Cannot repopulate thumbnail input with file, so it is
+        // omitted here 
         const inputs = {
             title: req.body.title,
             keywords: req.body.keywords,
             content: req.body.content
         }
-        const errors = validationResult(req);
 
-        if (!errors.isEmpty()) {
+        const nonFileErrors = validationResult(req).array()
+        errors.push(...nonFileErrors)
+
+        if (errors.length) {
             const data = {
-                title: 'Update Blog',
-                inputs,
-                errors: errors.array()
+                title: "Create Blog",
+                inputs: inputs,
+                errors: errors
             }
+            const safeData = _.cloneDeep(data)
+            ents.encodeObject(safeData)
             
-            res.render("pages/blogForm", { data });
+            res.render("pages/blogForm", { data, safeData });
 
-            return;
+            return
         }
-        
+
+        ents.encodeObject(inputs)
+
+        // const user = req.user
         const blog = new Blog({
-            ...inputs,
-            author: {
-                name: user.username,
-                profile_pic: user.profile_pic
+            title: inputs.title,
+            thumbnail: {
+                data: fs.readFileSync(
+                    path.join(
+                        process.cwd(),
+                        'upload',
+                        'files',
+                        req.file.filename
+                    )
+                ),
+                contentType: req.file.mimetype
             },
-            publish_date: null,
+            author: {
+                name: req.user.username,
+                profile_pic: req.user.profile_pic ?? null
+            },
+            publish_date: Date.now(),
+            keywords: inputs.keywords.split(' '),
+            content: inputs.content,
             likes: 0,
             dislikes: 0
         });
 
         await Blog.findOneAndReplace({_id: req.params.blogId}, blog).exec();
 
-        // view updated blog
-        res.redirect(blog.url);
-    }),
+        fs.unlink(
+            path.join(
+                process.cwd(),
+                'upload',
+                'files',
+                req.file.filename
+            ),
+            (err) => {
+                if (err) {
+                    throw err
+                }
+            }
+        )
+        
+        res.redirect(blog.url)
+    }) 
 ];

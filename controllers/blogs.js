@@ -2,7 +2,9 @@ const Blog = require("../models/blog");
 const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-
+const ents = require('../utils/htmlEntities')
+const entities = require('entities')
+const _ = require('lodash')
   
 // Display blog
 exports.getBlog = asyncHandler(async (req, res, next) => {
@@ -21,12 +23,17 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
 
     blog.comments = comments
 
-    const data = {
+    const safeData = {
         title: blog.title,
         blog
     }
+    const data = _.cloneDeep(safeData)
+    ents.decodeObject(
+        data,
+        (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
+    )
 
-    res.render("pages/blog", { data });
+    res.render("pages/blog", { data, safeData });
 });
     
 // On comment create
@@ -37,8 +44,7 @@ exports.postComment = [
         .isLength({ min: 1, max: 300 })
         .withMessage(
             "Comment must be 1 to 300 characters."
-        )
-        .escape(),
+        ),
 
     asyncHandler(async (req, res, next) => {
         const content = req.body.content
@@ -49,23 +55,23 @@ exports.postComment = [
                 content,
                 errors: errors.array()
             }
-
+            const safeData = _.cloneDeep(data)
+            ents.encodeObject(safeData)
             
-            res.render("pages/commentForm ", { data })
+            res.render("pages/commentForm ", { data, safeData })
         } 
     
         const comment = new Comment({
-            
-            // get current user !!!!!!!!!!!!!!!!
-            // author: ...,
-
+            author: req.user._id,
+            blog: req.params.blogId,
             publish_date: Date.now(),
-            content,
+            content: entities.encodeHTML(content),
             likes: 0,
             dislikes: 0,
-            replies: []
         });
 
         await comment.save();
+
+        res.end()
     }),
 ];

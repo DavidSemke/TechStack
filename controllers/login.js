@@ -1,4 +1,7 @@
 const passport = require('../utils/auth')
+const entities = require('entities')
+const ents = require('../utils/htmlEntities')
+const _ = require('lodash')
 
 exports.getLogin = (req, res, next) => {
     const inputs = {
@@ -24,14 +27,21 @@ exports.getLogin = (req, res, next) => {
       inputs: inputs,
       errors: errors
     }
+    const safeData = _.cloneDeep(data)
+    ents.encodeObject(safeData)
 
-    res.render("pages/loginForm", { data })
+    res.render("pages/loginForm", { data, safeData })
 }
 
 exports.postLogin = [
     function (req, res, next) {
+      // save input into session
       req.session.username = req.body.username
       req.session.password = req.body.password
+
+      // escape username for proper comparisons
+      req.body.username = entities.encodeHTML(req.body.username)
+
       next()
     },
     passport.authenticate('local', {
