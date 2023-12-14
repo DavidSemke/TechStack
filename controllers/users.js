@@ -10,8 +10,10 @@ const _ = require('lodash')
 // Display user profile
 // Usernames are unique, and so they are used as ids
 exports.getUser = asyncHandler(async (req, res, next) => {
+    const filter = { username: req.params.username }
+    ents.encodeObject(filter)
     const user = await User
-        .findOne({username: req.params.username})
+        .findOne(filter)
         .exec()
 
     if (user === null) {
@@ -57,7 +59,6 @@ exports.updateUser = [
         .custom(asyncHandler(async (value, { req }) => {
             const filter = { username: value }
             ents.encodeObject(filter)
-
             const user = await User
                 .findOne(filter)
                 .exec()
@@ -136,6 +137,8 @@ exports.updateUser = [
 
             return
         }
+
+        ents.encodeObject(inputs)
 
         const filter = {
             username: req.user.username

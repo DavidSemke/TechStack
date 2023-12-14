@@ -12,6 +12,8 @@ const session = require("express-session")
 const passport = require('./utils/auth')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
+const ents = require('./utils/htmlEntities')
+const _ = require('lodash')
 // for testing
 const User = require("./models/user");
 
@@ -101,7 +103,17 @@ app.use(flash());
 
 // add user local
 app.use((req, res, next) => {
-  res.locals.mainUser = req.user
+  if (!req.user) {
+    return next()
+  }
+
+  const rawUser = _.cloneDeep(req.user)
+  ents.decodeObject(
+    rawUser,
+    (key, value) => key !== 'profile_pic'
+  )
+
+  res.locals.mainUser = rawUser
   next()
 })
 

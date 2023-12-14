@@ -39,9 +39,6 @@ exports.postLogin = [
       req.session.username = req.body.username
       req.session.password = req.body.password
 
-      // escape username for proper comparisons
-      req.body.username = entities.encodeHTML(req.body.username)
-
       next()
     },
     passport.authenticate('local', {
