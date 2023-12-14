@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
+const entities = require('entities')
 const _ = require('lodash')
 
 // Display user profile
@@ -185,11 +186,11 @@ exports.updateUser = [
             )
         }
 
-        const updatedUser = await User.findOneAndUpdate(
-            filter, update, { new: true }
-        )
+        await User.findOneAndUpdate(filter, update)
 
-        res.redirect(303, `/users/${updatedUser.username}`)
+        res.redirect(303, `/users/${encodeURIComponent(
+            entities.decodeHTML(updatedUser.username)
+        )}`)
     })
 ]
 

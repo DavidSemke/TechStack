@@ -19,6 +19,11 @@ exports.postSignup = [
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
+        .custom((value) => {
+            const usernameFormat = /^[-\dA-Za-z]*$/
+            return usernameFormat.test(value)
+        })
+        .withMessage("Username must only contain alphanumeric characters and '-'.")
         .custom(asyncHandler(async (value) => {
             const filter = { username: value }
             ents.encodeObject(filter)
