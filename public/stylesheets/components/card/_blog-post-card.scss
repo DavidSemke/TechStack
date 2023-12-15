@@ -2,7 +2,7 @@
 @use '../../globals/font-sizes' as fSizes;
 @use '../../globals/icon-sizes' as iSizes;
 
-.blog-card {
+.blog-post-card {
     height: 20rem;
     width: 30rem;
     display: flex;
@@ -85,19 +85,19 @@
         height: 16rem;
         width: 24rem;
 
-        .blog-card__stat-list {
+        .blog-post-card__stat-list {
             padding: 0.5rem;
         }
 
-        .blog-card__author-details {
+        .blog-post-card__author-details {
             gap: 0.5rem;
         }
 
-        .blog-card__title {
+        .blog-post-card__title {
             font-size: fSizes.$large;
         }
 
-        .blog-card__preview {
+        .blog-post-card__preview {
             display: none;
         }
     }

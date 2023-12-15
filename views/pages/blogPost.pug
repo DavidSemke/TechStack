@@ -1,0 +1,69 @@
+extends ../layouts/browser 
+include ../components/list/iconButtonList
+include ../components/link/iconLink
+include ../components/card/blogPostCard
+include ../components/card/commentCard
+
+block page
+    - const {title, blogPost} = data
+
+    .blog-post-page
+        .blog-post
+            h1.blog-post__title= title
+            .blog-post__metadata
+                .blog-post__author-details
+                    +iconLink(
+                        '/images/profileIcon.png',
+                        '#',
+                        blogPost.author.name
+                    )(class='-larger')
+                .blog-post__stat-button-list
+                    +iconButtonList(
+                        {
+                            'classId': 'blog-post-like-button',
+                            'icon': '/images/likeIcon.png',
+                            'label': blogPost.likes
+                        },
+                        {
+                            'classId': 'blog-post-dislike-button',
+                            'icon': '/images/dislikeIcon.png',
+                            'label': blogPost.dislikes
+                        },
+                        {
+                            'classId': 'blog-post-comment-button',
+                            'icon': '/images/commentIcon.png',
+                            'label': blogPost.comments.length
+                        }
+                    )
+                .blog-post__date= `Published on ${blogPost.publish_date}`
+            
+            .blog-post__thumbnail Thumbnail 
+            .blog-post__content= blogPost.content
+            .blog-post__stat-button-list
+                +iconButtonList(
+                    {
+                        'classId': 'blog-post-like-button',
+                        'icon': '/images/likeIcon.png',
+                        'label': blogPost.likes
+                    },
+                    {
+                        'classId': 'blog-post-dislike-button',
+                        'icon': '/images/dislikeIcon.png',
+                        'label': blogPost.dislikes
+                    },
+                    {
+                        'classId': 'blog-post-comment-button',
+                        'icon': '/images/commentIcon.png',
+                        'label': blogPost.comments.length
+                    }
+                )
+        
+        h2.blog-post-page__post-blog-post-heading More Blogs
+        .blog-post-card-pair
+            +blogPostCard(blogPost)(class='-small')
+            +blogPostCard(blogPost)(class='-small')
+        
+        h2.blog-post-page__post-blog-post-heading Comments
+        each comment in blogPost.comments
+            .blog-post-page__comment
+                +commentCard(comment)

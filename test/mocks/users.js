@@ -1,11 +1,11 @@
 const user = {
     'username': 'JohnDoe',
     'password': 'xdxdxd',
-    'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next blog on the best pizza places in town!',
+    'bio': 'Hello I am John. I like tennis and other white people things. Look out for my next post on the best pizza places in town!',
     'keywords': ['pizza', 'white', 'tennis'],
-    'blogs_recently_read': [
+    'blog_posts_recently_read': [
         {
-            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
+            'title': 'Latest Blog Post: We Went Fishing And Yes Fishing is a Sport.',
             'author': {
                 'name': 'James Games'
             },
@@ -28,9 +28,9 @@ const user = {
             'url': '#'
         }
     ],
-    'blogs_written': [
+    'blog_posts_written': [
         {
-            'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
+            'title': 'Latest Blog Post: We Went Fishing And Yes Fishing is a Sport.',
             'author': {
                 'name': 'James Games'
             },

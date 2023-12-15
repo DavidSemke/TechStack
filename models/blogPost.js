@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const BlogSchema = new Schema({
+const BlogPostSchema = new Schema({
   title: { type: String, required: true },
   thumbnail: { data: Buffer, contentType: String },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -14,9 +14,9 @@ const BlogSchema = new Schema({
 });
 
 // Virtual for blog URL
-BlogSchema.virtual("url").get(function () {
-  return `/blogs/${this._id}`;
+BlogPostSchema.virtual("url").get(function () {
+  return `/blogPosts/${this._id}`;
 });
 
 
-module.exports = mongoose.model("Blog", BlogSchema)
+module.exports = mongoose.model("BlogPost", BlogPostSchema)

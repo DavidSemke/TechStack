@@ -1,4 +1,4 @@
-const Blog = require("../models/blog");
+const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
@@ -6,26 +6,26 @@ const ents = require('../utils/htmlEntities')
 const entities = require('entities')
 const _ = require('lodash')
   
-// Display blog
-exports.getBlog = asyncHandler(async (req, res, next) => {
+// Display blog post
+exports.getBlogPost = asyncHandler(async (req, res, next) => {
   
-    const [blog, comments] = await Promise.all([
-        Blog.findById(req.params.id).exec(),
-        Comment.find({ blog: req.params.id }).exec(),
+    const [blogPost, comments] = await Promise.all([
+        BlogPost.findById(req.params.id).exec(),
+        Comment.find({ blogPost: req.params.id }).exec(),
     ]);
 
-    if (blog === null) {
-        const err = new Error("Blog not found");
+    if (blogPost === null) {
+        const err = new Error("Blog post not found");
         err.status = 404;
         
         return next(err);
     }
 
-    blog.comments = comments
+    blogPost.comments = comments
 
     const safeData = {
-        title: blog.title,
-        blog
+        title: blogPost.title,
+        blogPost
     }
     const data = _.cloneDeep(safeData)
     ents.decodeObject(
@@ -33,7 +33,7 @@ exports.getBlog = asyncHandler(async (req, res, next) => {
         (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
     )
 
-    res.render("pages/blog", { data, safeData });
+    res.render("pages/blogPost", { data, safeData });
 });
     
 // On comment create
@@ -63,7 +63,7 @@ exports.postComment = [
     
         const comment = new Comment({
             author: req.user._id,
-            blog: req.params.blogId,
+            blogPost: req.params.blogPostId,
             publish_date: Date.now(),
             content: entities.encodeHTML(content),
             likes: 0,

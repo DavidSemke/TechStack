@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const Blog = require("../models/blog");
+const BlogPost = require("../models/blogPost");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
@@ -195,29 +195,29 @@ exports.updateUser = [
 ]
 
 
-exports.getBlogs = [
+exports.getBlogPosts = [
     // getAuthorization,
 
 
 ]
 
-// Display blog create form
-exports.getBlogCreateForm = [
+// Display blog post create form
+exports.getBlogPostCreateForm = [
     function (req, res, next) {
 
         const safeData = {
-            title: "Create Blog",
+            title: "Create Blog Post",
             inputs: {},
             errors: []
         }
         const data = _.cloneDeep(safeData)
         
-        res.render("pages/blogForm",  { data, safeData })
+        res.render("pages/blogPostForm",  { data, safeData })
     }
 ]
     
-// On blog create
-exports.postBlog = [
+// On blog post create
+exports.postBlogPost = [
     // files processed after body middleware
     body("title")
         .trim()
@@ -240,7 +240,7 @@ exports.postBlog = [
             
             return !(wordCount < 500 || wordCount > 3000)
         })
-        .withMessage("Blog must be 500 to 3000 words."),
+        .withMessage("Blog post must be 500 to 3000 words."),
 
     asyncHandler(async (req, res, next) => {
         const errors = []
@@ -275,14 +275,14 @@ exports.postBlog = [
 
         if (errors.length) {
             const data = {
-                title: "Create Blog",
+                title: "Create Blog Post",
                 inputs: inputs,
                 errors: errors
             }
             const safeData = _.cloneDeep(data)
             ents.encodeObject(safeData)
             
-            res.render("pages/blogForm", { data, safeData });
+            res.render("pages/blogPostForm", { data, safeData });
 
             return
         }
@@ -290,7 +290,7 @@ exports.postBlog = [
         ents.encodeObject(inputs)
 
         // const user = req.user
-        const blog = new Blog({
+        const blogPost = new BlogPost({
             title: inputs.title,
             thumbnail: {
                 data: fs.readFileSync(
@@ -314,7 +314,7 @@ exports.postBlog = [
             dislikes: 0
         });
 
-        await blog.save();
+        await blogPost.save();
 
         fs.unlink(
             path.join(
@@ -330,51 +330,51 @@ exports.postBlog = [
             }
         )
         
-        res.redirect(blog.url)
+        res.redirect(blogPost.url)
     }) 
 ];
 
-// On blog delete
-exports.deleteBlog = [
+// On blog post delete
+exports.deleteBlogPost = [
 
     asyncHandler(async (req, res, next) => {
-        await Comment.deleteMany({blog: req.params.blogId}).exec()
-        await Blog.findByIdAndRemove(req.params.blogId).exec()
+        await Comment.deleteMany({blogPost: req.params.blogPostId}).exec()
+        await BlogPost.findByIdAndRemove(req.params.blogPostId).exec()
         res.redirect("/");
     })
 ]
 
-// Display blog update form
-exports.getBlogUpdateForm = [
+// Display blog post update form
+exports.getBlogPostUpdateForm = [
 
     asyncHandler(async (req, res, next) => {
-        const blog = await Blog.findById(req.params.blogId).exec()
+        const blogPost = await BlogPost.findById(req.params.blogPostId).exec()
     
-        if (blog === null) {
-            const err = new Error("Blog not found");
+        if (blogPost === null) {
+            const err = new Error("Blog post not found");
             err.status = 404;
             
             return next(err);
         }
 
         const safeData = {
-            title: 'Update Blog',
+            title: 'Update Blog Post',
             inputs: {
-                title: blog.title,
-                keywords: blog.keywords,
-                content: blog.content
+                title: blogPost.title,
+                keywords: blogPost.keywords,
+                content: blogPost.content
             },
             errors: []
         }
         const data = _.cloneDeep(safeData)
         ents.decodeObject(data)
     
-        res.render("pages/blogForm", { data, safeData });
+        res.render("pages/blogPostForm", { data, safeData });
     })
 ]
     
-// On blog update
-exports.updateBlog = [
+// On blog post update
+exports.updateBlogPost = [
     // files processed after body middleware
     body("title")
         .trim()
@@ -397,7 +397,7 @@ exports.updateBlog = [
             
             return !(wordCount < 500 || wordCount > 3000)
         })
-        .withMessage("Blog must be 500 to 3000 words."),
+        .withMessage("Blog post must be 500 to 3000 words."),
         
     asyncHandler(async (req, res, next) => {
         const errors = []
@@ -432,14 +432,14 @@ exports.updateBlog = [
 
         if (errors.length) {
             const data = {
-                title: "Create Blog",
+                title: "Create Blog Post",
                 inputs: inputs,
                 errors: errors
             }
             const safeData = _.cloneDeep(data)
             ents.encodeObject(safeData)
             
-            res.render("pages/blogForm", { data, safeData });
+            res.render("pages/blogPostForm", { data, safeData });
 
             return
         }
@@ -447,7 +447,7 @@ exports.updateBlog = [
         ents.encodeObject(inputs)
 
         // const user = req.user
-        const blog = new Blog({
+        const blogPost = new BlogPost({
             title: inputs.title,
             thumbnail: {
                 data: fs.readFileSync(
@@ -471,7 +471,9 @@ exports.updateBlog = [
             dislikes: 0
         });
 
-        await Blog.findOneAndReplace({_id: req.params.blogId}, blog).exec();
+        await BlogPost
+            .findOneAndReplace({_id: req.params.blogPostId}, blogPost)
+            .exec();
 
         fs.unlink(
             path.join(
@@ -487,6 +489,6 @@ exports.updateBlog = [
             }
         )
         
-        res.redirect(blog.url)
+        res.redirect(blogPost.url)
     }) 
 ];

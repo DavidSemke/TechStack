@@ -1,33 +1,33 @@
-const Blog = require('../models/blog.js')
-const Comment = require('../models/comment.js')
+const BlogPost = require('../models/blogPost')
+const Comment = require('../models/comment')
 const asyncHandler = require("express-async-handler");
 const ents = require('../utils/htmlEntities')
 const _ = require('lodash')
 // for testing
-const blog = require('../test/mocks/blogs.js')
+const blogPost = require('../test/mocks/blogPosts')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
-    // const blogs = await Blog
+    // const blogPosts = await BlogPost
     // .find()
     // .sort({ likes: 'desc' })
     // .exec();
   
-    // completeBlogs = []
+    // completeBlogPosts = []
     
-    // for (const blog of blogs) {
-    //     const blogComments = await Comment
-    //     .find({blog: blog._id})
+    // for (const blogPost of blogPosts) {
+    //     const blogPostComments = await Comment
+    //     .find({blogPost: blogPost._id})
     //     .exec()
         
-    //     completeBlogs.push({ 
-    //     ...blog, 
-    //     commentCount: blogComments.length
+    //     completeBlogPosts.push({ 
+    //     ...blogPost, 
+    //     commentCount: blogPostComments.length
     //     })
     // }
 
     const safeData = {
         title: "Tech Stack",
-        blogs: [blog, blog]
+        blogPosts: [blogPost, blogPost]
     }
     const data = _.cloneDeep(safeData)
     ents.decodeObject(

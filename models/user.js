@@ -7,19 +7,19 @@ const UserSchema = new Schema({
   profile_pic: { data: Buffer, contentType: String },
   bio: { type: String },
   keywords: { type: Array },
-  blogs_recently_read: { 
+  blog_posts_recently_read: { 
     type: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Blog',
+        ref: 'BlogPost',
       }
     ], 
   },
-  blogs_written: { 
+  blog_posts_written: { 
     type: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Blog',
+        ref: 'BlogPost',
       }
     ], 
   }

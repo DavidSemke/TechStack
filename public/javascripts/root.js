@@ -1,5 +1,5 @@
 import { sidebarEventListeners } from './toolbars.js'
-import { blogFormSetup } from './blogForm.js'
+import { blogPostFormSetup } from './blogPostForm.js'
 import { profileFormSetup } from './userProfile.js'
 import { initializeTinyMCE } from './tinyMCEConfig.js'
 
@@ -12,7 +12,7 @@ sidebarEventListeners(
     '.navbar-content-button'
 )
 
-blogFormSetup()
+blogPostFormSetup()
 initializeTinyMCE('#tinymce-app')
 
 profileFormSetup()

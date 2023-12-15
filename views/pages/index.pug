@@ -1,15 +1,15 @@
 extends ../layouts/browser
-include ../components/card/blogCard
+include ../components/card/blogPostCard
 
 block page
-  - const {blogs} = data
+  - const { blogPosts } = data
 
   .index-page
     - let i = 0
     while i < 2
-      .index-page__blog-card-pair.blog-card-pair
+      .index-page__blog-post-card-pair.blog-post-card-pair
         - let start = i*2
-        each blog in blogs.slice(start, start+2)
-          a(href=blog.url)
-            +blogCard(blog)
+        each blogPost in blogPosts.slice(start, start+2)
+          a(href=blogPost.url)
+            +blogPostCard(blogPost)
       - i+=1

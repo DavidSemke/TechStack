@@ -48,40 +48,40 @@ router.put(
 
 // view depends on if user is mainUser
 router.get(
-    '/:username/blogs', 
-    controller.getBlogs
+    '/:username/blog-posts', 
+    controller.getBlogPosts
 )
 
 router.post(
-    '/:username/blogs',
+    '/:username/blog-posts',
     // checkAuthorization,
     upload.single('thumbnail'),
     handleMulterError,
-    controller.postBlog
+    controller.postBlogPost
 )
 
 router.get(
-    '/:username/blogs/new-blog',
+    '/:username/blog-posts/new-blog-post',
     // checkAuthorization,
-    controller.getBlogCreateForm
+    controller.getBlogPostCreateForm
 )
 
 router.get(
-    '/:username/blogs/:blogId',
+    '/:username/blog-posts/:blogPostId',
     // checkAuthorization, 
-    controller.getBlogUpdateForm
+    controller.getBlogPostUpdateForm
 )
 
 router.put(
-    '/:username/blogs/:blogId',
+    '/:username/blog-posts/:blogPostId',
     // checkAuthorization, 
-    controller.updateBlog
+    controller.updateBlogPost
 )
 
 router.delete(
-    '/:username/blogs/:blogId',
+    '/:username/blog-posts/:blogPostId',
     // checkAuthorization, 
-    controller.deleteBlog
+    controller.deleteBlogPost
 )
 
 module.exports = router

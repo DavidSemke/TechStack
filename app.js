@@ -157,14 +157,14 @@ const signupRouter = require("./routes/signup")
 const loginRouter = require("./routes/login")(passport)
 const logoutRouter = require("./routes/logout")
 const usersRouter = require("./routes/users")
-const blogsRouter = require("./routes/blogs")
+const blogPostsRouter = require("./routes/blogPosts")
 
 app.use("/", indexRouter)
 app.use("/signup", signupRouter)
 app.use("/login", loginRouter)
 app.use("/logout", logoutRouter)
 app.use("/users", usersRouter)
-app.use("/blogs", blogsRouter)
+app.use("/blogPosts", blogPostsRouter)
 
 /* Error Handling */
 app.use(function (req, res, next) {

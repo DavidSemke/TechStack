@@ -1,13 +1,13 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const User = require("../models/user");
-const Blog = require("../models/blog");
+const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
 const path = require('path')
 const fs = require('fs')
 
 const users = [];
-const blogs = [];
+const blogPosts = [];
 const comments = [];
 
 const mongoose = require("mongoose");
@@ -21,7 +21,7 @@ async function main() {
     
     console.log("Debug: Should be connected?");
     await createUsers()
-    await createBlogs()
+    await createBlogPosts()
     await createComments()
     await createReplies()
 
@@ -50,10 +50,10 @@ async function userCreate(index, userData) {
     })
 }
 
-async function blogCreate(index, blogData) {
-    const blog = new Blog(blogData);
-    await blog.save();
-    blogs[index] = blog;
+async function blogPostCreate(index, blogPostData) {
+    const blogPost = new BlogPost(blogPostData);
+    await blogPost.save();
+    blogPosts[index] = blogPost;
 }
 
 async function commentCreate(index, commentData) {
@@ -119,8 +119,8 @@ async function createUsers() {
     ]);
 }
 
-async function createBlogs() {
-    console.log("Adding blogs");
+async function createBlogPosts() {
+    console.log("Adding blogPosts");
 
     const thumbnail = {
         data: fs.readFileSync(
@@ -135,7 +135,7 @@ async function createBlogs() {
     }
 
     await Promise.all([
-        blogCreate(
+        blogPostCreate(
             0, 
             { 
                 title: 'Local puppies adopted!',
@@ -149,7 +149,7 @@ async function createBlogs() {
                 dislikes: 0
             }
         ),
-        blogCreate(
+        blogPostCreate(
             1, 
             { 
                 title: 'Thugs have cars!',
@@ -173,7 +173,7 @@ async function createComments() {
             0,
             {
                 author: users[2],
-                blog: blogs[0],
+                blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Yay puppies!',
                 likes: 5,
@@ -184,7 +184,7 @@ async function createComments() {
             1,
             {
                 author: users[3],
-                blog: blogs[0],
+                blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Everyone loves puppies!',
                 likes: 10,
@@ -195,7 +195,7 @@ async function createComments() {
             2,
             {
                 author: users[1],
-                blog: blogs[1],
+                blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I am a thug and I am keeping my car!',
                 likes: 5,
@@ -206,7 +206,7 @@ async function createComments() {
             3,
             {
                 author: users[2],
-                blog: blogs[1],
+                blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'Thugs be tripping.',
                 likes: 10,
@@ -222,7 +222,7 @@ async function createReplies() {
         addReply(
             {
                 author: users[0],
-                blog: blogs[0],
+                blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Puppies!',
                 likes: 0,
@@ -233,7 +233,7 @@ async function createReplies() {
         addReply(
             {
                 author: users[1],
-                blog: blogs[1],
+                blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I will become mayor and take your car!',
                 likes: 1,

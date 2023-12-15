@@ -1,7 +1,7 @@
 @use '../globals/font-sizes' as fSizes;
 @use '../globals/icon-sizes' as iSizes;
 
-.blog-form-page {
+.blog-post-form-page {
     display: flex;
     align-items: flex-start;
     width: 80%;
@@ -44,7 +44,7 @@
     }
 }
 
-.blog-form {
+.blog-post-form {
     height: 100%;
     width: 100%;
     border-top: 2px solid white;
@@ -78,7 +78,7 @@
     min-height: 100%;
 }
 
-.blog-preview {
+.blog-post-preview {
     display: flex;
     flex-direction: column;
     gap: 1rem;

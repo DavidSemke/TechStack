@@ -5,7 +5,7 @@
  */
 
 const app = require('../app')
-const debug = require('debug')('blog:server')
+const debug = require('debug')
 const http = require('http')
 
 /**

@@ -1,4 +1,4 @@
-const blog = {
+const blogPost = {
     'title': 'Latest Blog: We Went Fishing And Yes Fishing is a Sport.',
     'author': {
         'name': 'James Games'
@@ -59,6 +59,6 @@ const comments = [
     }
 ]
 
-blog.comments = comments
+blogPost.comments = comments
 
-module.exports = blog
+module.exports = blogPost

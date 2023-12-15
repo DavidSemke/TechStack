@@ -21,10 +21,10 @@ block page
         else if error.path === 'content' || error.path === 'word-count'
             - contentErrors.push(error.msg)
 
-    .blog-form-page
-        .blog-form-page__left
-            .blog-form-page__heading Draft
-            .blog-form-page__body
+    .blog-post-form-page
+        .blog-post-form-page__left
+            .blog-post-form-page__heading Draft
+            .blog-post-form-page__body
                 +buttonList(
                     {
                         'classId': 'blog-form-metadata-tab',
@@ -35,12 +35,12 @@ block page
                         'label': 'Content'
                     } 
                 )(button='-tab')
-                form#blog-form.blog-form(
-                    action=`/users/${mainUser.username}/blogs`
+                form#blog-post-form.blog-post-form(
+                    action=`/users/${mainUser.username}/blog-posts`
                     method='post' 
                     enctype='multipart/form-data'
                 )
-                    .blog-form__metadata
+                    .blog-post-form__metadata
                         +formInput(
                             'title',
                             'text',
@@ -60,7 +60,7 @@ block page
                             keywordErrors
                         )(input={'required': ''})
 
-                    .blog-form__content.-hidden
+                    .blog-post-form__content.-hidden
                         +formTextarea(
                             'content',
                             inputs.content || '',
@@ -71,16 +71,16 @@ block page
                                 'class': 'tinymce-app'
                             }
                         )
-                        input#word-count.blog-form__hidden(
+                        input#word-count.blog-post-form__hidden(
                             name='word-count'
                             type='hidden'
                         )
 
-        .blog-form-page__right
-            .blog-form-page__heading Preview
-            .blog-form-page__body
-                .blog-preview
-                    .blog-preview__metadata
-                        .blog-preview__title
-                        .blog-preview__thumbnail Your thumbnail appears here
-                    .blog-preview__content
+        .blog-post-form-page__right
+            .blog-post-form-page__heading Preview
+            .blog-post-form-page__body
+                .blog-post-preview
+                    .blog-post-preview__metadata
+                        .blog-post-preview__title
+                        .blog-post-preview__thumbnail Your thumbnail appears here
+                    .blog-post-preview__content

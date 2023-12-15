@@ -112,21 +112,21 @@ block page
                             {
                                 'icon': '/images/profileIcon.png',
                                 'href': `#`,
-                                'label': 'Blog 1' 
+                                'label': 'Blog Post 1' 
                             },
                             {
                                 'icon': '/images/profileIcon.png',
                                 'href': `#`,
-                                'label': 'Blog 2' 
+                                'label': 'Blog Post 2' 
                             }
                         )
                 
-                if user.blogs_written && user.blogs_written.length
+                if user.blog_posts_written && user.blog_posts_written.length
                     .profile__author-details
-                        - let heading = `Blogs Written by ${user.username}`
+                        - let heading = `Blog Posts Written by ${user.username}`
                         
                         if isMainUser
-                            - heading = 'Blogs Written by You'
+                            - heading = 'Blog Posts Written by You'
                         
                         .profile__heading= heading
                         .profile__body
@@ -134,11 +134,11 @@ block page
                                 {
                                     'icon': '/images/profileIcon.png',
                                     'href': `#`,
-                                    'label': 'Blog 1' 
+                                    'label': 'Blog Post 1' 
                                 },
                                 {
                                     'icon': '/images/profileIcon.png',
                                     'href': `#`,
-                                    'label': 'Blog 2' 
+                                    'label': 'Blog Post 2' 
                                 }
                             )

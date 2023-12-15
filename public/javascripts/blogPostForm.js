@@ -1,13 +1,13 @@
-function blogFormTabEventListeners() {
+function blogPostFormTabEventListeners() {
     const metadata = document.querySelector(
-        '.blog-form__metadata'
+        '.blog-post-form__metadata'
     )
     const content = document.querySelector(
-        '.blog-form__content'
+        '.blog-post-form__content'
     )
 
     const metadataTab = document.querySelector(
-        '.blog-form-metadata-tab'
+        '.blog-post-form-metadata-tab'
     )
 
     metadataTab.addEventListener('click', () => {
@@ -18,7 +18,7 @@ function blogFormTabEventListeners() {
     })
 
     const contentTab = document.querySelector(
-        '.blog-form-content-tab'
+        '.blog-post-form-content-tab'
     )
 
     contentTab.addEventListener('click', () => {
@@ -29,9 +29,9 @@ function blogFormTabEventListeners() {
     })
 }
 
-function blogFormMetadataEventListeners() {
+function blogPostFormMetadataEventListeners() {
     const titlePreview = document.querySelector(
-        '.blog-preview__title'
+        '.blog-post-preview__title'
     )
     const titleInput = document.getElementById('title')
     titlePreview.textContent = titleInput.value
@@ -41,31 +41,35 @@ function blogFormMetadataEventListeners() {
     })
 }
 
-function blogFormSizing() {
-    const leftBody = document.querySelector('.blog-form-page__left .blog-form-page__body')
-    const rightBody = document.querySelector('.blog-form-page__right .blog-form-page__body')
+function blogPostFormSizing() {
+    const leftBody = document.querySelector(
+        '.blog-post-form-page__left .blog-post-form-page__body'
+    )
+    const rightBody = document.querySelector(
+        '.blog-post-form-page__right .blog-post-form-page__body'
+    )
     rightBody.style.maxHeight = leftBody.offsetHeight + 'px'
     rightBody.style.maxWidth = leftBody.offsetWidth + 'px'
 }
 
-// Function blogFormSizing must be called before function 
-// blogFormMetadataEventListeners
+// Function blogPostFormSizing must be called before function 
+// blogPostFormMetadataEventListeners
 // Therefore, this function providing the correct ordering is exported 
-function blogFormSetup() {
-    const blogFormPage = document.querySelector(
-        '.blog-form-page'
+function blogPostFormSetup() {
+    const blogPostFormPage = document.querySelector(
+        '.blog-post-form-page'
     )
 
     // check one tab to make sure page is correct
-    if (!blogFormPage) {
+    if (!blogPostFormPage) {
         return
     }
 
-    blogFormSizing()
-    blogFormTabEventListeners()
-    blogFormMetadataEventListeners()
+    blogPostFormSizing()
+    blogPostFormTabEventListeners()
+    blogPostFormMetadataEventListeners()
 }
 
 export {
-    blogFormSetup
+    blogPostFormSetup
 }

@@ -2,14 +2,14 @@
 @use '../globals/icon-sizes' as iSizes;
 @use '../globals/font-sizes' as fSizes;
 
-.blog-page {
+.blog-post-page {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     width: 80%;
     padding: 1rem;
 
-    &__post-blog-heading {
+    &__post-blog-post-heading {
         margin: 0;
         font-size: fSizes.$xlarge;
         border-bottom: 4px solid colors.$bg2;
@@ -21,7 +21,7 @@
     }
 }
 
-.blog {
+.blog-post {
 
     &__title {
         margin: 0;
