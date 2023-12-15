@@ -19,6 +19,7 @@ const blog = {
     'likes': 0,
     'dislikes': 0,
     'publish_date': '2020/12/12',
+    'last_modified_date': '2020/12/12',
     'url': '#'
 }
 
