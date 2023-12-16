@@ -157,7 +157,7 @@ async function createBlogPosts() {
                 author: users[1],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
-                keywords: ['thugs, cars'],
+                keywords: ['thugs', 'cars'],
                 content: 'Thug cars are really loud! They must go!',
                 likes: 10,
                 dislikes: 5

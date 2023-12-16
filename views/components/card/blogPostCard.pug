@@ -22,7 +22,7 @@ mixin blogPostCard(blogPost)
         .blog-post-card__author-details
           .blog-post-card__avatar
             img(src='/images/profileIcon.png')
-          .blog-post-card__username= blogPost.author.name
+          .blog-post-card__username= blogPost.author.username
         .blog-post-card__date= blogPost.publish_date
       .blog-post-card__content-overview
         h1.blog-post-card__title= blogPost.title

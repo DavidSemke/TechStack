@@ -13,10 +13,5 @@ const BlogPostSchema = new Schema({
   dislikes: { type: Number, required: true }
 });
 
-// Virtual for blog URL
-BlogPostSchema.virtual("url").get(function () {
-  return `/blogPosts/${this._id}`;
-});
-
 
 module.exports = mongoose.model("BlogPost", BlogPostSchema)

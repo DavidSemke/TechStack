@@ -10,6 +10,6 @@ block page
       .index-page__blog-post-card-pair.blog-post-card-pair
         - let start = i*2
         each blogPost in blogPosts.slice(start, start+2)
-          a(href=blogPost.url)
+          a(href=`/blog-posts/${blogPost._id}`)
             +blogPostCard(blogPost)
       - i+=1

@@ -25,10 +25,5 @@ const UserSchema = new Schema({
   }
 });
 
-// Virtual for user profile URL
-UserSchema.virtual("url").get(function () {
-  return `/users/${this.username}`;
-});
-
 
 module.exports = mongoose.model("User", UserSchema)
