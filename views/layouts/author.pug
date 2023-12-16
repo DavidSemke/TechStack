@@ -5,7 +5,7 @@ include ../components/link/iconLink
 block navbar
     .navbar__left
         +iconButton(
-            'navbar-content-button',
+            'navbar__content-button',
             '/images/burgerIcon.png'
         )(class='-burger')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
@@ -17,7 +17,7 @@ block navbar
             class='-colorful'
         ) Publish
         +iconButton(
-            'navbar-account-button',
+            'navbar__account-button',
             '/images/profileIcon.png'
         )(class='-avatar')
     

@@ -5,11 +5,11 @@ import { initializeTinyMCE } from './tinyMCEConfig.js'
 
 sidebarEventListeners(
     '.account-sidebar', 
-    '.navbar-account-button'
+    '.navbar__account-button'
 )
 sidebarEventListeners(
     '.content-sidebar', 
-    '.navbar-content-button'
+    '.navbar__content-button'
 )
 
 blogPostFormSetup()

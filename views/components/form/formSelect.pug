@@ -1,0 +1,13 @@
+mixin formSelect(name, options)
+    .form-select&attributes(attributes.formSelect)
+        label.form-select__label(
+            for=name
+        )= name[0].toUpperCase() + name.slice(1)
+        select.form-select__select(
+            id=name
+            name=name
+        )&attributes(attributes.select)
+            each option in options
+                option(
+                    value=option
+                )= option[0].toUpperCase() + option.slice(1)

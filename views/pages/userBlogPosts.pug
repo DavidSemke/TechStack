@@ -1,0 +1,39 @@
+extends ../layouts/browser
+include ../components/form/searchbar
+include ../components/form/formSelect
+include ../components/fragment/blogPostFragment
+include ../list/blogPostList
+
+block page
+    .user-blog-posts-page
+        h1.user-blog-posts-page__heading= title
+        .user-blog-posts-page__toolbar
+            +searchbar('user-blog-posts-page__searchbar')
+            +formSelect(
+                'sort-by',
+                [
+                    'title', 
+                    'last-mod-date', 
+                    'publish-date', 
+                    'likes',
+                    'dislikes',
+                    'total-comments'
+                ]
+            )
+        .user-blog-posts
+            .user-blog-posts__left 
+                .user-blog-posts__tabs
+                    +buttonList(
+                        {
+                            'classId': 'user-blog-posts__published-tab',
+                            'label': 'Published'
+                        },
+                        {
+                            'classId': 'user-blog-posts__unpublished-tab',
+                            'label': 'Unpublished'
+                        } 
+                    )(button='-tab')
+                .user-blog-posts__container
+                    +blogPostList(blogPosts)
+            .user-blog-posts__right
+                +blogPostFragment()

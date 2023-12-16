@@ -1,7 +1,8 @@
-.searchbar
-    .searchbar__icon
-        img(src='/images/searchIcon.png')
-    form.searchbar__form
-        input.searchbar__input(
-            type='text', placeholder='Search Tech Stack'
-        )
+mixin searchbar(formClassId)
+    .searchbar 
+        .searchbar__icon
+            img(src='/images/searchIcon.png')
+        form.searchbar__form(class=formClassId)
+            input.searchbar__input(
+                type='text', placeholder='Search Tech Stack'
+            )

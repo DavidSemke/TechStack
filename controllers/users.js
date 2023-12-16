@@ -195,11 +195,44 @@ exports.updateUser = [
 ]
 
 
-exports.getBlogPosts = [
-    // getAuthorization,
+exports.getBlogPosts = asyncHandler(async (req, res, next) => {
+    const filter = { username: req.params.username }
+    ents.encodeObject(filter)
+    const user = await User
+        .findOne(filter)
+        .exec()
 
+    if (user === null) {
+        const err = new Error("User not found");
+        err.status = 404;
+        
+        return next(err);
+    }
 
-]
+    let title = `${user.username}'s Blog Posts`
+    let isMainUser = false
+
+    if (
+        req.user 
+        && user.username === req.user.username
+    ) {
+        title = 'Your Blog Posts'
+        isMainUser = true
+    }
+    
+    const safeData = {
+        title,
+        user,
+        isMainUser
+    }
+    const data = _.cloneDeep(safeData)
+    ents.decodeObject(
+        data,
+        (key, value) => key !== 'profile_pic'
+    )
+
+    res.render("pages/userBlogPosts", { data, safeData });
+})
 
 // Display blog post create form
 exports.getBlogPostCreateForm = [

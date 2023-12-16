@@ -1,0 +1,13 @@
+mixin blogPostFragment(blogPost={})
+    .blog-post-fragment
+        .blog-post-fragment__metadata
+            .blog-post-fragment__title= blogPost.title || ''
+            if blogPost.thumbnail
+                - const pic = blogPost.thumbnail
+                - const base64 = Buffer.from(pic.data).toString('base64')
+                - const dataUri = `data:${pic.contentType};base64,${base64}`
+                .blog-post-fragment__thumbnail
+                    img(src=dataUri)
+            else
+                .blog-post-fragment__thumbnail Your thumbnail appears here
+        .blog-post-fragment__content= blogPost.content || ''

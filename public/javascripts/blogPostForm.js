@@ -7,7 +7,7 @@ function blogPostFormTabEventListeners() {
     )
 
     const metadataTab = document.querySelector(
-        '.blog-post-form-metadata-tab'
+        '.blog-post-form-page__metadata-tab'
     )
 
     metadataTab.addEventListener('click', () => {
@@ -18,7 +18,7 @@ function blogPostFormTabEventListeners() {
     })
 
     const contentTab = document.querySelector(
-        '.blog-post-form-content-tab'
+        '.blog-post-form-page__content-tab'
     )
 
     contentTab.addEventListener('click', () => {

@@ -2,6 +2,7 @@ extends ../layouts/author
 include ../components/list/buttonList
 include ../components/form/formInput
 include ../components/form/formTextarea
+include ../components/fragment/blogPostFragment
 
 block page
     - const {inputs, errors} = data
@@ -27,11 +28,11 @@ block page
             .blog-post-form-page__body
                 +buttonList(
                     {
-                        'classId': 'blog-form-metadata-tab',
+                        'classId': 'blog-post-form-page__metadata-tab',
                         'label': 'Metadata'
                     },
                     {
-                        'classId': 'blog-form-content-tab',
+                        'classId': 'blog-post-form-page__content-tab',
                         'label': 'Content'
                     } 
                 )(button='-tab')
@@ -79,8 +80,4 @@ block page
         .blog-post-form-page__right
             .blog-post-form-page__heading Preview
             .blog-post-form-page__body
-                .blog-post-preview
-                    .blog-post-preview__metadata
-                        .blog-post-preview__title
-                        .blog-post-preview__thumbnail Your thumbnail appears here
-                    .blog-post-preview__content
+                +blogPostFragment()

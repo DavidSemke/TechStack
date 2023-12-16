@@ -1,16 +1,17 @@
 extends toolbars
 include ../components/button/iconButton
 include ../components/link/iconLink
+include ../components/form/searchbar
 
 block navbar
     .navbar__left
         +iconButton(
-            'navbar-content-button',
+            'navbar__content-button',
             '/images/burgerIcon.png'
         )(class='-burger')
         +iconLink('/images/favicon.png', '/', 'Tech Stack')
     .navbar__center 
-        include ../components/form/searchbar
+        +searchbar('navbar__searchbar')
     .navbar__right 
         if mainUser
             +iconLink(
@@ -22,7 +23,7 @@ block navbar
             a(href='/login' class='-button') Login
         
         +iconButton(
-            'navbar-account-button',
+            'navbar__account-button',
             '/images/profileIcon.png'
         )(class='-avatar')
 

@@ -1,0 +1,29 @@
+include iconList
+
+mixin blogPostList(...blogPosts)
+    ul.blog-post-list&attributes(attributes)
+        each blogPost in blogPosts
+            li.blog-post-list__item
+                .blog-post-item__top 
+                    .blog-post-item__title
+                    .blog-post-item__date-group
+                        .blog-post-item__date
+                        .blog-post-item__date
+                .blog-post-item__bottom
+                    +iconList(
+                        {
+                        'icon': '/images/likeIcon.png',
+                        'label': blogPost.likes
+                        },
+                        {
+                        'icon': '/images/dislikeIcon.png',
+                        'label': blogPost.dislikes
+                        },
+                        {
+                        'icon': '/images/commentIcon.png',
+                        'label': blogPost.comments.length
+                        }
+                    )(class='-small')
+                
+                
+                
