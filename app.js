@@ -12,8 +12,9 @@ const session = require("express-session")
 const passport = require('./utils/auth')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
+const mongoSanitize = require('express-mongo-sanitize')
 const ents = require('./utils/htmlEntities')
-const _ = require('lodash')
+
 // for testing
 const User = require("./models/user");
 
@@ -90,6 +91,7 @@ app.use(flash());
 app.use(async (req, res, next) => {
   const autologUser = await User
     .findOne({ username: 'aaaaaa' })
+    .lean()
     .exec();
 
   req.login(autologUser, (err) => {
@@ -107,9 +109,8 @@ app.use((req, res, next) => {
     return next()
   }
 
-  const rawUser = _.cloneDeep(req.user)
-  ents.decodeObject(
-    rawUser,
+  const rawUser = ents.decodeObject(
+    req.user,
     (key, value) => key !== 'profile_pic'
   )
 
@@ -122,7 +123,7 @@ app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-
+app.use(mongoSanitize());
 
 /* Static Setup */
 app.use(

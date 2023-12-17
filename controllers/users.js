@@ -5,16 +5,13 @@ const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
-const entities = require('entities')
-const _ = require('lodash')
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
 exports.getUser = asyncHandler(async (req, res, next) => {
-    const filter = { username: req.params.username }
-    ents.encodeObject(filter)
     const user = await User
-        .findOne(filter)
+        .findOne({ username: req.params.username })
+        .lean()
         .exec()
 
     if (user === null) {
@@ -42,9 +39,8 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         inputs: {},
         errors: []
     }
-    const data = _.cloneDeep(safeData)
-    ents.decodeObject(
-        data,
+    const data = ents.decodeObject(
+        safeData,
         (key, value) => key !== 'profile_pic'
     )
 
@@ -58,10 +54,9 @@ exports.updateUser = [
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
         .custom(asyncHandler(async (value, { req }) => {
-            const filter = { username: value }
-            ents.encodeObject(filter)
             const user = await User
-                .findOne(filter)
+                .findOne({ username: value })
+                .lean()
                 .exec()
 
             if (user && req.user.username !== value) {
@@ -117,12 +112,10 @@ exports.updateUser = [
         errors.push(...nonFileErrors)
 
         if (errors.length) {
-            const rawUser = _.cloneDeep(req.user)
-            ents.decodeObject(
-                rawUser,
+            const rawUser = ents.decodeObject(
+                req.user,
                 (key, value) => key !== 'profile_pic'
             )
-
             const data = {
                 title: "Your Profile",
                 user: rawUser,
@@ -130,16 +123,15 @@ exports.updateUser = [
                 inputs: inputs,
                 errors: errors
             }
-
-            const safeData = _.cloneDeep(data)
-            ents.encodeObject(safeData)
+            const safeData = ents.encodeObject(
+                data,
+                (key, value) => key !== 'profile_pic'
+            )
             
             res.render("pages/userProfile", { data, safeData });
 
             return
         }
-
-        ents.encodeObject(inputs)
 
         const filter = {
             username: req.user.username
@@ -149,11 +141,11 @@ exports.updateUser = [
         }
 
         if (inputs.bio) {
-            update.bio = inputs.bio
+            update.bio = ents.encode(inputs.bio)
         }
 
         if (inputs.keywords) {
-            update.keywords = inputs.keywords.split(' ')
+            update.keywords = ents.encode(inputs.keywords).split(' ')
         }
         
         // add new profile pic to update if uploaded
@@ -186,20 +178,17 @@ exports.updateUser = [
             )
         }
 
-        await User.findOneAndUpdate(filter, update)
+        await User.findOneAndUpdate(filter, update).lean().exec()
 
-        res.redirect(303, `/users/${encodeURIComponent(
-            entities.decodeHTML(updatedUser.username)
-        )}`)
+        res.redirect(303, `/users/${updatedUser.username}`)
     })
 ]
 
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
-    const filter = { username: req.params.username }
-    ents.encodeObject(filter)
     const user = await User
-        .findOne(filter)
+        .findOne({ username: req.params.username })
+        .lean()
         .exec()
 
     if (user === null) {
@@ -225,9 +214,8 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
         user,
         isMainUser
     }
-    const data = _.cloneDeep(safeData)
-    ents.decodeObject(
-        data,
+    const data = ents.decodeObject(
+        safeData,
         (key, value) => key !== 'profile_pic'
     )
 
@@ -312,19 +300,17 @@ exports.postBlogPost = [
                 inputs: inputs,
                 errors: errors
             }
-            const safeData = _.cloneDeep(data)
-            ents.encodeObject(safeData)
+            const safeData = ents.encodeObject(data)
             
             res.render("pages/blogPostForm", { data, safeData });
 
             return
         }
 
-        ents.encodeObject(inputs)
+        const encodedInputs = ents.encodeObject(inputs)
 
-        // const user = req.user
         const blogPost = new BlogPost({
-            title: inputs.title,
+            title: encodedInputs.title,
             thumbnail: {
                 data: fs.readFileSync(
                     path.join(
@@ -341,8 +327,8 @@ exports.postBlogPost = [
                 profile_pic: req.user.profile_pic ?? null
             },
             publish_date: Date.now(),
-            keywords: inputs.keywords.split(' '),
-            content: inputs.content,
+            keywords: encodedInputs.keywords.split(' '),
+            content: encodedInputs.content,
             likes: 0,
             dislikes: 0
         });
@@ -369,7 +355,6 @@ exports.postBlogPost = [
 
 // On blog post delete
 exports.deleteBlogPost = [
-
     asyncHandler(async (req, res, next) => {
         await Comment.deleteMany({blogPost: req.params.blogPostId}).exec()
         await BlogPost.findByIdAndRemove(req.params.blogPostId).exec()
@@ -381,7 +366,10 @@ exports.deleteBlogPost = [
 exports.getBlogPostUpdateForm = [
 
     asyncHandler(async (req, res, next) => {
-        const blogPost = await BlogPost.findById(req.params.blogPostId).exec()
+        const blogPost = await BlogPost
+            .findById(req.params.blogPostId)
+            .lean()
+            .exec()
     
         if (blogPost === null) {
             const err = new Error("Blog post not found");
@@ -399,8 +387,7 @@ exports.getBlogPostUpdateForm = [
             },
             errors: []
         }
-        const data = _.cloneDeep(safeData)
-        ents.decodeObject(data)
+        const data = ents.decodeObject(safeData)
     
         res.render("pages/blogPostForm", { data, safeData });
     })
@@ -469,19 +456,17 @@ exports.updateBlogPost = [
                 inputs: inputs,
                 errors: errors
             }
-            const safeData = _.cloneDeep(data)
-            ents.encodeObject(safeData)
+            const safeData = ents.encodeObject(data)
             
             res.render("pages/blogPostForm", { data, safeData });
 
             return
         }
 
-        ents.encodeObject(inputs)
+        const encodedInputs =ents.encodeObject(inputs)
 
-        // const user = req.user
         const blogPost = new BlogPost({
-            title: inputs.title,
+            title: encodedInputs.title,
             thumbnail: {
                 data: fs.readFileSync(
                     path.join(
@@ -498,8 +483,8 @@ exports.updateBlogPost = [
                 profile_pic: req.user.profile_pic ?? null
             },
             publish_date: Date.now(),
-            keywords: inputs.keywords.split(' '),
-            content: inputs.content,
+            keywords: encodedInputs.keywords.split(' '),
+            content: encodedInputs.content,
             likes: 0,
             dislikes: 0
         });

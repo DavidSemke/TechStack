@@ -1,7 +1,6 @@
 const passport = require('../utils/auth')
-const entities = require('entities')
 const ents = require('../utils/htmlEntities')
-const _ = require('lodash')
+
 
 exports.getLogin = (req, res, next) => {
     const inputs = {
@@ -27,8 +26,7 @@ exports.getLogin = (req, res, next) => {
       inputs: inputs,
       errors: errors
     }
-    const safeData = _.cloneDeep(data)
-    ents.encodeObject(safeData)
+    const safeData = ents.encodeObject(data)
 
     res.render("pages/loginForm", { data, safeData })
 }

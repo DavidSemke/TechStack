@@ -2,7 +2,7 @@ const BlogPost = require('../models/blogPost')
 const Comment = require('../models/comment')
 const asyncHandler = require("express-async-handler");
 const ents = require('../utils/htmlEntities')
-const _ = require('lodash')
+
 const dateFormat = require('../utils/dateFormat')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
@@ -28,9 +28,8 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
         title: "Tech Stack",
         blogPosts
     }
-    const data = _.cloneDeep(safeData)
-    ents.decodeObject(
-        data,
+    const data = ents.decodeObject(
+        safeData,
         (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
     )
     

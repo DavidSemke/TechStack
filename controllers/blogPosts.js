@@ -3,15 +3,18 @@ const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
-const entities = require('entities')
-const _ = require('lodash')
+
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
   
     const [blogPost, comments] = await Promise.all([
-        BlogPost.findById(req.params.id).exec(),
-        Comment.find({ blogPost: req.params.id }).exec(),
+        BlogPost.findById(req.params.id)
+            .lean()
+            .exec(),
+        Comment.find({ blogPost: req.params.id })
+            .lean()
+            .exec(),
     ]);
 
     if (blogPost === null) {
@@ -27,9 +30,8 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         title: blogPost.title,
         blogPost
     }
-    const data = _.cloneDeep(safeData)
-    ents.decodeObject(
-        data,
+    const data = ents.decodeObject(
+        safeData,
         (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
     )
 
@@ -55,8 +57,7 @@ exports.postComment = [
                 content,
                 errors: errors.array()
             }
-            const safeData = _.cloneDeep(data)
-            ents.encodeObject(safeData)
+            const safeData = ents.encodeObject(data)
             
             res.render("pages/commentForm ", { data, safeData })
         } 
@@ -65,7 +66,7 @@ exports.postComment = [
             author: req.user._id,
             blogPost: req.params.blogPostId,
             publish_date: Date.now(),
-            content: entities.encodeHTML(content),
+            content: ents.encode(content),
             likes: 0,
             dislikes: 0,
         });

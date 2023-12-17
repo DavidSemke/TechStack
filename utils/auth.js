@@ -6,10 +6,9 @@ const ents = require('./htmlEntities')
 
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {
-        const filter = { username: username }
-        ents.encodeObject(filter)
         const user = await User
-            .findOne(filter)
+            .findOne({ username })
+            .lean()
             .exec();
 
         if (!user) {
@@ -43,7 +42,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findById(id);
+        const user = await User.findById(id).lean().exec();
         done(null, user);
     } 
     catch(err) {

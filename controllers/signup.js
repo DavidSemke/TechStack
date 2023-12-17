@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
-const _ = require('lodash')
+
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
     const data = {
@@ -25,11 +25,9 @@ exports.postSignup = [
         })
         .withMessage("Username must only contain alphanumeric characters and '-'.")
         .custom(asyncHandler(async (value) => {
-            const filter = { username: value }
-            ents.encodeObject(filter)
-
             const userExists = await User
-                .findOne(filter)
+                .findOne({ username: value })
+                .lean()
                 .exec()
 
             if (userExists) {
@@ -66,8 +64,7 @@ exports.postSignup = [
                 inputs: inputs,
                 errors: errors.array(),
             }
-            const safeData = _.cloneDeep(data)
-            ents.encodeObject(safeData)
+            const safeData = ents.encodeObject(data)
           
           res.render("pages/signupForm", { data, safeData })
         
@@ -84,10 +81,6 @@ exports.postSignup = [
                     username: req.body.username,
                     password: hash
                 }
-                ents.encodeObject(
-                    userData,
-                    (key, value) => key === 'username'
-                )
                 const user = new User(userData);
                 await user.save();
 
