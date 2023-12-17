@@ -1,38 +1,57 @@
 const entities = require('entities')
+const _ = require('lodash')
 
 function decodeObject(obj, filter=null) {
-    for (const [key, value] of Object.entries(obj)) {
+    const clone = _.cloneDeep(obj)
+
+    for (const [key, value] of Object.entries(clone)) {
 
         if (filter !== null && !filter(key, value)) {
             continue
         }
         
         if (typeof value === 'string') {
-            obj[key] = entities.decodeHTML(value)
+            clone[key] = decode(value)
         }
         else if (typeof value === 'object' && value !== null) {
             decodeObject(value, filter)
         }
     }
+
+    return clone
 }
 
 function encodeObject(obj, filter=null) {
-    for (const [key, value] of Object.entries(obj)) {
+    const clone = _.cloneDeep(obj)
+
+    for (const [key, value] of Object.entries(clone)) {
 
         if (filter !== null && !filter(key, value)) {
             continue
         }
         
         if (typeof value === 'string') {
-            obj[key] = entities.encodeHTML(value)
+            clone[key] = encode(value)
         }
         else if (typeof value === 'object' && value !== null) {
             encodeObject(value, filter)
         }
     }
+
+    return clone
+}
+
+function encode(str) {
+    return entities.encodeHTML(str)
+}
+
+function decode(str) {
+    return entities.decodeHTML(str)
 }
 
 module.exports = {
     encodeObject,
-    decodeObject
+    decodeObject,
+    encode,
+    decode
 }
