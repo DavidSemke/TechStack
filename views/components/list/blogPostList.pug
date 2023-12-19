@@ -1,6 +1,6 @@
 include iconList
 
-mixin blogPostList(...blogPosts)
+mixin blogPostList(blogPosts)
     ul.blog-post-list&attributes(attributes)
         each blogPost in blogPosts
             li.blog-post-list__item

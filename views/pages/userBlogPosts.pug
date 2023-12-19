@@ -2,13 +2,19 @@ extends ../layouts/browser
 include ../components/form/searchbar
 include ../components/form/formSelect
 include ../components/fragment/blogPostFragment
-include ../list/blogPostList
+include ../components/list/blogPostList
+include ../components/list/buttonList
 
 block page
+    - const {title, blogPosts} = data
+
     .user-blog-posts-page
         h1.user-blog-posts-page__heading= title
         .user-blog-posts-page__toolbar
-            +searchbar('user-blog-posts-page__searchbar')
+            +searchbar(
+                'user-blog-posts-page__searchbar', 
+                'Search Blog Posts'
+            )
             +formSelect(
                 'sort-by',
                 [

@@ -1,10 +1,12 @@
 const User = require("../models/user");
 const BlogPost = require("../models/blogPost");
+const Comment = require('../models/comment')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
+const dateFormat = require('../utils/dateFormat')
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -198,25 +200,32 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    let title = `${user.username}'s Blog Posts`
-    let isMainUser = false
+    const blogPosts = await BlogPost
+        .find({ author: user._id })
+        .lean()
+        .exec()
 
-    if (
-        req.user 
-        && user.username === req.user.username
-    ) {
-        title = 'Your Blog Posts'
-        isMainUser = true
+    for (const blogPost of blogPosts) {
+        const comments = await Comment
+            .find({ blogPost: blogPost._id })
+            .lean()
+            .exec()
+        blogPost.comments = comments
+        blogPost.publish_date = dateFormat.formatDate(
+            blogPost.publish_date
+        )
+        blogPost.last_modified_date = dateFormat.formatDate(
+            blogPost.last_modified_date
+        )
     }
     
     const safeData = {
-        title,
-        user,
-        isMainUser
+        title: 'Your Blog Posts',
+        blogPosts,
     }
     const data = ents.decodeObject(
         safeData,
-        (key, value) => key !== 'profile_pic'
+        (key, value) => key !== 'thumbnail'
     )
 
     res.render("pages/userBlogPosts", { data, safeData });

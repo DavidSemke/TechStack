@@ -536,6 +536,17 @@
   margin-top: 2rem;
 }
 
+.user-blog-posts-page {
+  width: 80%;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.user-blog-posts-page__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .profile-page {
   width: 80%;
 }

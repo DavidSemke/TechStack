@@ -9,9 +9,16 @@ block navbar
             'navbar__content-button',
             '/images/burgerIcon.png'
         )(class='-burger')
-        +iconLink('/images/favicon.png', '/', 'Tech Stack')
+        +iconLink(
+            '/images/favicon.png', 
+            '/', 
+            'Tech Stack'
+        )
     .navbar__center 
-        +searchbar('navbar__searchbar')
+        +searchbar(
+            'navbar__searchbar', 
+            'Search Tech Stack'
+        )
     .navbar__right 
         if mainUser
             +iconLink(

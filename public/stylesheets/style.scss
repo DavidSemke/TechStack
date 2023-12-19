@@ -7,6 +7,7 @@
 @use 'components/form/searchbar';
 @use 'components/fragment/blog-post-fragment';
 @use 'components/link/icon-link';
+@use 'components/list/blog-post-list';
 @use 'components/list/button-list';
 @use 'components/list/icon-button-list';
 @use 'components/list/icon-link-list';
@@ -23,6 +24,7 @@
 @use 'pages/blog-post-form';
 @use 'pages/blog-post';
 @use 'pages/index';
+@use 'pages/user-blog-posts';
 @use 'pages/user-profile';
 
 

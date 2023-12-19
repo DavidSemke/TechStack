@@ -1,8 +1,8 @@
-mixin searchbar(formClassId)
+mixin searchbar(formClassId, placeholder)
     .searchbar 
         .searchbar__icon
             img(src='/images/searchIcon.png')
         form.searchbar__form(class=formClassId)
             input.searchbar__input(
-                type='text', placeholder='Search Tech Stack'
+                type='text', placeholder=placeholder
             )

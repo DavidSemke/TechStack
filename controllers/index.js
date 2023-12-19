@@ -2,7 +2,6 @@ const BlogPost = require('../models/blogPost')
 const Comment = require('../models/comment')
 const asyncHandler = require("express-async-handler");
 const ents = require('../utils/htmlEntities')
-
 const dateFormat = require('../utils/dateFormat')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
@@ -15,7 +14,7 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
     
     for (const blogPost of blogPosts) {
         const comments = await Comment
-            .find({blogPost: blogPost._id})
+            .find({ blogPost: blogPost._id })
             .lean()
             .exec()
         blogPost.comments = comments
