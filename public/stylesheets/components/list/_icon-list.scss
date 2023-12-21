@@ -4,7 +4,6 @@
 
 .icon-list {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 3rem;
 
@@ -31,5 +30,9 @@
         .icon-list__label {
             font-size: fSizes.$small
         }
+    }
+
+    &.-center {
+        justify-content: center;
     }
 }

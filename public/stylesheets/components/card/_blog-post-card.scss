@@ -54,12 +54,9 @@
     }
 
     &__preview {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        max-height: 2rem;
         margin: 0;
-        width: 100%;
+        overflow: hidden;
     }
 
     &__keywords-container {
@@ -74,12 +71,10 @@
     }
 
     &__keywords {
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        max-height: 1rem;
         padding-left: 1rem;
         padding-right: 1rem;
+        overflow: hidden;
     }
 
     &.-small {

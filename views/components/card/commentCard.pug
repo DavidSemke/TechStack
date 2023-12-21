@@ -29,7 +29,7 @@ mixin commentCard(comment, isReply=false)
                     'icon': '/images/commentIcon.png',
                     'label': 'Z'
                 }
-            )(iconButton='-row -small')
+            )(iconButton = { 'class': '-row -small' })
 
             // prevent replying to a reply
             if !isReply

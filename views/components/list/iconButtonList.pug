@@ -1,6 +1,8 @@
 include ../button/iconButton
 
 mixin iconButtonList(...buttonItems)
+    - console.log(attributes)
+    - console.log(attributes.iconButton)
     ul.icon-button-list&attributes(attributes.iconButtonList)
         each item in buttonItems
             li.icon-button-list__item
@@ -9,4 +11,4 @@ mixin iconButtonList(...buttonItems)
                     item.classId,
                     item.icon,  
                     item.label
-                )(class=attributes.iconButton)
+                )(attributes.iconButton)

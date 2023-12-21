@@ -1,13 +1,20 @@
 mixin formSelect(name, options)
     .form-select&attributes(attributes.formSelect)
+        - const labelWords = name.split('-')
+        each word, index in labelWords
+            - labelWords[index] = word[0].toUpperCase() + word.slice(1)
+
         label.form-select__label(
             for=name
-        )= name[0].toUpperCase() + name.slice(1)
+        )= labelWords.join(' ')
         select.form-select__select(
             id=name
             name=name
         )&attributes(attributes.select)
             each option in options
+                - const optionWords = option.split('-')
+                each word, index in optionWords
+                    - optionWords[index] = word[0].toUpperCase() + word.slice(1)
                 option(
                     value=option
-                )= option[0].toUpperCase() + option.slice(1)
+                )= optionWords.join(' ')
