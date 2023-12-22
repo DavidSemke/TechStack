@@ -15,11 +15,14 @@ block page
                     +iconLink(
                         '/images/profileIcon.png',
                         '#',
-                        blogPost.author.name
-                    )(class='-larger')
+                        blogPost.author.name,
+                        {
+                            'class': '-larger'
+                        }
+                    )
                 .blog-post__stat-button-list
                     +iconButtonList(
-                        {
+                        [{
                             'classId': 'blog-post-like-button',
                             'icon': '/images/likeIcon.png',
                             'label': blogPost.likes
@@ -33,7 +36,7 @@ block page
                             'classId': 'blog-post-comment-button',
                             'icon': '/images/commentIcon.png',
                             'label': blogPost.comments.length
-                        }
+                        }]
                     )
                 .blog-post__date= `Published on ${blogPost.publish_date}`
             
@@ -41,7 +44,7 @@ block page
             .blog-post__content= blogPost.content
             .blog-post__stat-button-list
                 +iconButtonList(
-                    {
+                    [{
                         'classId': 'blog-post-like-button',
                         'icon': '/images/likeIcon.png',
                         'label': blogPost.likes
@@ -55,13 +58,23 @@ block page
                         'classId': 'blog-post-comment-button',
                         'icon': '/images/commentIcon.png',
                         'label': blogPost.comments.length
-                    }
+                    }]
                 )
         
         h2.blog-post-page__post-blog-post-heading More Blogs
         .blog-post-card-pair
-            +blogPostCard(blogPost)(class='-small')
-            +blogPostCard(blogPost)(class='-small')
+            +blogPostCard(
+                blogPost, 
+                {
+                    'class': '-small'
+                }
+            )
+            +blogPostCard(
+                blogPost,
+                {
+                    'class': '-small'
+                }
+            )
         
         h2.blog-post-page__post-blog-post-heading Comments
         each comment in blogPost.comments

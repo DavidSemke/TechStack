@@ -7,8 +7,12 @@ block navbar
     .navbar__left
         +iconButton(
             'navbar__content-button',
-            '/images/burgerIcon.png'
-        )(class='-burger')
+            '/images/burgerIcon.png',
+            null,
+            {
+                'class': '-burger'
+            }
+        )
         +iconLink(
             '/images/favicon.png', 
             '/', 
@@ -24,15 +28,22 @@ block navbar
             +iconLink(
                 '/images/writeIcon.png', 
                 `/users/${mainUser.username}/blog-posts/new-blog-post`,
-                'Write'
-            )(class='-button')
+                'Write',
+                {
+                    'class': '-button'
+                }
+            )
         else 
             a(href='/login' class='-button') Login
         
         +iconButton(
             'navbar__account-button',
-            '/images/profileIcon.png'
-        )(class='-avatar')
+            '/images/profileIcon.png',
+            null,
+            {
+                'class': '-avatar'
+            }
+        )
 
 block sidebars
     include ../components/toolbar/contentSidebar

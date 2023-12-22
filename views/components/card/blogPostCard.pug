@@ -1,10 +1,10 @@
 include ../list/iconList
 
-mixin blogPostCard(blogPost)
-  .blog-post-card&attributes(attributes)
+mixin blogPostCard(blogPost, attrs={})
+  .blog-post-card&attributes(attrs)
     .blog-post-card__stat-list
       +iconList(
-        {
+        [{
           'icon': '/images/likeIcon.png',
           'label': blogPost.likes
         },
@@ -15,8 +15,11 @@ mixin blogPostCard(blogPost)
         {
           'icon': '/images/commentIcon.png',
           'label': blogPost.comments.length
+        }],
+        {
+          'class': '-column -small -center'
         }
-      )(class='-column -small -center')
+      )
     .blog-post-card__overview
       .blog-post-card__author-date
         .blog-post-card__author-details

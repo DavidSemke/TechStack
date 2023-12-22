@@ -8,18 +8,18 @@ include ../list/iconLinkList
                 img(src='/images/profileIcon.png')
             .account-sidebar__username= mainUser.username
         +iconLinkList(
-            {
+            [{
                 'icon': '/images/profileIcon.png',
                 'href': `/users/${mainUser.username}`,
                 'label': 'Your Profile'     
-            }
+            }]
         )
         +iconLinkList(
-            {
+            [{
                 'icon': '/images/blogPostIcon.png',
                 'href': `/users/${mainUser.username}/blog-posts`,
                 'label': 'Your Blog Posts'
-            }
+            }]
         )
         .account-sidebar__logout
             a(href='/logout') Logout

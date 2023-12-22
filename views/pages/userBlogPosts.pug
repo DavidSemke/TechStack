@@ -30,15 +30,18 @@ block page
             .user-blog-posts__left 
                 .user-blog-posts__tabs
                     +buttonList(
-                        {
+                        [{
                             'classId': 'user-blog-posts__published-tab',
                             'label': 'Published'
                         },
                         {
                             'classId': 'user-blog-posts__unpublished-tab',
                             'label': 'Unpublished'
-                        } 
-                    )(button='-tab')
+                        }],
+                        {
+                            'button': {'class': '-tab'}
+                        }
+                    )
                 .user-blog-posts__tab-container
                     +blogPostList(blogPosts)
             .user-blog-posts__right.-hidden

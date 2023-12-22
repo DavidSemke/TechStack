@@ -1,8 +1,8 @@
 include iconList
 include iconButtonList
 
-mixin blogPostList(blogPosts)
-    ul.blog-post-list&attributes(attributes)
+mixin blogPostList(blogPosts, attrs={})
+    ul.blog-post-list&attributes(attrs)
         each blogPost in blogPosts
             li.blog-post-item
                 .blog-post-item__top 
@@ -12,7 +12,7 @@ mixin blogPostList(blogPosts)
                         .blog-post-item__date= `Last modified: ${blogPost.last_modified_date}`
                 .blog-post-item__bottom
                     +iconList(
-                        {
+                        [{
                             'icon': '/images/likeIcon.png',
                             'label': blogPost.likes
                         },
@@ -23,18 +23,24 @@ mixin blogPostList(blogPosts)
                         {
                             'icon': '/images/commentIcon.png',
                             'label': blogPost.comments.length
-                        }
-                    )(class='-small')
-                    +iconButtonList(
+                        }],
                         {
+                            'class': '-small'
+                        }
+                    )
+                    +iconButtonList(
+                        [{
                             'classId': `blog-post-item__edit-button-${blogPost._id}`,
                             'icon': '/images/editIcon.png'
                         },
                         {
                             'classId': `blog-post-item__delete-button-${blogPost._id}`,
                             'icon': '/images/deleteIcon.png'
-                        },
-                    )(iconButton = { 'class': ['-small', '-colorful'] })
+                        }],
+                        {
+                            'iconButton': {'class': '-small -colorful'}
+                        }
+                    )
                 
                 
                 

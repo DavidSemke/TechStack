@@ -1,12 +1,13 @@
 include ../link/iconLink
 
-mixin iconLinkList(...actionItems)
-    ul.icon-link-list&attributes(attributes.iconLinkList)
+mixin iconLinkList(actionItems, attrs={})
+    ul.icon-link-list&attributes(attrs.iconLinkList)
         each item in actionItems
             li.icon-link-list__item
                 - item.label = item.label ?? null
                 +iconLink(
                     item.icon, 
                     item.href, 
-                    item.label
-                )(class=attributes.iconLink)
+                    item.label,
+                    attrs.iconLink
+                )

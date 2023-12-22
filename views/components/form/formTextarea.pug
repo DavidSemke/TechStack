@@ -1,12 +1,12 @@
-mixin formTextarea(name, value, errors)
-    .form-textarea&attributes(attributes.formTextarea)
+mixin formTextarea(name, value, errors=[], attrs={})
+    .form-textarea&attributes(attrs.formTextarea)
         label.form-textarea__label(
             for=name
         )= name[0].toUpperCase() + name.slice(1)
         textarea.form-textarea__textarea(
             id=name
             name=name
-        )&attributes(attributes.textarea)= value
+        )&attributes(attrs.textarea)= value
         if errors.length
             .form-textarea__error-container
                 each error in errors

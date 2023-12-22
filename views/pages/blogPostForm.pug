@@ -27,15 +27,18 @@ block page
             .blog-post-form-page__heading Draft
             .blog-post-form-page__body
                 +buttonList(
-                    {
+                    [{
                         'classId': 'blog-post-form-page__metadata-tab',
                         'label': 'Metadata'
                     },
                     {
                         'classId': 'blog-post-form-page__content-tab',
                         'label': 'Content'
-                    } 
-                )(button='-tab')
+                    }],
+                    {
+                        'button': { 'class': '-tab' }
+                    }
+                )
                 form#blog-post-form.blog-post-form(
                     action=`/users/${mainUser.username}/blog-posts`
                     method='post' 
@@ -46,30 +49,40 @@ block page
                             'title',
                             'text',
                             inputs.title || '',
-                            titleErrors
-                        )(input={'required': ''})
+                            titleErrors,
+                            {
+                                'input': {'required': ''}
+                            }
+                        )
                         +formInput(
                             'thumbnail',
                             'file',
                             '',
-                            thumbnailErrors
-                        )(input={'required': ''})
+                            thumbnailErrors,
+                            {
+                                'input': {'required': ''}
+                            }
+                        )
                         +formInput(
                             'keywords',
                             'text',
                             inputs.keywords || '',
-                            keywordErrors
-                        )(input={'required': ''})
+                            keywordErrors,
+                            {
+                                'input': {'required': ''}
+                            }
+                        )
 
                     .blog-post-form__content.-hidden
                         +formTextarea(
                             'content',
                             inputs.content || '',
-                            contentErrors
-                        )(
-                            textarea={
-                                'id': 'tinymce-app',
-                                'class': 'tinymce-app'
+                            contentErrors,
+                            {
+                                'textarea': {
+                                    'id': 'tinymce-app',
+                                    'class': 'tinymce-app'
+                                }
                             }
                         )
                         input#word-count.blog-post-form__hidden(

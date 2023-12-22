@@ -1,6 +1,5 @@
-mixin iconButton(classId, icon, label=null)
-    - console.log(attributes)
-    button.icon-button(class=classId)&attributes(attributes)
+mixin iconButton(classId, icon, label=null, attrs={})
+    button.icon-button(class=classId)&attributes(attrs)
         .icon-button__icon
             img(src=icon)
         if label !== null

@@ -1,5 +1,5 @@
-mixin iconList(...iconItems)
-    ul.icon-list&attributes(attributes)
+mixin iconList(iconItems, attrs={})
+    ul.icon-list&attributes(attrs)
         each item in iconItems
             li.icon-list__item
                 .icon-list__icon

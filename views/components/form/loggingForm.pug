@@ -19,14 +19,20 @@ mixin loggingForm(action, inputs={}, errors=[])
             'username',
             'text',
             inputs.username || '',
-            usernameErrors
-        )(input={'required': ''})
+            usernameErrors,
+            {
+                'input': {'required': ''}
+            }
+        )
         +formInput(
             'password',
             'password',
             inputs.password || '',
-            passwordErrors.length ? passwordErrors : loginErrors
-        )(input={'required': ''})
+            passwordErrors.length ? passwordErrors : loginErrors,
+            {
+                'input': {'required': ''}
+            }
+        )
 
         // add more fields as desired
         if block 

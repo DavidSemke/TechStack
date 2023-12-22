@@ -1,5 +1,5 @@
-mixin formInput(name, type, value, errors)
-    .form-input&attributes(attributes.formInput)
+mixin formInput(name, type, value, errors=[], attrs={})
+    .form-input&attributes(attrs.formInput)
         - const labelWords = name.split('-')
         each word, index in labelWords
             - labelWords[index] = word[0].toUpperCase() + word.slice(1)
@@ -12,7 +12,7 @@ mixin formInput(name, type, value, errors)
             name=name 
             type=type
             value=value
-        )&attributes(attributes.input)
+        )&attributes(attrs.input)
         if errors.length
             .form-input__error-container
                 each error in errors

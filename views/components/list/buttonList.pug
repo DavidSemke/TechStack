@@ -1,7 +1,7 @@
-mixin buttonList(...buttonItems)
-    ul.button-list&attributes(attributes.buttonList)
+mixin buttonList(buttonItems, attrs={})
+    ul.button-list&attributes(attrs.buttonList)
         each item in buttonItems
             li.button-list__item
                 button.button-list__button(
-                    class=[item.classId, attributes.button]
-                )= item.label
+                    class=item.classId
+                )&attributes(attrs.button)= item.label

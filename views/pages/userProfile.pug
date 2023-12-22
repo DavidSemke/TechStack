@@ -81,19 +81,21 @@ block page
                     +formTextarea(
                         'bio',
                         inputs.bio || mainUser.bio,
-                        bioErrors
-                    )(
-                        textarea={
-                            'rows': '5'
+                        bioErrors,
+                        {
+                            'textarea': {
+                                'rows': '5'
+                            }
                         }
                     )
                     +formTextarea(
                         'keywords',
                         inputs.keywords || mainUser.keywords.join(' '),
-                        keywordErrors
-                    )(
-                        textarea={
-                            'rows': '2'
+                        keywordErrors,
+                        {
+                            'textarea': {
+                                'rows': '2'
+                            }
                         }
                     )
                     .profile-form__buttons
@@ -109,7 +111,7 @@ block page
                     .profile__heading Recent Reads
                     .profile__body
                         +iconLinkList(
-                            {
+                            [{
                                 'icon': '/images/profileIcon.png',
                                 'href': `#`,
                                 'label': 'Blog Post 1' 
@@ -118,7 +120,7 @@ block page
                                 'icon': '/images/profileIcon.png',
                                 'href': `#`,
                                 'label': 'Blog Post 2' 
-                            }
+                            }]
                         )
                 
                 if user.blog_posts_written && user.blog_posts_written.length
@@ -131,7 +133,7 @@ block page
                         .profile__heading= heading
                         .profile__body
                             +iconLinkList(
-                                {
+                                [{
                                     'icon': '/images/profileIcon.png',
                                     'href': `#`,
                                     'label': 'Blog Post 1' 
@@ -140,5 +142,5 @@ block page
                                     'icon': '/images/profileIcon.png',
                                     'href': `#`,
                                     'label': 'Blog Post 2' 
-                                }
+                                }]
                             )
