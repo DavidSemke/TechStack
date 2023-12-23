@@ -160,3 +160,11 @@ ul, ol {
   gap: 1rem;
   font-size: fSizes.$large;
 }
+
+.-hidden {
+  visibility: hidden;
+}
+
+.-gone {
+  display: none;
+}

@@ -5,14 +5,17 @@ mixin blogPostCard(blogPost, attrs={})
     .blog-post-card__stat-list
       +iconList(
         [{
+          'classId': 'blog-post-card__likes',
           'icon': '/images/likeIcon.png',
           'label': blogPost.likes
         },
         {
+          'classId': 'blog-post-card__dislikes',
           'icon': '/images/dislikeIcon.png',
           'label': blogPost.dislikes
         },
         {
+          'classId': 'blog-post-card__total-comments',
           'icon': '/images/commentIcon.png',
           'label': blogPost.comments.length
         }],

@@ -205,15 +205,27 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
         .lean()
         .exec()
 
+    const publishedBlogPosts = []
+    const unpublishedBlogPosts = []
+
     for (const blogPost of blogPosts) {
         const comments = await Comment
             .find({ blogPost: blogPost._id })
             .lean()
             .exec()
         blogPost.comments = comments
-        blogPost.publish_date = dateFormat.formatDate(
-            blogPost.publish_date
-        )
+
+        if (blogPost.publish_date) {
+            blogPost.publish_date = dateFormat.formatDate(
+                blogPost.publish_date
+            )
+
+            publishedBlogPosts.push(blogPost)
+        }
+        else {
+            unpublishedBlogPosts.push(blogPost)
+        }
+        
         blogPost.last_modified_date = dateFormat.formatDate(
             blogPost.last_modified_date
         )
@@ -221,7 +233,8 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     
     const safeData = {
         title: 'Your Blog Posts',
-        blogPosts,
+        publishedBlogPosts,
+        unpublishedBlogPosts
     }
     const data = ents.decodeObject(
         safeData,

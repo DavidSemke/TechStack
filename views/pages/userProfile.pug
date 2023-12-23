@@ -42,7 +42,7 @@ block page
 
                 .profile__username= user.username
             .profile__secondary(
-                class= updatingProfile ? '-hidden' : ''
+                class= updatingProfile ? '-gone' : ''
             )
                 .profile__bio
                     .profile__heading Bio 
@@ -64,7 +64,7 @@ block page
                 form.profile-form(
                     method='post' 
                     enctype='multipart/form-data'
-                    class= updatingProfile ? '' : '-hidden'
+                    class= updatingProfile ? '' : '-gone'
                 )
                     +formInput(
                         'profile-pic',

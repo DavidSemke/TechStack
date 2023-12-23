@@ -21,6 +21,23 @@
         justify-content: center;
     }
 
+    &.-slim {
+        padding-top: 0.1rem;
+        padding-bottom: 0.1rem;
+        padding-left: 0.1rem;
+        padding-right: 0.1rem;
+    }
+
+    &.-small {
+        .icon-link__icon {
+            height: iSizes.$small;
+            width: iSizes.$small;
+        }
+        .icon-link__label {
+            font-size: fSizes.$small;
+        }
+    }
+
     &.-large {
         
         .icon-link__icon {

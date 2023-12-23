@@ -1,4 +1,4 @@
-function blogPostFormTabEventListeners() {
+function blogPostFormTabListeners() {
     const metadata = document.querySelector(
         '.blog-post-form__metadata'
     )
@@ -11,9 +11,9 @@ function blogPostFormTabEventListeners() {
     )
 
     metadataTab.addEventListener('click', () => {
-        if (metadata.classList.contains('-hidden')) {
-            content.classList.add('-hidden')
-            metadata.classList.remove('-hidden')
+        if (metadata.classList.contains('-gone')) {
+            content.classList.add('-gone')
+            metadata.classList.remove('-gone')
         }
     })
 
@@ -22,14 +22,14 @@ function blogPostFormTabEventListeners() {
     )
 
     contentTab.addEventListener('click', () => {
-        if (content.classList.contains('-hidden')) {
-            metadata.classList.add('-hidden')
-            content.classList.remove('-hidden')
+        if (content.classList.contains('-gone')) {
+            metadata.classList.add('-gone')
+            content.classList.remove('-gone')
         }
     })
 }
 
-function blogPostFormMetadataEventListeners() {
+function blogPostFormMetadataListeners() {
     const titlePreview = document.querySelector(
         '.blog-post-preview__title'
     )
@@ -60,14 +60,13 @@ function blogPostFormSetup() {
         '.blog-post-form-page'
     )
 
-    // check one tab to make sure page is correct
     if (!blogPostFormPage) {
         return
     }
 
     blogPostFormSizing()
-    blogPostFormTabEventListeners()
-    blogPostFormMetadataEventListeners()
+    blogPostFormTabListeners()
+    blogPostFormMetadataListeners()
 }
 
 export {

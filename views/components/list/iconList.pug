@@ -1,7 +1,7 @@
 mixin iconList(iconItems, attrs={})
     ul.icon-list&attributes(attrs)
         each item in iconItems
-            li.icon-list__item
+            li.icon-list__item(class=item.classId)
                 .icon-list__icon
                     img(src=item.icon)
                 if item.label != null

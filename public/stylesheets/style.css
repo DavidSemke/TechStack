@@ -86,7 +86,7 @@
   margin-bottom: -10px;
 }
 .blog-post-card__keywords {
-  max-height: 1rem;
+  max-height: 1.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   overflow: hidden;
@@ -232,6 +232,19 @@
 .icon-link.-center {
   justify-content: center;
 }
+.icon-link.-slim {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+.icon-link.-small .icon-link__icon {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+.icon-link.-small .icon-link__label {
+  font-size: 0.8rem;
+}
 .icon-link.-large .icon-link__icon {
   height: 3rem;
   width: 3rem;
@@ -275,6 +288,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.blog-post-item__actions {
+  display: flex;
+  gap: 2rem;
 }
 
 .button-list {
@@ -497,14 +514,8 @@
   gap: 1rem;
   width: 100%;
 }
-.blog-post-form__metadata.-hidden {
-  display: none;
-}
 .blog-post-form__content {
   height: 100%;
-}
-.blog-post-form__content.-hidden {
-  display: none;
 }
 
 .tinymce-app {
@@ -594,7 +605,7 @@
 .user-blog-posts__right {
   flex: 1;
 }
-.user-blog-posts__right.-hidden {
+.user-blog-posts__right.-gone {
   visibility: hidden;
 }
 .user-blog-posts__tab-container {
@@ -621,9 +632,6 @@
 }
 .profile__secondary {
   flex: 1;
-}
-.profile__secondary.-hidden {
-  display: none;
 }
 .profile__tertiary {
   flex: 1;
@@ -667,7 +675,7 @@
   display: flex;
   justify-content: space-around;
 }
-.profile-form.-hidden {
+.profile-form.-gone {
   display: none;
 }
 
@@ -793,4 +801,12 @@ ul, ol {
   align-items: center;
   gap: 1rem;
   font-size: 1.2rem;
+}
+
+.-hidden {
+  visibility: hidden;
+}
+
+.-gone {
+  display: none;
 }

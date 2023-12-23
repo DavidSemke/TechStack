@@ -1,4 +1,4 @@
-function blogPostLikeButtonEventListeners() {
+function blogPostLikeButtonListeners() {
     const button = document.querySelector(
         '.blog-post-like-button'
     )
@@ -13,7 +13,7 @@ function blogPostLikeButtonEventListeners() {
 
 }
 
-function blogPostDislikeButtonEventListeners() {
+function blogPostDislikeButtonListeners() {
     const button = document.querySelector(
         '.blog-post-dislike-button'
     )
@@ -28,7 +28,7 @@ function blogPostDislikeButtonEventListeners() {
 
 }
 
-function blogPostCommentButtonEventListeners() {
+function blogPostCommentButtonListeners() {
     const button = document.querySelector(
         '.blog-post-comment-button'
     )
@@ -42,9 +42,21 @@ function blogPostCommentButtonEventListeners() {
     })
 }
 
+function blogPostSetup() {
+    const blogPostPage = document.querySelector(
+        '.blog-post-page'
+    )
+
+    if (!blogPostPage) {
+        return
+    }
+
+    blogPostLikeButtonListeners()
+    blogPostDislikeButtonListeners()
+    blogPostCommentButtonListeners()
+}
+
 
 export {
-    blogPostLikeButtonEventListeners,
-    blogPostDislikeButtonEventListeners,
-    blogPostCommentButtonEventListeners
+    blogPostSetup
 }

@@ -36,4 +36,9 @@
         flex-direction: column;
         justify-content: space-between;
     }
+
+    &__actions {
+        display: flex;
+        gap: 2rem;
+    }
 }

@@ -6,7 +6,7 @@ include ../components/list/blogPostList
 include ../components/list/buttonList
 
 block page
-    - const {title, blogPosts} = data
+    - const {title, publishedBlogPosts, unpublishedBlogPosts} = data
 
     .user-blog-posts-page
         h1.user-blog-posts-page__heading= title
@@ -18,13 +18,18 @@ block page
             +formSelect(
                 'sort-by',
                 [
-                    'title', 
-                    'last-mod-date', 
-                    'publish-date', 
-                    'likes',
                     'dislikes',
+                    'last-mod-date', 
+                    'likes',
+                    'publish-date', 
+                    'title', 
                     'total-comments'
-                ]
+                ],
+                {
+                    'select': { 
+                        'class': 'user-blog-posts-page__sort-selector'
+                    }
+                }
             )
         .user-blog-posts
             .user-blog-posts__left 
@@ -43,6 +48,16 @@ block page
                         }
                     )
                 .user-blog-posts__tab-container
-                    +blogPostList(blogPosts)
+                    +blogPostList(
+                        publishedBlogPosts,
+                        {'class': 'user-blog-posts__published'}
+                    )
+                    +blogPostList(
+                        unpublishedBlogPosts,
+                        {'class': [
+                            'user-blog-posts__unpublished', 
+                            '-gone'
+                        ]}
+                    )
             .user-blog-posts__right.-hidden
                 +blogPostFragment()

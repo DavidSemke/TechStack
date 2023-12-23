@@ -1,4 +1,4 @@
-function sidebarEventListeners(sidebarSelector, sidebarButtonSelector) {
+function sidebarListeners(sidebarSelector, sidebarButtonSelector) {
     const sidebar = document.querySelector(sidebarSelector)
 
     if (!sidebar) {
@@ -21,5 +21,5 @@ function sidebarEventListeners(sidebarSelector, sidebarButtonSelector) {
 }
 
 export {
-    sidebarEventListeners
+    sidebarListeners
 }

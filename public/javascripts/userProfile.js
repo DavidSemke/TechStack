@@ -21,9 +21,9 @@ function profileFormSetup() {
     )
 
     profileEditButton.addEventListener('click', () => {
-        if (profileForm.classList.contains('-hidden')) {
-            secondary.classList.add('-hidden')
-            profileForm.classList.remove('-hidden')
+        if (profileForm.classList.contains('-gone')) {
+            secondary.classList.add('-gone')
+            profileForm.classList.remove('-gone')
         }
     })
 
@@ -32,9 +32,9 @@ function profileFormSetup() {
     )
 
     profileFormCancelButton.addEventListener('click', () => {
-        if (secondary.classList.contains('-hidden')) {
-            profileForm.classList.add('-hidden')
-            secondary.classList.remove('-hidden')
+        if (secondary.classList.contains('-gone')) {
+            profileForm.classList.add('-gone')
+            secondary.classList.remove('-gone')
 
             const { username, bio, keywords } = backendData.user 
 

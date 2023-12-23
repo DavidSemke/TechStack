@@ -25,9 +25,7 @@
 
     &__secondary {
         flex: 1;
-        &.-hidden {
-            display: none;
-        }
+        
     }
 
     &__tertiary {
@@ -82,7 +80,7 @@
         justify-content: space-around;
     }
 
-    &.-hidden {
+    &.-gone {
         display: none;
     }
 }
