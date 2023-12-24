@@ -17,6 +17,9 @@
 
 .user-blog-posts {
     display: flex;
+    gap: 2rem;
+    height: 100%;
+    margin-bottom: 2rem;
 
     &__left {
         flex: 1;
@@ -24,13 +27,13 @@
 
     &__right {
         flex: 1;
-
-        &.-gone {
-            visibility: hidden;
-        }
+        overflow: auto;
+        padding: 1rem;
+        border: 2px solid colors.$bg2;
     }
 
     &__tab-container {
+        overflow: auto;
         border: 2px solid colors.$bg2;
     }
 }

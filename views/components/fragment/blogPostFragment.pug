@@ -9,5 +9,5 @@ mixin blogPostFragment(blogPost={}, attrs={})
                 .blog-post-fragment__thumbnail
                     img(src=dataUri)
             else
-                .blog-post-fragment__thumbnail Your thumbnail appears here
+                .blog-post-fragment__thumbnail.-empty Your thumbnail appears here
         .blog-post-fragment__content= blogPost.content || ''

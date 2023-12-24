@@ -205,6 +205,8 @@
   aspect-ratio: 4/3;
   margin-left: auto;
   margin-right: auto;
+}
+.blog-post-fragment__thumbnail.-empty {
   border: 2px dashed white;
   font-size: 1.2rem;
 }
@@ -443,7 +445,6 @@
 .page-container {
   display: flex;
   justify-content: center;
-  overflow: auto;
   min-height: 100vh;
   width: 80%;
 }
@@ -598,17 +599,21 @@
 
 .user-blog-posts {
   display: flex;
+  gap: 2rem;
+  height: 100%;
+  margin-bottom: 2rem;
 }
 .user-blog-posts__left {
   flex: 1;
 }
 .user-blog-posts__right {
   flex: 1;
-}
-.user-blog-posts__right.-gone {
-  visibility: hidden;
+  overflow: auto;
+  padding: 1rem;
+  border: 2px solid rgb(36, 36, 36);
 }
 .user-blog-posts__tab-container {
+  overflow: auto;
   border: 2px solid rgb(36, 36, 36);
 }
 

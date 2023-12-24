@@ -253,7 +253,11 @@ exports.getBlogPostCreateForm = [
             inputs: {},
             errors: []
         }
-        const data = _.cloneDeep(safeData)
+        const data = {
+            title: "Create Blog Post",
+            inputs: {},
+            errors: []
+        }
         
         res.render("pages/blogPostForm",  { data, safeData })
     }

@@ -20,8 +20,10 @@ block navbar
         )
     .navbar__center 
         +searchbar(
-            'navbar__searchbar', 
-            'Search Tech Stack'
+            'Search Tech Stack',
+            {
+                'class': 'navbar__searchbar', 
+            }
         )
     .navbar__right 
         if mainUser

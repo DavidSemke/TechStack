@@ -21,8 +21,11 @@
         aspect-ratio: 4/3;
         margin-left: auto;
         margin-right: auto;
-        border: 2px dashed white;
-        font-size: fSizes.$large;
+        
+        &.-empty {
+            border: 2px dashed white;
+            font-size: fSizes.$large;
+        }
     }
 
     &__metadata {

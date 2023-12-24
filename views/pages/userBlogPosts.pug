@@ -12,8 +12,8 @@ block page
         h1.user-blog-posts-page__heading= title
         .user-blog-posts-page__toolbar
             +searchbar(
-                'user-blog-posts-page__searchbar', 
-                'Search Blog Posts'
+                'Search Blog Posts',
+                {'class': 'user-blog-posts-page__searchbar'}
             )
             +formSelect(
                 'sort-by',
@@ -25,6 +25,7 @@ block page
                     'title', 
                     'total-comments'
                 ],
+                'title',
                 {
                     'select': { 
                         'class': 'user-blog-posts-page__sort-selector'

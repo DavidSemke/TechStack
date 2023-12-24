@@ -1,12 +1,10 @@
 function userBlogPostsSearchbarListeners() {
     const searchbar = document.querySelector(
-        '.user-blog-posts-page__searchbar'
+        '.user-blog-posts-page__searchbar .searchbar__input'
     )
 
     searchbar.addEventListener('change', (event) => {
-        const blogPostItems = Array.from(
-            document.querySelectorAll('.blog-post-item')
-        )
+        const blogPostItems = document.querySelectorAll('.blog-post-item')
         const searchValue = event
             .currentTarget
             .value
@@ -23,9 +21,9 @@ function userBlogPostsSearchbarListeners() {
                 const title = item.querySelector('.blog-post-item__title')
                     .textContent
                     .toLowerCase()
-                const regex = new RegExp(title)
+                const regex = new RegExp(searchValue)
                 
-                if (regex.test(searchValue))
+                if (regex.test(title))
                     item.classList.remove('-gone')
                 else {
                     item.classList.add('-gone')
@@ -36,25 +34,26 @@ function userBlogPostsSearchbarListeners() {
 }
 
 function userBlogPostsSortSelectorListeners() {
-    const sortSelector = document.querySelector(
-        'user-blog-posts-page__sort-selector'
-    ) 
+    // const sortSelector = document.querySelector(
+    //     '.user-blog-posts-page__sort-selector'
+    // ) 
 
-    sortSelector.addEventListener('change', (event) => {
-        const sortValue = event
-            .currentTarget
-            .value
-            .trim()
-            .toLowerCase()
-        sortBlogPostList(
-            sortValue, 
-            '.user-blog-posts__published .blog-post-list'
-        )
-        sortBlogPostList(
-            sortValue, 
-            '.user-blog-posts__unpublished .blog-post-list'
-        )
-    })
+    // sortSelector.addEventListener('change', (event) => {
+    //     const sortValue = event
+    //         .currentTarget
+    //         .value
+    //         .trim()
+    //         .toLowerCase()
+        
+    //     sortBlogPostList(
+    //         sortValue, 
+    //         '.user-blog-posts__published .blog-post-list'
+    //     )
+    //     sortBlogPostList(
+    //         sortValue, 
+    //         '.user-blog-posts__unpublished .blog-post-list'
+    //     )
+    // })
 }
 
 function sortBlogPostList(sortBy, blogPostList) {
@@ -197,7 +196,7 @@ function userBlogPostsTabListeners() {
 }
 
 function userBlogPostsListListeners(blogPostList) {
-    const items = blogPostList.querySelector(
+    const items = blogPostList.querySelectorAll(
         '.blog-post-item'
     )
     const rightPanel = document.querySelector(
@@ -237,12 +236,23 @@ function onItemClick(event, rightPanel) {
 
 
     const fragmentThumbnail = document.querySelector(
-        '.blog-post-fragment__thumbnail > img'
+        '.blog-post-fragment__thumbnail'
     )
-    const pic = blogPost.thumbnail
-    const base64 = Buffer.from(pic.data).toString('base64')
-    const dataUri = `data:${pic.contentType};base64,${base64}`
-    fragmentThumbnail.src = dataUri
+    fragmentThumbnail.innerHTML = ''
+
+    if (blogPost.thumbnail) {
+        const pic = blogPost.thumbnail
+        const dataUri = `data:${pic.contentType};base64,${pic.data}`
+        const img = document.createElement('img')
+        img.src = dataUri
+        
+        fragmentThumbnail.classList.remove('-empty')
+        fragmentThumbnail.append(img)
+    }
+    else {
+        fragmentThumbnail.classList.add('-empty')
+        fragmentThumbnail.textContent = 'Your thumbnail appears here'
+    }
 
     const fragmentContent = document.querySelector(
         '.blog-post-fragment__content'
@@ -282,10 +292,10 @@ function userBlogPostsSetup() {
     userBlogPostsTabListeners()
 
     const publishedList = document.querySelector(
-        'user-blog-posts__published'
+        '.user-blog-posts__published'
     )
     const unpublishedList = document.querySelector(
-        'user-blog-posts__unpublished'
+        '.user-blog-posts__unpublished'
     )
     userBlogPostsListListeners(publishedList)
     userBlogPostsListListeners(unpublishedList)
