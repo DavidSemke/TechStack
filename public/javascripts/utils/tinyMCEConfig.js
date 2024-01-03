@@ -26,13 +26,13 @@ function initializeTinyMCE(selector) {
         setup: (editor) => {
             editor.on('init', () => {
                 editor.setContent(initialContent)
-                const preview = document.querySelector('.blog-post-preview__content')
+                const preview = document.querySelector('.blog-post-fragment__content')
                 preview.innerHTML = editor.getContent()
             })
     
             editor.on('change', () => {
                 editor.save()
-                const preview = document.querySelector('.blog-post-preview__content')
+                const preview = document.querySelector('.blog-post-fragment__content')
                 preview.innerHTML = editor.getContent()
             })
 

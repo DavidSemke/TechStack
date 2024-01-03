@@ -34,26 +34,26 @@ function userBlogPostsSearchbarListeners() {
 }
 
 function userBlogPostsSortSelectorListeners() {
-    // const sortSelector = document.querySelector(
-    //     '.user-blog-posts-page__sort-selector'
-    // ) 
+    const sortSelector = document.querySelector(
+        '.user-blog-posts-page__sort-selector'
+    ) 
 
-    // sortSelector.addEventListener('change', (event) => {
-    //     const sortValue = event
-    //         .currentTarget
-    //         .value
-    //         .trim()
-    //         .toLowerCase()
+    sortSelector.addEventListener('change', (event) => {
+        const sortValue = event
+            .target
+            .value
+            .trim()
+            .toLowerCase()
         
-    //     sortBlogPostList(
-    //         sortValue, 
-    //         '.user-blog-posts__published .blog-post-list'
-    //     )
-    //     sortBlogPostList(
-    //         sortValue, 
-    //         '.user-blog-posts__unpublished .blog-post-list'
-    //     )
-    // })
+        sortBlogPostList(
+            sortValue, 
+            '.user-blog-posts__published .blog-post-list'
+        )
+        sortBlogPostList(
+            sortValue, 
+            '.user-blog-posts__unpublished .blog-post-list'
+        )
+    })
 }
 
 function sortBlogPostList(sortBy, blogPostList) {
@@ -233,7 +233,6 @@ function onItemClick(event, rightPanel) {
         '.blog-post-fragment__title'
     )
     fragmentTitle.textContent = blogPost.title
-
 
     const fragmentThumbnail = document.querySelector(
         '.blog-post-fragment__thumbnail'

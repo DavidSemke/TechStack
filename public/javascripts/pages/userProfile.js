@@ -1,4 +1,5 @@
 import { decodeHTML } from '/entities/index.js'
+import { formFetch } from '../utils/fetch.js'
 
 function profileFormSetup() {
     const profilePage = document.querySelector(
@@ -59,23 +60,13 @@ function profileFormSetup() {
     })
 
     profileForm.addEventListener('submit', (event) => {
-        // prevent a get/post request
         event.preventDefault()
 
-        fetch(`/users/${backendData.user.username}`, {
-            method: 'PUT',
-            body: new FormData(profileForm)
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error - Status: ${res.status}`)
-                }
-
-                window.location.href = res.url
-            })
-            .catch(error => {
-                throw error
-            })
+        formFetch(
+            `/users/${backendData.user.username}`, 
+            'PUT', 
+            profileForm
+        )
     })
 }
 

@@ -1,3 +1,6 @@
+import { formFetch } from './utils/fetch.js'
+import { initializeTinyMCE } from './utils/tinyMCEConfig.js'
+
 function blogPostFormTabListeners() {
     const metadata = document.querySelector(
         '.blog-post-form__metadata'
@@ -31,13 +34,60 @@ function blogPostFormTabListeners() {
 
 function blogPostFormMetadataListeners() {
     const titlePreview = document.querySelector(
-        '.blog-post-preview__title'
+        '.blog-post-fragment__title'
     )
     const titleInput = document.getElementById('title')
     titlePreview.textContent = titleInput.value
 
     titleInput.addEventListener('change', () => {
         titlePreview.textContent = titleInput.value
+    })
+}
+
+function blogPostFormSubmitListeners() {
+    const blogPostForm = document.querySelector(
+        '.blog-post-form'
+    )
+
+    const discardButton = document.querySelector(
+        '.navbar__discard-button'
+    )
+    discardButton.addEventListener('click', () => {
+        addPreMethod('discard')
+    })
+
+    const saveButton = document.querySelector(
+        '.navbar__save-button'
+    )
+    saveButton.addEventListener('click', () => {
+        addPreMethod('save')
+    })
+
+    const publishButton = document.querySelector(
+        '.navbar__publish-button'
+    )
+    publishButton.addEventListener('click', () => {
+        addPreMethod('publish')
+    })
+
+    function addPreMethod(preMethod) {
+        const input = document.createElement('input')
+        input.name = 'pre-method'
+        input.type = 'hidden'
+        input.value = preMethod
+        blogPostForm.append(input)
+    }
+    
+    blogPostForm.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        // blogPost param is empty object if posting, else putting
+        if (Object.keys(backendData.blogPost).length) {
+            formFetch(window.location.href, 'PUT', blogPostForm)
+        }
+        else {
+            formFetch(window.location.href, 'POST', blogPostForm)
+        }
     })
 }
 
@@ -54,7 +104,6 @@ function blogPostFormSizing() {
 
 // Function blogPostFormSizing must be called before function 
 // blogPostFormMetadataEventListeners
-// Therefore, this function providing the correct ordering is exported 
 function blogPostFormSetup() {
     const blogPostFormPage = document.querySelector(
         '.blog-post-form-page'
@@ -67,6 +116,8 @@ function blogPostFormSetup() {
     blogPostFormSizing()
     blogPostFormTabListeners()
     blogPostFormMetadataListeners()
+    blogPostFormSubmitListeners()
+    initializeTinyMCE('#tinymce-app')
 }
 
 export {

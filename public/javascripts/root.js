@@ -1,8 +1,7 @@
-import { sidebarListeners } from './toolbars.js'
-import { blogPostFormSetup } from './blogPostForm.js'
-import { initializeTinyMCE } from './tinyMCEConfig.js'
-import { profileFormSetup } from './userProfile.js'
-import { userBlogPostsSetup } from './userBlogPosts.js'
+import { sidebarListeners } from './layouts/toolbars.js'
+import { blogPostFormSetup } from './pages/blogPostForm.js'
+import { profileFormSetup } from './pages/userProfile.js'
+import { userBlogPostsSetup } from './pages/userBlogPosts.js'
 
 
 sidebarListeners(
@@ -15,8 +14,5 @@ sidebarListeners(
 )
 
 blogPostFormSetup()
-initializeTinyMCE('#tinymce-app')
-
 profileFormSetup()
-
 userBlogPostsSetup()
