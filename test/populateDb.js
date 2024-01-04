@@ -134,31 +134,119 @@ async function createBlogPosts() {
         contentType: 'image/webp'
     }
 
+    // public versions
     await Promise.all([
         blogPostCreate(
             0, 
             { 
                 title: 'Local puppies adopted!',
-                thumbnail: thumbnail,
+                thumbnail,
                 author: users[0],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['puppies'],
                 content: 'Puppies adopted, everyone is happy!',
                 likes: 100,
-                dislikes: 0
+                dislikes: 0,
             }
         ),
         blogPostCreate(
             1, 
             { 
                 title: 'Thugs have cars!',
-                thumbnail: thumbnail,
+                thumbnail,
                 author: users[1],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['thugs', 'cars'],
                 content: 'Thug cars are really loud! They must go!',
+                likes: 10,
+                dislikes: 5
+            }
+        )
+    ]);
+
+    // private versions (last 4 indexes are NOT published)
+    await Promise.all([
+        blogPostCreate(
+            2, 
+            { 
+                title: 'Local puppies adopted!',
+                thumbnail,
+                author: users[0],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['puppies'],
+                content: 'Puppies adopted, everyone is happy!',
+                likes: 100,
+                dislikes: 0,
+                public_version: blogPosts[0]
+            }
+        ),
+        blogPostCreate(
+            3, 
+            { 
+                title: 'Thugs have cars!',
+                thumbnail,
+                author: users[1],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['thugs', 'cars'],
+                content: 'Thug cars are really loud! They must go!',
+                likes: 10,
+                dislikes: 5,
+                public_version: blogPosts[1]
+            }
+        ),
+        blogPostCreate(
+            4, 
+            { 
+                title: 'Spiders in my basement!',
+                thumbnail,
+                author: users[0],
+                last_modified_date: Date.now(),
+                keywords: ['spiders'],
+                content: 'Adventurer, I need you to squish 80 spiders!',
+                likes: 100,
+                dislikes: 0
+            }
+        ),
+        blogPostCreate(
+            5, 
+            { 
+                title: 'Only you can prevent forest fires!',
+                thumbnail,
+                author: users[1],
+                last_modified_date: Date.now(),
+                keywords: ['fire', 'forest'],
+                content: 'I smoked a forest yesterday and dreamt of magical jacuzzi.',
+                likes: 10,
+                dislikes: 5
+            }
+        ),
+        // public versions
+        blogPostCreate(
+            6, 
+            { 
+                title: 'I shipped my pants!',
+                thumbnail,
+                author: users[0],
+                last_modified_date: Date.now(),
+                keywords: ['puppies'],
+                content: 'I did not like my Amazon order so I am returning the pants, thanks Obama.',
+                likes: 100,
+                dislikes: 0, 
+            }
+        ),
+        blogPostCreate(
+            7, 
+            { 
+                title: 'Don\'t worry guys I\'m 6ft!',
+                thumbnail,
+                author: users[1],
+                last_modified_date: Date.now(),
+                keywords: ['thugs', 'cars'],
+                content: 'I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!',
                 likes: 10,
                 dislikes: 5
             }
