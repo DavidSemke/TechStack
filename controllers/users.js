@@ -156,8 +156,7 @@ exports.updateUser = [
                 data: fs.readFileSync(
                     path.join(
                         process.cwd(),
-                        'upload',
-                        'files',
+                        'uploads',
                         req.file.filename
                     )
                 ),
@@ -168,8 +167,7 @@ exports.updateUser = [
             fs.unlink(
                 path.join(
                     process.cwd(),
-                    'upload',
-                    'files',
+                    'uploads',
                     req.file.filename
                 ),
                 (err) => {
@@ -186,7 +184,6 @@ exports.updateUser = [
     })
 ]
 
-
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     const user = await User
         .findOne({ username: req.params.username })
@@ -200,15 +197,23 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    const blogPosts = await BlogPost
-        .find({ author: user._id })
+    // get all private blog posts 
+    // (private blog post can be unpublished or edit of published)
+    const privateBlogPosts = await BlogPost
+        .find({ 
+            author: user._id,
+            $or: [
+                { public_version: { $exists: true } },
+                { publish_date: { $exists: false} }
+            ]
+        })
         .lean()
         .exec()
 
     const publishedBlogPosts = []
     const unpublishedBlogPosts = []
 
-    for (const blogPost of blogPosts) {
+    for (const blogPost of privateBlogPosts) {
         const comments = await Comment
             .find({ blogPost: blogPost._id })
             .lean()
@@ -251,12 +256,14 @@ exports.getBlogPostCreateForm = [
         const safeData = {
             title: "Create Blog Post",
             inputs: {},
-            errors: []
+            errors: [],
+            blogPost: {}
         }
         const data = {
             title: "Create Blog Post",
             inputs: {},
-            errors: []
+            errors: [],
+            blogPost: {}
         }
         
         res.render("pages/blogPostForm",  { data, safeData })
@@ -290,101 +297,61 @@ exports.postBlogPost = [
         .withMessage("Blog post must be 500 to 3000 words."),
 
     asyncHandler(async (req, res, next) => {
-        const errors = []
-
-        if (req.fileTypeError) {
-            errors.push( 
-                {
-                    'path': 'thumbnail',
-                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
-                }
-            )
-        }
-        else if (req.fileLimitError) {
-            errors.push(
-                {
-                    'path': 'thumbnail',
-                    'msg': req.fileLimitError.message + '.'
-                }
-            )
-        }
-
-        // Cannot repopulate thumbnail input with file, so it is
-        // omitted here 
-        const inputs = {
-            title: req.body.title,
-            keywords: req.body.keywords,
-            content: req.body.content
+        switch (req.body['pre-method']) {
+            case 'discard':
+                res.redirect(303, `/users/${req.user.username}/blog-posts`)
+                break
+            case 'save':
+                await post(req, res)
+                break
+            case 'publish':
+                await post(req, res, true)
+                break
+            default:
+                const err = new Error(
+                    'Request body key "pre-method" must have value '
+                        + '"discard", "save", or "publish".'
+                );
+                err.status = 400
+                
+                return next(err);
         }
 
-        const nonFileErrors = validationResult(req).array()
-        errors.push(...nonFileErrors)
+        async function post(req, res, publishing=false) {
+            const data = await processBlogPostData(req, res)
 
-        if (errors.length) {
-            const data = {
-                title: "Create Blog Post",
-                inputs: inputs,
-                errors: errors
+            // data is null or an object
+            if (!data) {
+                return
             }
-            const safeData = ents.encodeObject(data)
-            
-            res.render("pages/blogPostForm", { data, safeData });
 
-            return
-        }
+            if (publishing) {
+                data.publish_date = Date.now()
 
-        const encodedInputs = ents.encodeObject(inputs)
-
-        const blogPost = new BlogPost({
-            title: encodedInputs.title,
-            thumbnail: {
-                data: fs.readFileSync(
-                    path.join(
-                        process.cwd(),
-                        'upload',
-                        'files',
-                        req.file.filename
-                    )
-                ),
-                contentType: req.file.mimetype
-            },
-            author: {
-                name: req.user.username,
-                profile_pic: req.user.profile_pic ?? null
-            },
-            publish_date: Date.now(),
-            keywords: encodedInputs.keywords.split(' '),
-            content: encodedInputs.content,
-            likes: 0,
-            dislikes: 0
-        });
-
-        await blogPost.save();
-
-        fs.unlink(
-            path.join(
-                process.cwd(),
-                'upload',
-                'files',
-                req.file.filename
-            ),
-            (err) => {
-                if (err) {
-                    throw err
-                }
-            }
-        )
+                const publicBlogPost = new BlogPost(data);
+                await publicBlogPost.save();
         
-        res.redirect(blogPost.url)
+                data.public_version = publicBlogPost._id
+
+                res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
+            }
+            else {
+                res.end()
+            }
+
+            const privateBlogPost = new BlogPost(data)
+            await privateBlogPost.save();
+        }
     }) 
 ];
 
 // On blog post delete
+// Public blog posts do not depend on private counterparts existing
 exports.deleteBlogPost = [
     asyncHandler(async (req, res, next) => {
         await Comment.deleteMany({blogPost: req.params.blogPostId}).exec()
-        await BlogPost.findByIdAndRemove(req.params.blogPostId).exec()
-        res.redirect("/");
+        await BlogPost.findOneAndDelete({ _id: req.params.blogPostId }).exec()
+        res.end();
     })
 ]
 
@@ -394,6 +361,7 @@ exports.getBlogPostUpdateForm = [
     asyncHandler(async (req, res, next) => {
         const blogPost = await BlogPost
             .findById(req.params.blogPostId)
+            .populate('public_version')
             .lean()
             .exec()
     
@@ -408,10 +376,11 @@ exports.getBlogPostUpdateForm = [
             title: 'Update Blog Post',
             inputs: {
                 title: blogPost.title,
-                keywords: blogPost.keywords,
+                keywords: blogPost.keywords.join(' '),
                 content: blogPost.content
             },
-            errors: []
+            errors: [],
+            blogPost
         }
         const data = ents.decodeObject(safeData)
     
@@ -446,93 +415,201 @@ exports.updateBlogPost = [
         .withMessage("Blog post must be 500 to 3000 words."),
         
     asyncHandler(async (req, res, next) => {
-        const errors = []
+        const blogPost = await BlogPost
+            .findById(req.params.blogPostId)
+            .populate('public_version')
+            .lean()
+            .exec()
 
-        if (req.fileTypeError) {
-            errors.push( 
-                {
-                    'path': 'thumbnail',
-                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
-                }
-            )
+        switch (req.body['pre-method']) {
+            case 'discard':
+                await backwardUpdate(req, res, blogPost)
+                break
+            case 'save':
+                await forwardUpdate(req, res, blogPost)
+                break
+            case 'publish':
+                await forwardUpdate(req, res, blogPost, true)
+                break
+            default:
+                const err = new Error(
+                    'Request body key "pre-method" must have value '
+                        + '"discard", "save", or "publish".'
+                );
+                err.status = 400
+                
+                return next(err);
         }
-        else if (req.fileLimitError) {
-            errors.push(
-                {
-                    'path': 'thumbnail',
-                    'msg': req.fileLimitError.message + '.'
-                }
-            )
-        }
 
-        // Cannot repopulate thumbnail input with file, so it is
-        // omitted here 
-        const inputs = {
-            title: req.body.title,
-            keywords: req.body.keywords,
-            content: req.body.content
-        }
-
-        const nonFileErrors = validationResult(req).array()
-        errors.push(...nonFileErrors)
-
-        if (errors.length) {
-            const data = {
-                title: "Create Blog Post",
-                inputs: inputs,
-                errors: errors
+        async function backwardUpdate(req, res, blogPost) {
+            const privateFilter = {
+                _id: req.params.blogPostId
             }
-            const safeData = ents.encodeObject(data)
-            
-            res.render("pages/blogPostForm", { data, safeData });
 
-            return
+            if (blogPost.public_version) {
+                const publicBlogPost = {...blogPost.public_version}
+                delete publicBlogPost._id
+
+                await BlogPost.findOneAndUpdate(
+                    privateFilter, 
+                    publicBlogPost
+                )
+            }
+            else {
+                await BlogPost.findOneAndDelete(
+                    privateFilter
+                )
+            }
+
+            res.redirect(303, `/users/${req.user.username}/blog-posts`)
         }
 
-        const encodedInputs =ents.encodeObject(inputs)
+        async function forwardUpdate(req, res, blogPost, publishing=false) {
+            const data = await processBlogPostData(req, res, blogPost)
 
-        const blogPost = new BlogPost({
-            title: encodedInputs.title,
-            thumbnail: {
-                data: fs.readFileSync(
-                    path.join(
-                        process.cwd(),
-                        'upload',
-                        'files',
-                        req.file.filename
+            // data is null or an object
+            if (!data) {
+                return
+            }
+
+            const privateFilter = {
+                _id: req.params.blogPostId
+            }
+            const privateUpdate = {
+                title: data.title,
+                thumbnail: data.thumbnail,
+                keywords: data.keywords,
+                content: data.content,
+            }
+
+            if (publishing) {
+                privateUpdate.publish_date = Date.now()
+                privateUpdate.last_modified_date = Date.now()
+                let publicBlogPost = null
+
+                if (blogPost.public_version) {
+                    publicBlogPost = blogPost.public_version
+
+                    const publicFilter = {
+                        _id: blogPost.public_version._id
+                    }
+                    const publicUpdate = privateUpdate
+    
+                    // update public version
+                    await BlogPost.findOneAndUpdate(
+                        publicFilter, 
+                        publicUpdate
                     )
-                ),
-                contentType: req.file.mimetype
-            },
-            author: {
-                name: req.user.username,
-                profile_pic: req.user.profile_pic ?? null
-            },
-            publish_date: Date.now(),
-            keywords: encodedInputs.keywords.split(' '),
-            content: encodedInputs.content,
-            likes: 0,
-            dislikes: 0
-        });
-
-        await BlogPost
-            .findOneAndReplace({_id: req.params.blogPostId}, blogPost)
-            .exec();
-
-        fs.unlink(
-            path.join(
-                process.cwd(),
-                'upload',
-                'files',
-                req.file.filename
-            ),
-            (err) => {
-                if (err) {
-                    throw err
                 }
+                else {
+                    // create a public version
+                    const publicBlogPostData = {...blogPost, ...privateUpdate}
+                    delete publicBlogPostData._id
+
+                    publicBlogPost = new BlogPost(publicBlogPostData)
+                    await publicBlogPost.save();
+
+                    privateUpdate.public_version = publicBlogPost._id
+                }
+
+                res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
             }
-        )
-        
-        res.redirect(blogPost.url)
+            else {
+                res.end()
+            }
+    
+            // update private version
+            await BlogPost.findOneAndUpdate(
+                privateFilter, 
+                privateUpdate
+            )
+        }
     }) 
 ];
+
+
+async function processBlogPostData(req, res, blogPost=null) {
+    const errors = []
+
+    if (req.fileTypeError) {
+        errors.push( 
+            {
+                'path': 'thumbnail',
+                'msg': 'File must be jpeg, jpg, png, webp, or gif.'
+            }
+        )
+    }
+    else if (req.fileLimitError) {
+        errors.push(
+            {
+                'path': 'thumbnail',
+                'msg': req.fileLimitError.message + '.'
+            }
+        )
+    }
+
+    // Cannot repopulate thumbnail input with file, so it is
+    // omitted here 
+    const inputs = {
+        title: req.body.title,
+        keywords: req.body.keywords,
+        content: req.body.content
+    }
+
+    const nonFileErrors = validationResult(req).array()
+    errors.push(...nonFileErrors)
+
+    if (errors.length) {
+        const data = {
+            title: (blogPost ? 'Update' : 'Create') + ' Blog Post' ,
+            inputs: inputs,
+            errors: errors,
+            blogPost: blogPost || {}
+        }
+        const safeData = ents.encodeObject(data)
+        
+        res.render("pages/blogPostForm", { data, safeData });
+
+        return null
+    }
+
+    const encodedInputs = ents.encodeObject(inputs)
+
+    const blogPostData = {
+        title: encodedInputs.title,
+        thumbnail: {
+            data: fs.readFileSync(
+                path.join(
+                    process.cwd(),
+                    'uploads',
+                    req.file.filename
+                )
+            ),
+            contentType: req.file.mimetype
+        },
+        author: {
+            name: req.user.username,
+            profile_pic: req.user.profile_pic ?? null
+        },
+        keywords: encodedInputs.keywords.split(' '),
+        content: encodedInputs.content,
+        likes: 0,
+        dislikes: 0,
+    }
+
+    // delete uploaded thumbnail
+    fs.unlink(
+        path.join(
+            process.cwd(),
+            'uploads',
+            req.file.filename
+        ),
+        (err) => {
+            if (err) {
+                throw err
+            }
+        }
+    )
+
+    return blogPostData
+}

@@ -299,6 +299,9 @@
 .button-list {
   display: flex;
 }
+.button-list.-small-gap {
+  gap: 2rem;
+}
 
 .icon-button-list {
   display: flex;

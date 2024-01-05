@@ -8,6 +8,8 @@ function formFetch(href, method, form) {
                 throw new Error(`HTTP error - Status: ${res.status}`)
             }
 
+            console.log(res.url)
+
             if (res.url) {
                 window.location.href = res.url
             }

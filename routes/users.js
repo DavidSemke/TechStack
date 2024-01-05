@@ -74,7 +74,9 @@ router.get(
 
 router.put(
     '/:username/blog-posts/:blogPostId',
-    // checkAuthorization, 
+    // checkAuthorization,
+    upload.single('thumbnail'),
+    handleMulterError, 
     controller.updateBlogPost
 )
 

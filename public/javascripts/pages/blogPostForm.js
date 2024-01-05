@@ -1,5 +1,5 @@
-import { formFetch } from './utils/fetch.js'
-import { initializeTinyMCE } from './utils/tinyMCEConfig.js'
+import { formFetch } from '../utils/fetch.js'
+import { initializeTinyMCE } from '../utils/tinyMCEConfig.js'
 
 function blogPostFormTabListeners() {
     const metadata = document.querySelector(
@@ -71,7 +71,12 @@ function blogPostFormSubmitListeners() {
     })
 
     function addPreMethod(preMethod) {
+        if (document.querySelector('.blog-post-form__pre-method')) {
+            return
+        }
+
         const input = document.createElement('input')
+        input.class = 'blog-post-form__pre-method'
         input.name = 'pre-method'
         input.type = 'hidden'
         input.value = preMethod

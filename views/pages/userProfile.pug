@@ -34,7 +34,7 @@ block page
                     
                     if user.profile_pic
                         - const pic = user.profile_pic
-                        - const base64 = Buffer.from(pic.data).toString('base64')
+                        - const base64 = pic.data.toString('base64')
                         - const dataUri = `data:${pic.contentType};base64,${base64}`
                         img(src=dataUri)
                     else

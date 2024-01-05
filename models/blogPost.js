@@ -7,10 +7,11 @@ const BlogPostSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   publish_date: { type: Date },
   last_modified_date: { type: Date, required: true },
-  keywords: { type: Array, required: true },
-  content: { type: String, required: true },
-  likes: { type: Number, required: true },
-  dislikes: { type: Number, required: true }
+  keywords: { type: Array },
+  content: { type: String },
+  likes: { type: Number },
+  dislikes: { type: Number },
+  public_version: { type: Schema.Types.ObjectId, ref: 'BlogPost' }
 });
 
 

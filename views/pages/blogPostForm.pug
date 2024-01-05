@@ -5,7 +5,7 @@ include ../components/form/formTextarea
 include ../components/fragment/blogPostFragment
 
 block page
-    - const {inputs, errors} = data
+    - const {inputs, errors, blogPost} = data
 
     - const titleErrors = []
     - const thumbnailErrors = []
@@ -40,7 +40,6 @@ block page
                     }
                 )
                 form#blog-post-form.blog-post-form(
-                    action=`/users/${mainUser.username}/blog-posts`
                     method='post' 
                     enctype='multipart/form-data'
                 )
@@ -49,28 +48,19 @@ block page
                             'title',
                             'text',
                             inputs.title || '',
-                            titleErrors,
-                            {
-                                'input': {'required': ''}
-                            }
+                            titleErrors
                         )
                         +formInput(
                             'thumbnail',
                             'file',
                             '',
-                            thumbnailErrors,
-                            {
-                                'input': {'required': ''}
-                            }
+                            thumbnailErrors
                         )
                         +formInput(
                             'keywords',
                             'text',
                             inputs.keywords || '',
-                            keywordErrors,
-                            {
-                                'input': {'required': ''}
-                            }
+                            keywordErrors
                         )
                         p * Keywords should be separated by spaces.
 

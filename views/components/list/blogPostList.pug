@@ -9,24 +9,33 @@ mixin blogPostList(blogPosts, attrs={})
                 .blog-post-item__top 
                     .blog-post-item__title= blogPost.title
                     .blog-post-item__date-group
-                        .blog-post-item__published= `Published: ${blogPost.publish_date}`
+                        .blog-post-item__published= `Published: ${blogPost.publish_date || 'N/A'}`
                         .blog-post-item__last-modified= `Last modified: ${blogPost.last_modified_date}`
                 .blog-post-item__bottom
+                    - let likes = '-'
+                    - let dislikes = '-'
+                    - let totalComments = '-'
+                    
+                    if blogPost.publish_date 
+                        - likes = blogPost.likes
+                        - dislikes = blogPost.dislikes 
+                        - totalComments = blogPost.comments.length
+
                     +iconList(
                         [{
                             'classId': 'blog-post-item__likes',
                             'icon': '/images/likeIcon.png',
-                            'label': blogPost.likes
+                            'label': likes
                         },
                         {
                             'classId': 'blog-post-item__dislikes',
                             'icon': '/images/dislikeIcon.png',
-                            'label': blogPost.dislikes
+                            'label': dislikes
                         },
                         {
                             'classId': 'blog-post-item__total-comments',
                             'icon': '/images/commentIcon.png',
-                            'label': blogPost.comments.length
+                            'label': totalComments
                         }],
                         {
                             'class': '-small'

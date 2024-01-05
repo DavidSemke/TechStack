@@ -2,4 +2,9 @@
 
 .button-list {
     display: flex;
+
+    &.-small-gap {
+        gap: 2rem;
+    }
+    
 }

@@ -6,7 +6,10 @@ const dateFormat = require('../utils/dateFormat')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
     const blogPosts = await BlogPost
-        .find()
+        .find({
+            public_version: { $exists: false },
+            publish_date: { $exists: true } 
+        })
         .sort({ likes: 'desc' })
         .populate('author')
         .lean()
@@ -18,9 +21,16 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
             .lean()
             .exec()
         blogPost.comments = comments
-        blogPost.publish_date = dateFormat.formatDate(
-            blogPost.publish_date
-        )
+
+        if (blogPost.publish_date) {
+            blogPost.publish_date = dateFormat.formatDate(
+                blogPost.publish_date
+            )
+        }
+        else {
+            blogPost.publish_date = 'N/A'
+        }
+        
     }
 
     const safeData = {

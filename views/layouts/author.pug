@@ -1,6 +1,7 @@
 extends toolbars
 include ../components/button/iconButton
 include ../components/link/iconLink
+include ../components/list/buttonList
 
 block navbar
     .navbar__left
@@ -17,13 +18,32 @@ block navbar
             '/', 
             'Tech Stack'
         )
-        .navbar__message Draft by #{mainUser.username}
     .navbar__right
-        button(
-            form='blog-post-form'
-            type='submit' 
-            class='-colorful'
-        ) Publish
+        +buttonList(
+            [{
+                'classId': 'navbar__discard-button',
+                'label': 'Discard'
+            },
+            {
+                'classId': 'navbar__save-button',
+                'label': 'Save'
+            },
+            {
+                'classId': 'navbar__publish-button',
+                'label': 'Publish'
+            }],
+            {
+                'button': { 
+                    'class': '-colorful',
+                    'form': 'blog-post-form',
+                    'type': 'submit'
+                },
+                'buttonList': {
+                    'class': '-small-gap'
+                }
+            }
+        )
+        
         +iconButton(
             'navbar__account-button',
             '/images/profileIcon.png',

@@ -36,7 +36,13 @@ function userBlogPostsSearchbarListeners() {
 function userBlogPostsSortSelectorListeners() {
     const sortSelector = document.querySelector(
         '.user-blog-posts-page__sort-selector'
-    ) 
+    )
+    const publishedList = document.querySelector(
+        '.user-blog-posts__published.blog-post-list'
+    )
+    const unpublishedList = document.querySelector(
+        '.user-blog-posts__unpublished.blog-post-list'
+    )
 
     sortSelector.addEventListener('change', (event) => {
         const sortValue = event
@@ -47,93 +53,97 @@ function userBlogPostsSortSelectorListeners() {
         
         sortBlogPostList(
             sortValue, 
-            '.user-blog-posts__published .blog-post-list'
+            publishedList,
+            true
         )
         sortBlogPostList(
             sortValue, 
-            '.user-blog-posts__unpublished .blog-post-list'
+            unpublishedList
         )
+        
     })
 }
 
-function sortBlogPostList(sortBy, blogPostList) {
+function sortBlogPostList(sortBy, blogPostList, published=false) {
     const blogPostItems = Array.from(
         blogPostList.querySelectorAll('.blog-post-item')
     )
-    
-    switch (sortBy) {
-        case 'title':
-            blogPostItems.sort((a, b) => {
-                const titleA = a.querySelector(
-                    '.blog-post-item__title'
-                ).textContent
-                const titleB = b.querySelector(
-                    '.blog-post-item__title'
-                ).textContent
 
-                return titleA.localeCompare(titleB)
-            })
-            break
-        case 'last-mod-date':
-            blogPostItems.sort((a, b) => {
-                const dateA = a.querySelector(
-                    '.blog-post-item__last-modified'
-                ).textContent
-                const dateB = b.querySelector(
-                    '.blog-post-item__last-modified'
-                ).textContent
+    if (sortBy === 'title') {
+        blogPostItems.sort((a, b) => {
+            const titleA = a.querySelector(
+                '.blog-post-item__title'
+            ).textContent
+            const titleB = b.querySelector(
+                '.blog-post-item__title'
+            ).textContent
 
-                return compareDateStrings(dateA, dateB)
-            })
-            break
-        case 'publish-date':
-            blogPostItems.sort((a, b) => {
-                const dateA = a.querySelector(
-                    '.blog-post-item__published'
-                ).textContent
-                const dateB = b.querySelector(
-                    '.blog-post-item__published'
-                ).textContent
+            return titleA.localeCompare(titleB)
+        })
+    }
+    else if (sortBy === 'last-mod-date') {
+        blogPostItems.sort((a, b) => {
+            const dateA = a.querySelector(
+                '.blog-post-item__last-modified'
+            ).textContent
+            const dateB = b.querySelector(
+                '.blog-post-item__last-modified'
+            ).textContent
 
-                return compareDateStrings(dateA, dateB)
-            })
-            break 
-        case 'likes':
-            blogPostItems.sort((a, b) => {
-                const likesA = a.querySelector(
-                    '.blog-post-item__likes .icon-list__label'
-                ).textContent
-                const likesB = b.querySelector(
-                    '.blog-post-item__likes .icon-list__label'
-                ).textContent
+            return compareDateStrings(dateA, dateB)
+        })
+    }
+    else if (published) {
+        switch (sortBy) {
+            case 'publish-date':
+                blogPostItems.sort((a, b) => {
+                    const dateA = a.querySelector(
+                        '.blog-post-item__published'
+                    ).textContent
+                    const dateB = b.querySelector(
+                        '.blog-post-item__published'
+                    ).textContent
 
-                return parseInt(likesA) - parseInt(likesB)
-            })
-            break
-        case 'dislikes':
-            blogPostItems.sort((a, b) => {
-                const dislikesA = a.querySelector(
-                    '.blog-post-item__dislikes .icon-list__label'
-                ).textContent
-                const dislikesB = b.querySelector(
-                    '.blog-post-item__dislikes .icon-list__label'
-                ).textContent
+                    return compareDateStrings(dateA, dateB)
+                })
+                break 
+            case 'likes':
+                blogPostItems.sort((a, b) => {
+                    const likesA = a.querySelector(
+                        '.blog-post-item__likes .icon-list__label'
+                    ).textContent
+                    const likesB = b.querySelector(
+                        '.blog-post-item__likes .icon-list__label'
+                    ).textContent
 
-                return parseInt(dislikesA) - parseInt(dislikesB)
-            })
-            break
-        case 'total-comments':
-            blogPostItems.sort((a, b) => {
-                const commentsA = a.querySelector(
-                    '.blog-post-item__total-comments .icon-list__label'
-                ).textContent
-                const commentsB = b.querySelector(
-                    '.blog-post-item__total-comments .icon-list__label'
-                ).textContent
+                    return parseInt(likesA) - parseInt(likesB)
+                })
+                break
+            case 'dislikes':
+                blogPostItems.sort((a, b) => {
+                    const dislikesA = a.querySelector(
+                        '.blog-post-item__dislikes .icon-list__label'
+                    ).textContent
+                    const dislikesB = b.querySelector(
+                        '.blog-post-item__dislikes .icon-list__label'
+                    ).textContent
 
-                return parseInt(commentsA) - parseInt(commentsB)
-            })
-            break
+                    return parseInt(dislikesA) - parseInt(dislikesB)
+                })
+                break
+            case 'total-comments':
+                blogPostItems.sort((a, b) => {
+                    const commentsA = a.querySelector(
+                        '.blog-post-item__total-comments .icon-list__label'
+                    ).textContent
+                    const commentsB = b.querySelector(
+                        '.blog-post-item__total-comments .icon-list__label'
+                    ).textContent
+
+                    return parseInt(commentsA) - parseInt(commentsB)
+                })
+                break
+        }
     }
 
     blogPostList.innerHTML = ''
