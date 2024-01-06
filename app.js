@@ -165,7 +165,7 @@ app.use("/signup", signupRouter)
 app.use("/login", loginRouter)
 app.use("/logout", logoutRouter)
 app.use("/users", usersRouter)
-app.use("/blogPosts", blogPostsRouter)
+app.use("/blog-posts", blogPostsRouter)
 
 /* Error Handling */
 app.use(function (req, res, next) {

@@ -4,7 +4,7 @@
 .icon-link {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 
     &__icon {
         height: iSizes.$medium;
@@ -12,7 +12,7 @@
     }
 
     &.-avatar {
-        .icon-link__icon {
+        .icon-link__icon > img {
             border-radius: 50%;
         }
     }

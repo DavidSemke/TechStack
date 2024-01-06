@@ -3,16 +3,21 @@ const Comment = require("../models/comment");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
+const dateFormat = require('../utils/dateFormat')
 
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
   
     const [blogPost, comments] = await Promise.all([
-        BlogPost.findById(req.params.id)
+        BlogPost.findById(req.params.blogPostId)
+            .populate('author')
             .lean()
             .exec(),
-        Comment.find({ blogPost: req.params.id })
+        Comment.find({ 
+            blogPost: req.params.blogPostId
+        })
+            .populate('author')
             .lean()
             .exec(),
     ]);
@@ -24,7 +29,37 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    blogPost.comments = comments
+    blogPost.publish_date = dateFormat.formatDate(
+        blogPost.publish_date
+    )
+
+    const replyMap = {};
+    const nonReplies = []
+
+    for (const comment of comments) {
+        comment.publish_date = dateFormat.formatDate(
+            comment.publish_date
+        )
+
+        if ('reply_to' in comment) {
+            
+            if (!(comment.reply_to in replyMap)) {
+                replyMap[comment.reply_to] = []
+            }
+
+            replyMap[comment.reply_to].push(comment)
+        }
+        else {
+            nonReplies.push(comment)
+            replyMap[comment._id] = []
+        }
+    }
+
+    for (const nonReply of nonReplies) {
+        nonReply.replies = replyMap[nonReply._id]
+    }
+
+    blogPost.comments = nonReplies
 
     const safeData = {
         title: blogPost.title,

@@ -19,6 +19,10 @@
         padding-bottom: 1rem;
         border-bottom: 2px solid colors.$bg2;
     }
+
+    &__reply {
+        margin-left: 4rem;
+    }
 }
 
 .blog-post {
@@ -59,5 +63,17 @@
         margin-right: auto;
         margin-left: auto;
         width: 75%;
+    }
+
+    &__content {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    &__post-blog-separator {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border-top: 4px solid colors.$bg2;
+        border-bottom: 4px solid colors.$bg2;
     }
 }

@@ -1,34 +1,53 @@
 include ../list/iconButtonList
 include ../link/iconLink
 
-mixin commentCard(comment, isReply=false, attrs={}) 
+mixin commentCard(comment, isReply=false, attrs={})
     .comment-card&attributes(attrs)
         .comment-card__author-date 
             .comment-card__author-details
+                - const author = comment.author
+                - let profileIcon = '/images/profileIcon.png'
+
+                if author.profile_pic
+                    - const pic = author.profile_pic
+                    - const base64 = pic.data.toString('base64')
+                    - profileIcon = `data:${pic.contentType};base64,${base64}`
+
                 +iconLink(
-                    '/images/profileIcon.png',
-                    '#',
-                    comment.author.name
+                    profileIcon,
+                    `/users/${author.username}`,
+                    author.username,
+                    {
+                        'class': '-avatar'
+                    }
                 )
             .comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar
+            - 
+                const iconButtons = [
+                    {
+                        'classId': `comment-like-button-${comment._id}`,
+                        'icon': '/images/likeIcon.png',
+                        'label': comment.likes
+                    },
+                    {
+                        'classId': `comment-dislike-button-${comment._id}`,
+                        'icon': '/images/dislikeIcon.png',
+                        'label': comment.dislikes
+                    }
+                ]
+            
+            if !isReply
+                -
+                    iconButtons.push({
+                        'classId': `comment-view-replies-button-${comment._id}`,
+                        'icon': '/images/commentIcon.png',
+                        'label': comment.replies.length
+                    })
+            
             +iconButtonList(
-                [{
-                    'classId': `comment-like-button-${comment._id}`,
-                    'icon': '/images/likeIcon.png',
-                    'label': comment.likes
-                },
-                {
-                    'classId': `comment-dislike-button-${comment._id}`,
-                    'icon': '/images/dislikeIcon.png',
-                    'label': comment.dislikes
-                },
-                {
-                    'classId': `comment-view-replies-button-${comment._id}`,
-                    'icon': '/images/commentIcon.png',
-                    'label': 'Z'
-                }],
+                iconButtons,
                 {
                     'iconButton': {'class': '-row -small' }
                 }

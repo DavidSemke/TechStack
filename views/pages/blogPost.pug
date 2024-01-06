@@ -12,14 +12,23 @@ block page
             h1.blog-post__title= title
             .blog-post__metadata
                 .blog-post__author-details
+                    - const author = blogPost.author
+                    - let profileIcon = '/images/profileIcon.png'
+
+                    if author.profile_pic
+                        - const profilePic = author.profile_pic
+                        - const profilePicBase64 = profilePic.data.toString('base64')
+                        - profileIcon = `data:${profilePic.contentType};base64,${profilePicBase64}`
+
                     +iconLink(
-                        '/images/profileIcon.png',
-                        '#',
-                        blogPost.author.name,
+                        profileIcon,
+                        `/users/${author.username}`,
+                        author.username,
                         {
-                            'class': '-larger'
+                            'class': ['-avatar', '-larger']
                         }
                     )
+
                 .blog-post__stat-button-list
                     +iconButtonList(
                         [{
@@ -40,26 +49,32 @@ block page
                     )
                 .blog-post__date= `Published on ${blogPost.publish_date}`
             
-            .blog-post__thumbnail Thumbnail 
+            - const thumbnail = blogPost.thumbnail
+            - const thumbnailBase64 = thumbnail.data.toString('base64')
+            - thumbnailImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
+            
+            .blog-post__thumbnail
+                img(src=thumbnailImg)
             .blog-post__content= blogPost.content
-            .blog-post__stat-button-list
-                +iconButtonList(
-                    [{
-                        'classId': 'blog-post-like-button',
-                        'icon': '/images/likeIcon.png',
-                        'label': blogPost.likes
-                    },
-                    {
-                        'classId': 'blog-post-dislike-button',
-                        'icon': '/images/dislikeIcon.png',
-                        'label': blogPost.dislikes
-                    },
-                    {
-                        'classId': 'blog-post-comment-button',
-                        'icon': '/images/commentIcon.png',
-                        'label': blogPost.comments.length
-                    }]
-                )
+            .blog-post__post-blog-separator
+                .blog-post__stat-button-list
+                    +iconButtonList(
+                        [{
+                            'classId': 'blog-post-like-button',
+                            'icon': '/images/likeIcon.png',
+                            'label': blogPost.likes
+                        },
+                        {
+                            'classId': 'blog-post-dislike-button',
+                            'icon': '/images/dislikeIcon.png',
+                            'label': blogPost.dislikes
+                        },
+                        {
+                            'classId': 'blog-post-comment-button',
+                            'icon': '/images/commentIcon.png',
+                            'label': blogPost.comments.length
+                        }]
+                    )
         
         h2.blog-post-page__post-blog-post-heading More Blogs
         .blog-post-card-pair
@@ -80,3 +95,6 @@ block page
         each comment in blogPost.comments
             .blog-post-page__comment
                 +commentCard(comment)
+            each reply in comment.replies 
+                .blog-post-page__comment.blog-post-page__reply
+                    +commentCard(reply, true)
