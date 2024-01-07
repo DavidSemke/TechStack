@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const User = require("../models/user");
 const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
+const Reaction = require("../models/reaction");
 const path = require('path')
 const fs = require('fs')
 
@@ -23,7 +24,7 @@ async function main() {
     await createUsers()
     await createBlogPosts()
     await createComments()
-    await createReplies()
+    await createReactions()
 
     console.log("Debug: Closing mongoose");
     mongoose.connection.close();
@@ -62,9 +63,9 @@ async function commentCreate(index, commentData) {
     comments[index] = comment;
 }
 
-async function addReply(replyData) {
-    const reply = new Comment(replyData)
-    await reply.save()
+async function reactionCreate(reactionData) {
+    const reaction = new Reaction(reactionData)
+    await reaction.save()
 }
 
 async function createUsers() {
@@ -133,6 +134,40 @@ async function createBlogPosts() {
         ),
         contentType: 'image/webp'
     }
+    const reactions = [
+        {
+            likes: 1,
+            dislikes: 0
+        },
+        {
+            likes: 1,
+            dislikes: 1
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        }
+    ]
 
     // public versions
     await Promise.all([
@@ -146,8 +181,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['puppies'],
                 content: 'Puppies adopted, everyone is happy!',
-                likes: 100,
-                dislikes: 0,
+                likes: reactions[0].likes,
+                dislikes: reactions[0].dislikes,
             }
         ),
         blogPostCreate(
@@ -160,8 +195,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['thugs', 'cars'],
                 content: 'Thug cars are really loud! They must go!',
-                likes: 10,
-                dislikes: 5
+                likes: reactions[1].likes,
+                dislikes: reactions[1].dislikes
             }
         )
     ]);
@@ -178,8 +213,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['puppies'],
                 content: 'Puppies adopted, everyone is happy!',
-                likes: 100,
-                dislikes: 0,
+                likes: reactions[2].likes,
+                dislikes: reactions[2].dislikes,
                 public_version: blogPosts[0]
             }
         ),
@@ -193,8 +228,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['thugs', 'cars'],
                 content: 'Thug cars are really loud! They must go!',
-                likes: 10,
-                dislikes: 5,
+                likes: reactions[3].likes,
+                dislikes: reactions[3].dislikes,
                 public_version: blogPosts[1]
             }
         ),
@@ -207,8 +242,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['spiders'],
                 content: 'Adventurer, I need you to squish 80 spiders!',
-                likes: 100,
-                dislikes: 0
+                likes: reactions[4].likes,
+                dislikes: reactions[4].dislikes
             }
         ),
         blogPostCreate(
@@ -220,8 +255,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['fire', 'forest'],
                 content: 'I smoked a forest yesterday and dreamt of magical jacuzzi.',
-                likes: 10,
-                dislikes: 5
+                likes: reactions[5].likes,
+                dislikes: reactions[5].dislikes
             }
         ),
         // public versions
@@ -234,8 +269,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['puppies'],
                 content: 'I did not like my Amazon order so I am returning the pants, thanks Obama.',
-                likes: 100,
-                dislikes: 0, 
+                likes: reactions[6].likes,
+                dislikes: reactions[6].dislikes, 
             }
         ),
         blogPostCreate(
@@ -247,8 +282,8 @@ async function createBlogPosts() {
                 last_modified_date: Date.now(),
                 keywords: ['thugs', 'cars'],
                 content: 'I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!',
-                likes: 10,
-                dislikes: 5
+                likes: reactions[7].likes,
+                dislikes: reactions[7].dislikes
             }
         ),
     ]);
@@ -256,6 +291,34 @@ async function createBlogPosts() {
 
 async function createComments() {
     console.log("Adding comments");
+
+    const reactions = [
+        {
+            likes: 1,
+            dislikes: 0
+        },
+        {
+            likes: 1,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 1
+        },
+        {
+            likes: 1,
+            dislikes: 1
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+        {
+            likes: 0,
+            dislikes: 0
+        },
+    ]
+
     await Promise.all([
         commentCreate(
             0,
@@ -264,8 +327,8 @@ async function createComments() {
                 blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Yay puppies!',
-                likes: 5,
-                dislikes: 0
+                likes: reactions[0].likes,
+                dislikes: reactions[0].dislikes
             }
         ),
         commentCreate(
@@ -275,8 +338,8 @@ async function createComments() {
                 blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Everyone loves puppies!',
-                likes: 10,
-                dislikes: 0
+                likes: reactions[1].likes,
+                dislikes: reactions[1].dislikes
             }
         ),
         commentCreate(
@@ -286,8 +349,8 @@ async function createComments() {
                 blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I am a thug and I am keeping my car!',
-                likes: 5,
-                dislikes: 10
+                likes: reactions[2].likes,
+                dislikes: reactions[2].dislikes
             }
         ),
         commentCreate(
@@ -297,38 +360,96 @@ async function createComments() {
                 blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'Thugs be tripping.',
-                likes: 10,
-                dislikes: 5
+                likes: reactions[3].likes,
+                dislikes: reactions[3].dislikes
             }
         )
     ]);
-}
 
-async function createReplies() {
-    console.log("Adding replies");
     await Promise.all([
-        addReply(
+        commentCreate(
+            4,
             {
                 author: users[0],
                 blogPost: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Puppies!',
-                likes: 0,
-                dislikes: 1,
+                likes: reactions[4].likes,
+                dislikes: reactions[4].dislikes,
                 reply_to: comments[0]
             }
         ),
-        addReply(
+        commentCreate(
+            5,
             {
                 author: users[1],
                 blogPost: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I will become mayor and take your car!',
-                likes: 1,
-                dislikes: 0,
+                likes: reactions[5].likes,
+                dislikes: reactions[5].dislikes,
                 reply_to: comments[2]
             }
         )
     ])
+}
+
+async function createReactions() {
+    console.log("Adding reactions");
+
+    const reactions = []
+    const postGroups = [
+        {
+            type: 'BlogPost',
+            collection: blogPosts
+        },
+        {
+            type: 'Comment',
+            collection: comments
+        }
+    ]
+    const reactionGroups = [
+        {
+            type: 'Like',
+            keyName: 'likes'
+        },
+        {
+            type: 'Dislike',
+            keyName: 'dislikes'
+        },
+    ]
+
+    let userIndex = 0
+
+    for (const postGroup of postGroups) {
+        const { type: postType, collection: posts } = postGroup
+
+        for (const post of posts) {
+            for (const reactionGroup of reactionGroups) {
+                const { type: reactionType, keyName } = reactionGroup
+    
+                for (let i=0; i<post[keyName]; i++) {
+                    reactions.push(
+                        {
+                            user: users[userIndex % users.length],
+                            content: {
+                                content_type: postType,
+                                content_id: post
+                            },
+                            reaction_type: reactionType
+                        }
+                    )
+    
+                    userIndex++
+                }
+            }
+        }
+
+        
+    }
+
+    await Promise.all(
+        reactions.map((reaction => reactionCreate(reaction)))
+    )
 }
 
