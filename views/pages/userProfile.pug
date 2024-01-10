@@ -1,5 +1,5 @@
 extends ../layouts/browser
-include ../components/list/iconLinkList
+include ../components/list/iconElementList
 include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/list/buttonList
@@ -110,16 +110,22 @@ block page
                 .profile__browser-details
                     .profile__heading Recent Reads
                     .profile__body
-                        +iconLinkList(
+                        +iconElementList(
                             [{
+                                'tag': 'a',
                                 'icon': '/images/profileIcon.png',
-                                'href': `#`,
-                                'label': 'Blog Post 1' 
+                                'label': 'Blog Post 1',
+                                'attrs': {
+                                    'href': `#`,
+                                }
                             },
                             {
+                                'tag': 'a',
                                 'icon': '/images/profileIcon.png',
-                                'href': `#`,
-                                'label': 'Blog Post 2' 
+                                'label': 'Blog Post 2',
+                                'attrs': {
+                                    'href': `#`,
+                                } 
                             }]
                         )
                 
@@ -134,13 +140,19 @@ block page
                         .profile__body
                             +iconLinkList(
                                 [{
+                                    'tag': 'a',
                                     'icon': '/images/profileIcon.png',
-                                    'href': `#`,
-                                    'label': 'Blog Post 1' 
+                                    'label': 'Blog Post 1',
+                                    'attrs': {
+                                        'href': `#`,
+                                    }
                                 },
                                 {
+                                    'tag': 'a',
                                     'icon': '/images/profileIcon.png',
-                                    'href': `#`,
-                                    'label': 'Blog Post 2' 
+                                    'label': 'Blog Post 2',
+                                    'attrs': {
+                                        'href': `#`,
+                                    } 
                                 }]
                             )

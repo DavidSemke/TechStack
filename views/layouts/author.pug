@@ -1,22 +1,30 @@
 extends toolbars
-include ../components/button/iconButton
-include ../components/link/iconLink
+include ../components/icon/iconElement
 include ../components/list/buttonList
 
 block navbar
     .navbar__left
-        +iconButton(
-            'navbar__content-button',
+        +iconElement(
+            'button'
             '/images/burgerIcon.png',
             null,
             {
-                'class': '-burger'
+                'class': [
+                    'navbar__content-button',
+                    '-padding-burger-small'
+                ]
             }
         )
-        +iconLink(
+        +iconElement(
+            'a',
             '/images/favicon.png', 
-            '/', 
-            'Tech Stack'
+            'Tech Stack',
+            {
+                'href': '/',
+                'class': [
+                    '-gap-small'
+                ]
+            }
         )
     .navbar__right
         +buttonList(
@@ -34,22 +42,26 @@ block navbar
             }],
             {
                 'button': { 
-                    'class': '-colorful',
                     'form': 'blog-post-form',
-                    'type': 'submit'
+                    'type': 'submit',
+                    'class': '-colorful',
                 },
                 'buttonList': {
-                    'class': '-small-gap'
+                    'class': '-gap-small'
                 }
             }
         )
         
-        +iconButton(
-            'navbar__account-button',
+        +iconElement(
+            'button'
             '/images/profileIcon.png',
             null,
             {
-                'class': '-avatar'
+                'class': [
+                    'navbar__account-button',
+                    '-avatar',
+                    '-padding-burger-small'
+                ]
             }
         )
     

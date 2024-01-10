@@ -1,5 +1,5 @@
-include ../list/iconButtonList
-include ../link/iconLink
+include ../list/iconElementList
+include ../icon/iconElement
 
 mixin commentCard(comment, isReply=false, attrs={})
     .comment-card(id=comment._id)&attributes(attrs)
@@ -13,43 +13,56 @@ mixin commentCard(comment, isReply=false, attrs={})
                     - const base64 = pic.data.toString('base64')
                     - profileIcon = `data:${pic.contentType};base64,${base64}`
 
-                +iconLink(
+                +iconElement(
+                    'a',
                     profileIcon,
-                    `/users/${author.username}`,
                     author.username,
                     {
-                        'class': '-avatar'
+                        'href': `/users/${author.username}`,
+                        'class': [
+                            '-avatar',
+                            '-gap-small'
+                        ]
                     }
                 )
             .comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar
             - 
-                const iconButtons = [
+                const iconElements = [
                     {
-                        'classId': `comment-card__like-button`,
+                        'tag': 'button',
                         'icon': '/images/likeIcon.png',
-                        'label': comment.likes
+                        'label': comment.likes,
+                        'attrs': {
+                            'class': `comment-card__like-button`,
+                        }
                     },
                     {
-                        'classId': `comment-card__dislike-button`,
+                        'tag': 'button',
                         'icon': '/images/dislikeIcon.png',
-                        'label': comment.dislikes
+                        'label': comment.dislikes,
+                        'attrs': {
+                            'class': `comment-card__dislike-button`,
+                        }
                     }
                 ]
             
             if !isReply
                 -
-                    iconButtons.push({
-                        'classId': `comment-card__view-replies-button`,
+                    iconElements.push({
+                        'tag': 'button',
                         'icon': '/images/commentIcon.png',
-                        'label': comment.replies.length
+                        'label': comment.replies.length,
+                        'attrs': {
+                            'class': `comment-card__view-replies-button`
+                        }
                     })
             
-            +iconButtonList(
-                iconButtons,
+            +iconElementList(
+                iconElements,
                 {
-                    'iconButton': {'class': '-row -small' }
+                    'iconElement': {'class': '-small' }
                 }
             )
 

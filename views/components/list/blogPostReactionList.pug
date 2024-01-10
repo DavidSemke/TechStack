@@ -1,16 +1,19 @@
-include ../button/iconButton
-include ../link/iconLink
+include ../icon/iconElement
 
 ul.blog-post__reaction-list
     li.blog-post__reaction-item
         form.blog-post__reaction-form
-            +iconButton(
-                'blog-post__like-button',
+            +iconElement(
+                'button',
                 '/images/likeIcon.png',
                 blogPost.likes,
                 { 
                     'type': 'submit',
-                    'class': '-padding-small'
+                    'class': [
+                        'blog-post__like-button',
+                        '-padding-even-small',
+                        '-column'
+                    ]
                 }
             )
             input(
@@ -20,13 +23,17 @@ ul.blog-post__reaction-list
             )
     li.blog-post__reaction-item
         form.blog-post__reaction-form
-            +iconButton(
-                'blog-post__dislike-button',
+            +iconElement(
+                'button',
                 '/images/dislikeIcon.png',
                 blogPost.dislikes,
                 { 
                     'type': 'submit',
-                    'class': '-padding-small'
+                    'class': [
+                        'blog-post__dislike-button',
+                        '-padding-even-small',
+                        '-column'
+                    ]
                 }
             )
             input(
@@ -35,14 +42,17 @@ ul.blog-post__reaction-list
                 value='dislike'
             )
     li.blog-post__reaction-item
-        +iconLink(
+        +iconElement(
+            'a',
             '/images/commentIcon.png',
-            '#comment-section',
             blogPost.comments.length,
             { 
+                'href': '#comment-section-heading',
                 'class': [
-                    '-padding-small',
-                    '-button'
-                ]
+                    '-padding-even-small',
+                    '-button',
+                    '-column'
+                ],
+                
             }
         )

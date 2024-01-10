@@ -1,9 +1,0 @@
-@use '../../globals/colors';
-@use '../../globals/font-sizes' as fSizes;
-@use '../../globals/icon-sizes' as iSizes;
-
-.icon-link-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}

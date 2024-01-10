@@ -5,7 +5,6 @@
 .icon-element {
     display: flex;
     align-items: center;
-    gap: 0.2;
 
     &__icon {
         height: iSizes.$medium;
@@ -22,16 +21,31 @@
         flex-direction: column;
     }
 
-    &.-even-padding-slim {
+    &.-gap-small {
+        gap: 0.5rem;
+    }
+
+    &.-gap-medium {
+        gap: 1rem;
+    }
+
+    &.-padding-even-slim {
         padding-top: 0.1rem;
         padding-bottom: 0.1rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
     }
 
-    &.-even-padding-small {
+    &.-padding-even-small {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    &.-padding-burger-small {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }

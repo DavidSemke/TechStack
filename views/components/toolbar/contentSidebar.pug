@@ -1,32 +1,48 @@
-include ../list/iconLinkList
+include ../list/iconElementList
 
 .content-sidebar.sidebar.-closed
     .sidebar__title Content
     .content-sidebar__heading Recent
     .content-sidebar__section
-        +iconLinkList(
+        +iconElementList(
             [{
+                'tag': 'a',
                 'icon': '/images/profileIcon.png',
-                'href': '/blog-posts',
-                'label': 'Blog Post 1'     
+                'label': 'Blog Post 1',
+                'attrs': {
+                    'href': '/',
+                    'class': '-gap-small'
+                }     
             },
             {
+                'tag': 'a',
                 'icon': '/images/profileIcon.png',
-                'href': '/blog-posts',
-                'label': 'Blog Post 2'
+                'label': 'Blog Post 2',
+                'attrs': {
+                    'href': '/',
+                    'class': '-gap-small'
+                }    
             }]
         )
     .content-sidebar__heading Suggested
     .content-sidebar__section
-        +iconLinkList(
+        +iconElementList(
             [{
+                'tag': 'a',
                 'icon': '/images/profileIcon.png',
-                'href': '/blog-posts',
-                'label': 'Blog Post 1'     
+                'label': 'Blog Post 1',
+                'attrs': {
+                    'href': '/',
+                    'class': '-gap-small'
+                }      
             },
             {
+                'tag': 'a',
                 'icon': '/images/profileIcon.png',
-                'href': '/blog-posts',
-                'label': 'Blog Post 2'
+                'label': 'Blog Post 2',
+                'attrs': {
+                    'href': '/',
+                    'class': '-gap-small'
+                } 
             }]
         )

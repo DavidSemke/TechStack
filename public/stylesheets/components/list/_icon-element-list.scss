@@ -1,0 +1,20 @@
+.icon-element-list {
+    display: flex;
+    align-items: center;
+
+    &.-column {
+        flex-direction: column;
+    }
+
+    &.-center {
+        justify-content: center;
+    }
+
+    &.-gap-small {
+        gap: 1rem;
+    }
+    
+    &.-gap-medium {
+        gap: 2rem;
+    }
+}

@@ -1,0 +1,13 @@
+include ../icon/iconElement
+
+mixin iconElementList(elementItems, attrs={})
+    ul.icon-element-list&attributes(attrs.iconElementList)
+        each item in elementItems
+            li.icon-element-list__item
+                - item.label = item.label ?? null
+                +iconElement(
+                    item.tag,
+                    item.icon,  
+                    item.label,
+                    {...attrs.iconElement, ...item.attrs}
+                )

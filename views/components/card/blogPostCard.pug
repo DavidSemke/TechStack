@@ -1,26 +1,46 @@
-include ../list/iconList
+include ../list/iconElementList
 
 mixin blogPostCard(blogPost, attrs={})
   .blog-post-card&attributes(attrs)
     .blog-post-card__stat-list
-      +iconList(
+      +iconElementList(
         [{
-          'classId': 'blog-post-card__likes',
+          'tag': 'div',
           'icon': '/images/likeIcon.png',
-          'label': blogPost.likes
+          'label': blogPost.likes,
+          'attrs': {
+            'class': 'blog-post-card__likes',
+          }
         },
         {
-          'classId': 'blog-post-card__dislikes',
+          'tag': 'div',
           'icon': '/images/dislikeIcon.png',
-          'label': blogPost.dislikes
+          'label': blogPost.dislikes,
+          'attrs': {
+            'class': 'blog-post-card__dislikes',
+          }
         },
         {
-          'classId': 'blog-post-card__total-comments',
+          'tag': 'div',
           'icon': '/images/commentIcon.png',
-          'label': blogPost.comments.length
+          'label': blogPost.comments.length,
+          'attrs': {
+            'class': 'blog-post-card__total-comments',
+          }
         }],
         {
-          'class': '-column -small -center'
+          'iconElementList': {
+            'class': [
+              '-center',
+              '-column',
+              '-gap-medium'
+            ]
+          },
+          'iconElement': {
+            'class': [
+              '-small'
+            ]
+          }
         }
       )
     .blog-post-card__overview

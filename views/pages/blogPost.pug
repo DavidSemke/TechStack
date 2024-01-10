@@ -1,5 +1,5 @@
 extends ../layouts/browser 
-include ../components/link/iconLink
+include ../components/icon/iconElement
 include ../components/card/blogPostCard
 include ../components/card/commentCard
 include ../components/form/formTextarea
@@ -21,12 +21,17 @@ block page
                         - const profilePicBase64 = profilePic.data.toString('base64')
                         - profileIcon = `data:${profilePic.contentType};base64,${profilePicBase64}`
 
-                    +iconLink(
+                    +iconElement(
+                        'a',
                         profileIcon,
-                        `/users/${author.username}`,
                         author.username,
                         {
-                            'class': ['-avatar', '-larger']
+                            'href': `/users/${author.username}`,
+                            'class': [
+                                '-avatar', 
+                                '-larger',
+                                '-gap-medium'
+                            ]
                         }
                     )
 
@@ -59,7 +64,7 @@ block page
                 }
             )
         
-        h2.blog-post-page__post-blog-post-heading Comments
+        h2#comment-section-heading.blog-post-page__post-blog-post-heading Comments
         form.blog-post-page__comment-form.comment-form
             +formTextarea(
                 'content',

@@ -1,6 +1,5 @@
-include iconList
-include ../button/iconButton
-include ../link/iconLink
+include iconElementList
+include ../icon/iconElement
 
 mixin blogPostList(blogPosts, attrs={})
     ul.blog-post-list&attributes(attrs)
@@ -21,36 +20,69 @@ mixin blogPostList(blogPosts, attrs={})
                         - dislikes = blogPost.dislikes 
                         - totalComments = blogPost.comments.length
 
-                    +iconList(
+                    +iconElementList(
                         [{
-                            'classId': 'blog-post-item__likes',
+                            'tag': 'div',
                             'icon': '/images/likeIcon.png',
-                            'label': likes
+                            'label': likes,
+                            'attrs': {
+                                'class': 'blog-post-item__likes'
+                            }
                         },
                         {
-                            'classId': 'blog-post-item__dislikes',
+                            'tag': 'div',
                             'icon': '/images/dislikeIcon.png',
-                            'label': dislikes
+                            'label': dislikes,
+                            'attrs': {
+                                'class': 'blog-post-item__dislikes'
+                            }
                         },
                         {
-                            'classId': 'blog-post-item__total-comments',
+                            'tag': 'div',
                             'icon': '/images/commentIcon.png',
-                            'label': totalComments
+                            'label': totalComments,
+                            'attrs': {
+                                'class': 'blog-post-item__total-comments'
+                            }
                         }],
                         {
-                            'class': '-small'
+                            'iconElementList': {
+                                'class': [
+                                    '-gap-medium'
+                                ]
+                            },
+                            'iconElement': {
+                                'class': [
+                                    '-small'
+                                ]
+                            }
                         }
                     )
                     .blog-post-item__actions
-                        +iconLink(
+                        +iconElement(
+                            'a',
                             '/images/editIcon.png',
-                            `/users/${mainUser.username}/blog-posts/${blogPost._id}`,
                             null,
-                            {'class': '-small -button -colorful -even-padding-slim'}
+                            {
+                                'href': `/users/${mainUser.username}/blog-posts/${blogPost._id}`,
+                                'class': [
+                                    '-small',
+                                    '-button',
+                                    '-colorful', 
+                                    '-padding-even-slim'
+                                ]
+                            }
                         )
-                        +iconButton(
-                            'blog-post-item__delete-button',
+                        +iconElement(
+                            'button',
                             '/images/deleteIcon.png',
                             null,
-                            {'class': '-small -colorful -even-padding-slim'}
+                            {
+                                'class': [
+                                    'blog-post-item__delete-button',
+                                    '-small',
+                                    '-colorful',
+                                    '-padding-even-slim'
+                                ]
+                            }
                         )

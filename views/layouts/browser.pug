@@ -1,22 +1,30 @@
 extends toolbars
-include ../components/button/iconButton
-include ../components/link/iconLink
+include ../components/icon/iconElement
 include ../components/form/searchbar
 
 block navbar
     .navbar__left
-        +iconButton(
-            'navbar__content-button',
+        +iconElement(
+            'button',
             '/images/burgerIcon.png',
             null,
             {
-                'class': '-burger'
+                'class': [
+                    'navbar__content-button',
+                    '-padding-burger-small'
+                ]
             }
         )
-        +iconLink(
-            '/images/favicon.png', 
-            '/', 
-            'Tech Stack'
+        +iconElement(
+            'a',
+            '/images/favicon.png',  
+            'Tech Stack',
+            {
+                'href': '/',
+                'class': [
+                    '-gap-small'
+                ]
+            }
         )
     .navbar__center 
         +searchbar(
@@ -27,23 +35,32 @@ block navbar
         )
     .navbar__right 
         if mainUser
-            +iconLink(
+            +iconElement(
+                'a',
                 '/images/writeIcon.png', 
-                `/users/${mainUser.username}/blog-posts/new-blog-post`,
                 'Write',
                 {
-                    'class': '-button'
+                    'href': `/users/${mainUser.username}/blog-posts/new-blog-post`,
+                    'class': [
+                        '-button',
+                        '-colorful',
+                        '-gap-small'
+                    ]
                 }
             )
         else 
-            a(href='/login' class='-button') Login
+            a(href='/login' class='-button -colorful') Login
         
-        +iconButton(
-            'navbar__account-button',
+        +iconElement(
+            'button',
             '/images/profileIcon.png',
             null,
             {
-                'class': '-avatar'
+                'class': [
+                    'navbar__account-button',
+                    '-avatar',
+                    '-padding-burger-small'
+                ]
             }
         )
 

@@ -10,7 +10,6 @@
 @use 'components/list/blog-post-list';
 @use 'components/list/button-list';
 @use 'components/list/icon-element-list';
-@use 'components/list/icon-list';
 @use 'components/toolbar/account-sidebar';
 @use 'components/toolbar/content-sidebar';
 @use 'globals/colors';
@@ -63,6 +62,7 @@ button, a.-button {
   border-radius: 5px;
   background: none;
   font-size: fSizes.$large;
+  text-decoration: none;
   
   &:hover {
     background-color: colors.$button;
