@@ -85,29 +85,30 @@ exports.postComment = [
 
     asyncHandler(async (req, res, next) => {
         const content = req.body.content
+        const replyTo = req.body['reply-to']
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            const data = {
-                content,
-                errors: errors.array()
-            }
-            const safeData = ents.encodeObject(data)
-            
-            res.render("pages/commentForm ", { data, safeData })
+            res.status(400).json({ errors: errors.array() })
         } 
+        else {
+            const commentData = {
+                author: req.user._id,
+                blogPost: req.params.blogPostId,
+                publish_date: Date.now(),
+                content: ents.encode(content),
+                likes: 0,
+                dislikes: 0,
+            }
+
+            if (replyTo) {
+                commentData.reply_to = replyTo
+            }
+
+            const comment = new Comment({ commentData });
+            await comment.save();
     
-        const comment = new Comment({
-            author: req.user._id,
-            blogPost: req.params.blogPostId,
-            publish_date: Date.now(),
-            content: ents.encode(content),
-            likes: 0,
-            dislikes: 0,
-        });
-
-        await comment.save();
-
-        res.end()
+            res.end()
+        }
     }),
 ];

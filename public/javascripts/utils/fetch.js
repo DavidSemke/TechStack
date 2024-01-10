@@ -1,4 +1,4 @@
-function formFetch(href, method, form) {
+function formFetch(href, method, form, onResponse=null) {
     fetch(href, {
         method,
         body: new FormData(form)
@@ -7,10 +7,11 @@ function formFetch(href, method, form) {
             if (!res.ok) {
                 throw new Error(`HTTP error - Status: ${res.status}`)
             }
-
-            console.log(res.url)
-
-            if (res.url) {
+            
+            if (onResponse) {
+                onResponse(res)
+            }
+            else if (res.url && res.url !== window.location.href) {
                 window.location.href = res.url
             }
         })

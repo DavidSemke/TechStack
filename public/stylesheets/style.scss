@@ -1,4 +1,3 @@
-@use 'components/button/icon-button';
 @use 'components/card/blog-post-card';
 @use 'components/card/comment-card';
 @use 'components/form/form-input';
@@ -7,19 +6,16 @@
 @use 'components/form/logging-form';
 @use 'components/form/searchbar';
 @use 'components/fragment/blog-post-fragment';
-@use 'components/link/icon-link';
+@use 'components/icon/icon-element';
 @use 'components/list/blog-post-list';
 @use 'components/list/button-list';
-@use 'components/list/icon-button-list';
-@use 'components/list/icon-link-list';
+@use 'components/list/icon-element-list';
 @use 'components/list/icon-list';
 @use 'components/toolbar/account-sidebar';
 @use 'components/toolbar/content-sidebar';
 @use 'globals/colors';
 @use 'globals/font-sizes' as fSizes;
 @use 'globals/icon-sizes' as iSizes;
-@use 'layouts/author';
-@use 'layouts/browser';
 @use 'layouts/logging';
 @use 'layouts/toolbars';
 @use 'pages/blog-post-form';
@@ -46,23 +42,6 @@ a {
   &:hover {
     color: colors.$linkHover;
   }
-
-  &.-button {
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    color: colors.$buttonColorful;
-    border: 2px solid colors.$buttonColorful;
-    border-radius: 5px;
-    background: none;
-    font-size: fSizes.$large;
-    
-    &:hover {
-      color: colors.$textLight;
-      background-color: colors.$buttonColorful;
-    }
-  }
 }
 
 body {
@@ -74,7 +53,7 @@ body {
   background-color: colors.$bg1;
 }
 
-button {
+button, a.-button {
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   padding-left: 1rem;
@@ -150,15 +129,6 @@ ul, ol {
   align-items: center;
   flex-wrap: wrap;
   gap: 4rem;
-}
-
-.signup-prompt {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  font-size: fSizes.$large;
 }
 
 .-hidden {

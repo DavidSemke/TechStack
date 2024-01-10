@@ -1,8 +1,9 @@
 extends ../layouts/browser 
-include ../components/list/iconButtonList
 include ../components/link/iconLink
 include ../components/card/blogPostCard
 include ../components/card/commentCard
+include ../components/form/formTextarea
+
 
 block page
     - const {title, blogPost} = data
@@ -29,24 +30,8 @@ block page
                         }
                     )
 
-                .blog-post__stat-button-list
-                    +iconButtonList(
-                        [{
-                            'classId': 'blog-post-like-button',
-                            'icon': '/images/likeIcon.png',
-                            'label': blogPost.likes
-                        },
-                        {
-                            'classId': 'blog-post-dislike-button',
-                            'icon': '/images/dislikeIcon.png',
-                            'label': blogPost.dislikes
-                        },
-                        {
-                            'classId': 'blog-post-comment-button',
-                            'icon': '/images/commentIcon.png',
-                            'label': blogPost.comments.length
-                        }]
-                    )
+                include ../components/list/blogPostReactionList
+
                 .blog-post__date= `Published on ${blogPost.publish_date}`
             
             - const thumbnail = blogPost.thumbnail
@@ -57,24 +42,7 @@ block page
                 img(src=thumbnailImg)
             .blog-post__content= blogPost.content
             .blog-post__post-blog-separator
-                .blog-post__stat-button-list
-                    +iconButtonList(
-                        [{
-                            'classId': 'blog-post-like-button',
-                            'icon': '/images/likeIcon.png',
-                            'label': blogPost.likes
-                        },
-                        {
-                            'classId': 'blog-post-dislike-button',
-                            'icon': '/images/dislikeIcon.png',
-                            'label': blogPost.dislikes
-                        },
-                        {
-                            'classId': 'blog-post-comment-button',
-                            'icon': '/images/commentIcon.png',
-                            'label': blogPost.comments.length
-                        }]
-                    )
+                include ../components/list/blogPostReactionList
         
         h2.blog-post-page__post-blog-post-heading More Blogs
         .blog-post-card-pair
@@ -92,9 +60,22 @@ block page
             )
         
         h2.blog-post-page__post-blog-post-heading Comments
+        form.blog-post-page__comment-form.comment-form
+            +formTextarea(
+                'content',
+                '',
+                [],
+                {
+                    'textarea': {
+                        'rows': '2',
+                        'placeholder': 'Add a comment...',
+                    }
+                }
+            )
+
         each comment in blogPost.comments
             .blog-post-page__comment
                 +commentCard(comment)
             each reply in comment.replies 
-                .blog-post-page__comment.blog-post-page__reply
+                .blog-post-page__comment.blog-post-page__reply.-gone
                     +commentCard(reply, true)

@@ -1,10 +1,11 @@
+
 @use '../../globals/font-sizes' as fSizes;
 @use '../../globals/icon-sizes' as iSizes;
 
-.icon-link {
+.icon-element {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.2;
 
     &__icon {
         height: iSizes.$medium;
@@ -12,52 +13,59 @@
     }
 
     &.-avatar {
-        .icon-link__icon > img {
+        .icon-element__icon > img {
             border-radius: 50%;
         }
     }
 
-    &.-center {
-        justify-content: center;
+    &.-column {
+        flex-direction: column;
     }
 
-    &.-slim {
+    &.-even-padding-slim {
         padding-top: 0.1rem;
         padding-bottom: 0.1rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
     }
 
+    &.-even-padding-small {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
     &.-small {
-        .icon-link__icon {
+        .icon-element__icon {
             height: iSizes.$small;
             width: iSizes.$small;
         }
-        .icon-link__label {
+        .icon-element__label {
             font-size: fSizes.$small;
         }
     }
 
     &.-large {
         
-        .icon-link__icon {
+        .icon-element__icon {
             height: iSizes.$large;
             width: iSizes.$large;
         }
 
-        .icon-link__label {
+        .icon-element__label {
             font-size: fSizes.$large;
         }
     }
 
     &.-larger {
         
-        .icon-link__icon {
+        .icon-element__icon {
             height: iSizes.$larger;
             width: iSizes.$larger;
         }
 
-        .icon-link__label {
+        .icon-element__label {
             font-size: fSizes.$larger;
         }
     }

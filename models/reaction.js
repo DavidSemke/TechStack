@@ -8,17 +8,17 @@ const ReactionSchema = new Schema({
     required: true 
   },
   content: { 
-    contentType: {
+    content_type: {
         type: String,
         enum: ['Comment', 'BlogPost'],
         required: true
     },
-    contentId: {
+    content_id: {
         type: Schema.Types.ObjectId,
         required: true
     }
   },
-  reactionType: {
+  reaction_type: {
     type: String,
     enum: ['Like', 'Dislike'],
     required: true

@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const BlogPost = require("../models/blogPost");
 const Comment = require('../models/comment')
+const Reaction = require('../models/reaction')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
@@ -183,6 +184,22 @@ exports.updateUser = [
         res.redirect(303, `/users/${updatedUser.username}`)
     })
 ]
+
+exports.postReaction = asyncHandler(async (req, res, next) => {
+    // need form submission where req.body contains
+    // reaction type
+    // contenttype
+    // content id
+
+
+    // const reaction = new Reaction({
+    //     user: req.user._id,
+    //     content: {
+    //         content_type: 
+    //     }
+    // })
+
+})
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     const user = await User

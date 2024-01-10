@@ -60,3 +60,12 @@
         border-bottom: 4px solid colors.$bg2;
     }
 }
+
+.signup-prompt {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-size: fSizes.$large;
+  }

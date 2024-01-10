@@ -1,0 +1,48 @@
+include ../button/iconButton
+include ../link/iconLink
+
+ul.blog-post__reaction-list
+    li.blog-post__reaction-item
+        form.blog-post__reaction-form
+            +iconButton(
+                'blog-post__like-button',
+                '/images/likeIcon.png',
+                blogPost.likes,
+                { 
+                    'type': 'submit',
+                    'class': '-padding-small'
+                }
+            )
+            input(
+                name='reaction-type' 
+                type='hidden'
+                value='like'
+            )
+    li.blog-post__reaction-item
+        form.blog-post__reaction-form
+            +iconButton(
+                'blog-post__dislike-button',
+                '/images/dislikeIcon.png',
+                blogPost.dislikes,
+                { 
+                    'type': 'submit',
+                    'class': '-padding-small'
+                }
+            )
+            input(
+                name='reaction-type' 
+                type='hidden'
+                value='dislike'
+            )
+    li.blog-post__reaction-item
+        +iconLink(
+            '/images/commentIcon.png',
+            '#comment-section',
+            blogPost.comments.length,
+            { 
+                'class': [
+                    '-padding-small',
+                    '-button'
+                ]
+            }
+        )

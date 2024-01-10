@@ -2,7 +2,7 @@ include ../list/iconButtonList
 include ../link/iconLink
 
 mixin commentCard(comment, isReply=false, attrs={})
-    .comment-card&attributes(attrs)
+    .comment-card(id=comment._id)&attributes(attrs)
         .comment-card__author-date 
             .comment-card__author-details
                 - const author = comment.author
@@ -27,12 +27,12 @@ mixin commentCard(comment, isReply=false, attrs={})
             - 
                 const iconButtons = [
                     {
-                        'classId': `comment-like-button-${comment._id}`,
+                        'classId': `comment-card__like-button`,
                         'icon': '/images/likeIcon.png',
                         'label': comment.likes
                     },
                     {
-                        'classId': `comment-dislike-button-${comment._id}`,
+                        'classId': `comment-card__dislike-button`,
                         'icon': '/images/dislikeIcon.png',
                         'label': comment.dislikes
                     }
@@ -41,7 +41,7 @@ mixin commentCard(comment, isReply=false, attrs={})
             if !isReply
                 -
                     iconButtons.push({
-                        'classId': `comment-view-replies-button-${comment._id}`,
+                        'classId': `comment-card__view-replies-button`,
                         'icon': '/images/commentIcon.png',
                         'label': comment.replies.length
                     })
@@ -55,4 +55,4 @@ mixin commentCard(comment, isReply=false, attrs={})
 
             // prevent replying to a reply
             if !isReply
-                button(class=`comment-reply-button-${comment._id}`) Reply
+                button(class=`comment-card__reply-button`) Reply
