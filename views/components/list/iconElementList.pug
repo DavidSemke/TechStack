@@ -2,9 +2,26 @@ include ../icon/iconElement
 
 mixin iconElementList(elementItems, attrs={})
     ul.icon-element-list&attributes(attrs.iconElementList)
+        - let sharedClasses = null
+        
+        if attrs.iconElement
+            - sharedClasses = attrs.iconElement.class 
+
+            if typeof sharedClasses === 'string'
+                - sharedClasses = sharedClasses.split(' ')
+
         each item in elementItems
             li.icon-element-list__item
+                - let indepClasses = item.attrs.class
+
+                if typeof indepClasses === 'string'
+                    - indepClasses = indepClasses.split(' ')
+
+                if sharedClasses && indepClasses
+                     - item.attrs.class = [...sharedClasses, ...indepClasses]
+                
                 - item.label = item.label ?? null
+
                 +iconElement(
                     item.tag,
                     item.icon,  
