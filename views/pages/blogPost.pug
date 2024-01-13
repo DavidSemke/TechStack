@@ -51,21 +51,23 @@ block page
         
         h2.blog-post-page__post-blog-post-heading More Blogs
         .blog-post-card-pair
-            +blogPostCard(
-                blogPost, 
-                {
-                    'class': '-small'
-                }
-            )
-            +blogPostCard(
-                blogPost,
-                {
-                    'class': '-small'
-                }
-            )
+            a(href=`/blog-posts/${blogPost._id}`)
+                +blogPostCard(
+                    blogPost, 
+                    {
+                        'class': '-small'
+                    }
+                )
+            a(href=`/blog-posts/${blogPost._id}`)
+                +blogPostCard(
+                    blogPost,
+                    {
+                        'class': '-small'
+                    }
+                )
         
         h2#comment-section-heading.blog-post-page__post-blog-post-heading Comments
-        form.blog-post-page__comment-form.comment-form
+        form.blog-post-page__comment-create-form
             +formTextarea(
                 'content',
                 '',
@@ -81,6 +83,9 @@ block page
         each comment in blogPost.comments
             .blog-post-page__comment
                 +commentCard(comment)
-            each reply in comment.replies 
-                .blog-post-page__comment.blog-post-page__reply.-gone
-                    +commentCard(reply, true)
+            
+            if comment.replies.length
+                .blog-post-page__reply-container.-gone
+                each reply in comment.replies
+                    .blog-post-page__comment
+                        +commentCard(reply, true)

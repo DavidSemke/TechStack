@@ -683,6 +683,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
   color: white;
+  scroll-behavior: smooth;
 }
 
 a {

@@ -2,7 +2,7 @@ include ../icon/iconElement
 
 ul.blog-post__reaction-list
     li.blog-post__reaction-item
-        form.blog-post__reaction-form
+        form.blog-post__like-reaction-form
             +iconElement(
                 'button',
                 '/images/likeIcon.png',
@@ -19,10 +19,11 @@ ul.blog-post__reaction-list
             input(
                 name='reaction-type' 
                 type='hidden'
-                value='like'
+                value='Like'
             )
+
     li.blog-post__reaction-item
-        form.blog-post__reaction-form
+        form.blog-post__dislike-reaction-form
             +iconElement(
                 'button',
                 '/images/dislikeIcon.png',
@@ -39,7 +40,7 @@ ul.blog-post__reaction-list
             input(
                 name='reaction-type' 
                 type='hidden'
-                value='dislike'
+                value='Dislike'
             )
     li.blog-post__reaction-item
         +iconElement(

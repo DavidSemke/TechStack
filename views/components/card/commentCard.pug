@@ -2,7 +2,7 @@ include ../list/iconElementList
 include ../icon/iconElement
 
 mixin commentCard(comment, isReply=false, attrs={})
-    .comment-card(id=comment._id)&attributes(attrs)
+    .comment-card&attributes(attrs)
         .comment-card__author-date 
             .comment-card__author-details
                 - const author = comment.author
@@ -28,44 +28,57 @@ mixin commentCard(comment, isReply=false, attrs={})
             .comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar
-            - 
-                const iconElements = [
+            form.comment-card__like-reaction-form
+                +iconElement(
+                    'button',
+                    '/images/likeIcon.png',
+                    comment.likes,
                     {
-                        'tag': 'button',
-                        'icon': '/images/likeIcon.png',
-                        'label': comment.likes,
-                        'attrs': {
-                            'class': `comment-card__like-button`,
-                        }
-                    },
-                    {
-                        'tag': 'button',
-                        'icon': '/images/dislikeIcon.png',
-                        'label': comment.dislikes,
-                        'attrs': {
-                            'class': `comment-card__dislike-button`,
-                        }
+                        'class': [
+                            `comment-card__like-button`,
+                            '-small',
+                            '-gap-small',
+                            '-padding-burger-small'
+                        ]
                     }
-                ]
+                )
+                input(
+                    name='reaction-type' 
+                    type='hidden'
+                    value='Like'
+                )
+            form.comment-card__dislike-reaction-form
+                +iconElement(
+                    'button',
+                    '/images/dislikeIcon.png',
+                    comment.dislikes,
+                    {
+                        'class': [
+                            `comment-card__dislike-button`,
+                            '-small',
+                            '-gap-small',
+                            '-padding-burger-small'
+                        ]
+                    }
+                )
+                input(
+                    name='reaction-type' 
+                    type='hidden'
+                    value='Dislike'
+                )
             
             if !isReply
-                -
-                    iconElements.push({
-                        'tag': 'button',
-                        'icon': '/images/commentIcon.png',
-                        'label': comment.replies.length,
-                        'attrs': {
-                            'class': `comment-card__view-replies-button`
-                        }
-                    })
-            
-            +iconElementList(
-                iconElements,
-                {
-                    'iconElement': {'class': '-small' }
-                }
-            )
-
-            // prevent replying to a reply
-            if !isReply
+                +iconElement(
+                    'button',
+                    '/images/commentIcon.png',
+                    comment.replies.length,
+                    {
+                        'class': [
+                            `comment-card__view-replies-button`,
+                            '-small',
+                            '-gap-small',
+                            '-padding-burger-small'
+                        ]
+                    }
+                )
                 button(class=`comment-card__reply-button`) Reply

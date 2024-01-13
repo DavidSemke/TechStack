@@ -46,9 +46,10 @@ router.put(
     controller.updateUser
 )
 
-// view depends on if user is mainUser
+// view depends on if user is mainUser ??? Not implemented
 router.get(
-    '/:username/blog-posts', 
+    '/:username/blog-posts',
+    // checkAuthorization, 
     controller.getBlogPosts
 )
 
@@ -84,6 +85,24 @@ router.delete(
     '/:username/blog-posts/:blogPostId',
     // checkAuthorization, 
     controller.deleteBlogPost
+)
+
+router.post(
+    '/:username/reactions',
+    // checkAuthorization,
+    controller.postReaction
+)
+
+router.put(
+    '/:username/reactions/:reactionId',
+    // checkAuthorization,
+    controller.updateReaction
+)
+
+router.delete(
+    '/:username/reactions/:reactionId',
+    // checkAuthorization,
+    controller.deleteReaction
 )
 
 module.exports = router

@@ -186,19 +186,132 @@ exports.updateUser = [
 ]
 
 exports.postReaction = asyncHandler(async (req, res, next) => {
-    // need form submission where req.body contains
-    // reaction type
-    // contenttype
-    // content id
+    const contentType = req.body['content-type']
+    const contentId = req.body['content-id']
+    const reactionType = req.body['reaction-type']
 
+    const reaction = new Reaction({
+        user: req.user._id,
+        content: {
+            content_type: contentType,
+            content_id: contentId
+        },
+        reaction_type: reactionType
+    })
+    await reaction.save()
 
-    // const reaction = new Reaction({
-    //     user: req.user._id,
-    //     content: {
-    //         content_type: 
-    //     }
-    // })
+    let contentModel = null
 
+    if (contentType === 'BlogPost') {
+        contentModel = BlogPost
+    }
+    else if (contentType === 'Comment') {
+        contentModel = Comment
+    }
+
+    if (reactionType === 'Like') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { $inc: { likes: 1 } }
+        )
+    }
+    else if (reactionType === 'Dislike') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { $inc: { dislikes: 1 } }
+        )
+    }
+
+    res.end()
+})
+
+exports.updateReaction = asyncHandler(async (req, res, next) => {
+    const contentType = req.body['content-type']
+    const contentId = req.body['content-id']
+    const reactionType = req.body['reaction-type']
+
+    await Reaction
+        .findOneAndUpdate(
+            { 
+                _id: req.params.reactionId
+            },
+            {
+                reaction_type: reactionType
+            }
+        )
+        .exec()
+
+    let contentModel = null
+
+    if (contentType === 'BlogPost') {
+        contentModel = BlogPost
+    }
+    else if (contentType === 'Comment') {
+        contentModel = Comment
+    }
+
+    if (reactionType === 'Like') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { 
+                $inc: { likes: 1 },
+                $inc: { dislikes: -1 } 
+            }
+        )
+    }
+    else if (reactionType === 'Dislike') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { 
+                $inc: { likes: -1 },
+                $inc: { dislikes: 1 } 
+            }
+        )
+    }
+
+    res.end()
+})
+
+exports.deleteReaction = asyncHandler(async (req, res, next) => {
+    const contentType = req.body['content-type']
+    const contentId = req.body['content-id']
+    const reactionType = req.body['reaction-type']
+
+    await Reaction
+        .findOneAndDelete(
+            { 
+                _id: req.params.reactionId
+            }
+        )
+        .exec()
+    
+    let contentModel = null
+
+    if (contentType === 'BlogPost') {
+        contentModel = BlogPost
+    }
+    else if (contentType === 'Comment') {
+        contentModel = Comment
+    }
+
+    if (reactionType === 'Like') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { 
+                $inc: { likes: -1 }
+            }
+        )
+    }
+    else if (reactionType === 'Dislike') {
+        await contentModel.findOneAndUpdate(
+            { _id: contentId },
+            { 
+                $inc: { dislikes: -1 } 
+            }
+        )
+    }
+
+    res.end()
 })
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {

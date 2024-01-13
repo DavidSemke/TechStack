@@ -1,9 +1,12 @@
 const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
+const Reaction = require("../models/reaction");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
+const pug = require('pug')
+const fs = require('fs')
 
   
 // Display blog post
@@ -33,6 +36,19 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         blogPost.publish_date
     )
 
+    // check if current user reacted to blog post
+    if (req.user) {
+        blogPost.reaction = Reaction.find({
+            user: req.user._id,
+            content: {
+                content_type: 'BlogPost',
+                content_id: blogPost._id
+            }
+        })
+            .lean()
+            .exec()
+    }
+    
     const replyMap = {};
     const nonReplies = []
 
@@ -40,6 +56,19 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         comment.publish_date = dateFormat.formatDate(
             comment.publish_date
         )
+
+        // check if current user reacted to comment
+        if (req.user) {
+            comment.reaction = Reaction.find({
+                user: req.user._id,
+                content: {
+                    content_type: 'Comment',
+                    content_id: comment._id
+                }
+            })
+                .lean()
+                .exec()
+        }
 
         if ('reply_to' in comment) {
             
@@ -63,7 +92,8 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
 
     const safeData = {
         title: blogPost.title,
-        blogPost
+        blogPost,
+        mainUser: req.user
     }
     const data = ents.decodeObject(
         safeData,
@@ -107,8 +137,19 @@ exports.postComment = [
 
             const comment = new Comment({ commentData });
             await comment.save();
-    
-            res.end()
+
+            const commentCard = pug.compileFile(
+                '../views/components/card/commentCard.pug'
+            )
+            const template = `
+            include commentCard
+            +commentCard(commentData, isReply)
+            `
+            const isReply = replyTo ? true : false
+            const compiledTemplate = pug.compile(template)
+            const renderedHTML = compiledTemplate({ commentData, isReply })
+
+            res.json({ renderedHTML })
         }
     }),
 ];
