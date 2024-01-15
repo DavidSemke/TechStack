@@ -6,8 +6,6 @@ const CommentSchema = new Schema({
   blogPost: { type: Schema.Types.ObjectId, ref: 'BlogPost', required: true },
   publish_date: { type: Date, required: true },
   content: { type: String, required: true },
-  likes: { type: Number, required: true },
-  dislikes: { type: Number, required: true },
   reply_to: { type: Schema.Types.ObjectId, ref: 'Comment' }
 });
 

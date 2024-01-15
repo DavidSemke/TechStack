@@ -9,8 +9,6 @@ const BlogPostSchema = new Schema({
   last_modified_date: { type: Date, required: true },
   keywords: { type: Array },
   content: { type: String },
-  likes: { type: Number },
-  dislikes: { type: Number },
   public_version: { type: Schema.Types.ObjectId, ref: 'BlogPost' }
 });
 
