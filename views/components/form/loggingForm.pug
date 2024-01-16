@@ -14,7 +14,10 @@ mixin loggingForm(action, inputs={}, errors=[])
     else 
         - loginErrors = errors
 
-    form.logging-form(action=action method="post")
+    form.logging-form(
+        action=action 
+        method="post"
+    )
         +formInput(
             'username',
             'text',

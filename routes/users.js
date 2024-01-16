@@ -90,18 +90,21 @@ router.delete(
 router.post(
     '/:username/reactions',
     // checkAuthorization,
+    upload.none(),
     controller.postReaction
 )
 
 router.put(
     '/:username/reactions/:reactionId',
     // checkAuthorization,
+    upload.none(),
     controller.updateReaction
 )
 
 router.delete(
     '/:username/reactions/:reactionId',
     // checkAuthorization,
+    upload.none(),
     controller.deleteReaction
 )
 

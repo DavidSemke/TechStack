@@ -2,7 +2,10 @@ include ../icon/iconElement
 
 ul.blog-post__reaction-list
     li.blog-post__reaction-item
-        form.blog-post__like-reaction-form
+        form(
+            method='post'
+            enctype='multipart/form-data'
+        ).blog-post__like-reaction-form
             +iconElement(
                 'button',
                 '/images/likeIcon.png',
@@ -21,9 +24,22 @@ ul.blog-post__reaction-list
                 type='hidden'
                 value='Like'
             )
+            input(
+                name='content-id'
+                type='hidden'
+                value=blogPost._id
+            )
+            input(
+                name='content-type'
+                type='hidden'
+                value='BlogPost'
+            )
 
     li.blog-post__reaction-item
-        form.blog-post__dislike-reaction-form
+        form(
+            method='post'
+            enctype='multipart/form-data'
+        ).blog-post__dislike-reaction-form
             +iconElement(
                 'button',
                 '/images/dislikeIcon.png',
@@ -41,6 +57,16 @@ ul.blog-post__reaction-list
                 name='reaction-type' 
                 type='hidden'
                 value='Dislike'
+            )
+            input(
+                name='content-id'
+                type='hidden'
+                value=blogPost._id
+            )
+            input(
+                name='content-type'
+                type='hidden'
+                value='BlogPost'
             )
     li.blog-post__reaction-item
         +iconElement(

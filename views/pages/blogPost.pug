@@ -86,6 +86,6 @@ block page
             
             if comment.replies.length
                 .blog-post-page__reply-container.-gone
-                each reply in comment.replies
-                    .blog-post-page__comment
-                        +commentCard(reply, true)
+                    each reply in comment.replies
+                        .blog-post-page__comment
+                            +commentCard(reply, true)

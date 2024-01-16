@@ -1,29 +1,24 @@
 const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
 const Reaction = require("../models/reaction");
+const ReactionCounter = require("../models/reactionCounter");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
 const pug = require('pug')
-const fs = require('fs')
+const { Types } = require('mongoose')
 
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
+    const blogPostId = new Types.ObjectId(req.params.blogPostId)
   
-    const [blogPost, comments] = await Promise.all([
-        BlogPost.findById(req.params.blogPostId)
-            .populate('author')
-            .lean()
-            .exec(),
-        Comment.find({ 
-            blogPost: req.params.blogPostId
-        })
-            .populate('author')
-            .lean()
-            .exec(),
-    ]);
+    const blogPost = await BlogPost
+        .findById(blogPostId)
+        .populate('author')
+        .lean()
+        .exec()
 
     if (blogPost === null) {
         const err = new Error("Blog post not found");
@@ -32,13 +27,32 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
+    const [comments, reactionCounter] = await Promise.all([
+        Comment.find({ 
+            blogPost: blogPostId
+        })
+            .populate('author')
+            .lean()
+            .exec(),
+        ReactionCounter.findOne({
+            content: {
+                content_type: 'BlogPost',
+                content_id: blogPostId
+            }
+        })
+            .lean()
+            .exec()
+    ])
+
     blogPost.publish_date = dateFormat.formatDate(
         blogPost.publish_date
     )
+    blogPost.likes = reactionCounter.like_count
+    blogPost.dislikes = reactionCounter.dislike_count
 
     // check if current user reacted to blog post
     if (req.user) {
-        blogPost.reaction = Reaction.find({
+        blogPost.reaction = await Reaction.findOne({
             user: req.user._id,
             content: {
                 content_type: 'BlogPost',
@@ -53,13 +67,24 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
     const nonReplies = []
 
     for (const comment of comments) {
+        const reactionCounter = await ReactionCounter.findOne({
+            content: {
+                content_type: 'Comment',
+                content_id: comment._id
+            }
+        })
+            .lean()
+            .exec()
+
         comment.publish_date = dateFormat.formatDate(
             comment.publish_date
         )
+        comment.likes = reactionCounter.like_count
+        comment.dislikes = reactionCounter.dislike_count
 
         // check if current user reacted to comment
         if (req.user) {
-            comment.reaction = Reaction.find({
+            comment.reaction = await Reaction.findOne({
                 user: req.user._id,
                 content: {
                     content_type: 'Comment',
@@ -127,25 +152,36 @@ exports.postComment = [
                 blogPost: req.params.blogPostId,
                 publish_date: Date.now(),
                 content: ents.encode(content),
-                likes: 0,
-                dislikes: 0,
             }
 
             if (replyTo) {
                 commentData.reply_to = replyTo
             }
 
-            const comment = new Comment({ commentData });
-            await comment.save();
+            const comment = new Comment({ commentData })
+            await comment.save()
 
-            const commentCard = pug.compileFile(
+            const reactionCounter = new ReactionCounter({
+                content: {
+                    content_type: 'Comment',
+                    content_id: comment._id
+                },
+                like_count: 0,
+                dislike_count: 0
+            })
+            await reactionCounter.save()
+
+            commentData.likes = 0
+            commentData.dislikes = 0
+
+            pug.compileFile(
                 '../views/components/card/commentCard.pug'
             )
             const template = `
             include commentCard
             +commentCard(commentData, isReply)
             `
-            const isReply = replyTo ? true : false
+            const isReply = Boolean(replyTo)
             const compiledTemplate = pug.compile(template)
             const renderedHTML = compiledTemplate({ commentData, isReply })
 

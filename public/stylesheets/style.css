@@ -520,7 +520,7 @@
   padding-bottom: 1rem;
   border-bottom: 2px solid rgb(36, 36, 36);
 }
-.blog-post-page__reply {
+.blog-post-page__reply-container {
   margin-left: 4rem;
 }
 

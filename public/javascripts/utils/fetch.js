@@ -1,4 +1,6 @@
-function formFetch(href, method, form, onResponseJson=null) {
+function formFetch(
+    href, method, form, followResponse=false, onResponseJson=null
+) {
     fetch(href, {
         method,
         body: new FormData(form)
@@ -8,9 +10,11 @@ function formFetch(href, method, form, onResponseJson=null) {
                 throw new Error(`HTTP error - Status: ${res.status}`)
             }
             
-            if (res.url && res.url !== window.location.href) {
+            if (followResponse) {
                 window.location.href = res.url
             }
+
+            return res.json()
         })
         .then(data => {
             if (onResponseJson) {

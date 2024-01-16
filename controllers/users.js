@@ -2,12 +2,14 @@ const User = require("../models/user");
 const BlogPost = require("../models/blogPost");
 const Comment = require('../models/comment')
 const Reaction = require('../models/reaction')
+const ReactionCounter = require('../models/reactionCounter')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
+const { Types } = require('mongoose')
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -187,8 +189,10 @@ exports.updateUser = [
 
 exports.postReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = req.body['content-id']
+    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
+
+    const promises = []
 
     const reaction = new Reaction({
         user: req.user._id,
@@ -198,120 +202,112 @@ exports.postReaction = asyncHandler(async (req, res, next) => {
         },
         reaction_type: reactionType
     })
-    await reaction.save()
+    promises.push(reaction.save())
 
-    let contentModel = null
-
-    if (contentType === 'BlogPost') {
-        contentModel = BlogPost
-    }
-    else if (contentType === 'Comment') {
-        contentModel = Comment
-    }
-
-    if (reactionType === 'Like') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { $inc: { likes: 1 } }
+    const countAttribute = `${reactionType.toLowerCase()}_count`
+    promises.push(
+        ReactionCounter.findOneAndUpdate(
+            { 
+                content: {
+                    content_type: contentType,
+                    content_id: contentId
+                }
+            },
+            { $inc: { [countAttribute]: 1 } }
         )
-    }
-    else if (reactionType === 'Dislike') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { $inc: { dislikes: 1 } }
-        )
-    }
+    )
 
-    res.end()
+    await Promise.all(promises)
+
+    res.json({ reactionId: reaction._id })
 })
 
 exports.updateReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = req.body['content-id']
+    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
+    const reactionId = new Types.ObjectId(req.params.reactionId)
 
-    await Reaction
-        .findOneAndUpdate(
-            { 
-                _id: req.params.reactionId
-            },
-            {
-                reaction_type: reactionType
-            }
-        )
-        .exec()
+    const promises = [
+        Reaction
+            .findOneAndUpdate(
+                { 
+                    _id: reactionId
+                },
+                {
+                    reaction_type: reactionType
+                }
+            )
+            .exec()
+    ]
 
-    let contentModel = null
-
-    if (contentType === 'BlogPost') {
-        contentModel = BlogPost
-    }
-    else if (contentType === 'Comment') {
-        contentModel = Comment
-    }
+    let primaryCountAttribute = null
+    let secondaryCountAttribute = null
 
     if (reactionType === 'Like') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { 
-                $inc: { likes: 1 },
-                $inc: { dislikes: -1 } 
-            }
-        )
+        primaryCountAttribute = 'like_count'
+        secondaryCountAttribute = 'dislike_count'
     }
     else if (reactionType === 'Dislike') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { 
-                $inc: { likes: -1 },
-                $inc: { dislikes: 1 } 
-            }
-        )
+        primaryCountAttribute = 'dislike_count'
+        secondaryCountAttribute = 'like_count'
     }
 
-    res.end()
+    promises.push(
+        ReactionCounter.findOneAndUpdate(
+            { 
+                content: {
+                    content_type: contentType,
+                    content_id: contentId
+                }
+            },
+            { 
+                $inc: { 
+                    [primaryCountAttribute]: 1,
+                    [secondaryCountAttribute]: -1
+                },
+            }
+        )
+            .exec()
+    )
+
+    await Promise.all(promises)
+
+    res.json({ reactionId })
 })
 
 exports.deleteReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = req.body['content-id']
+    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
+    const reactionId = new Types.ObjectId(req.params.reactionId)
 
-    await Reaction
-        .findOneAndDelete(
+    const promises = [
+        Reaction
+            .findOneAndDelete(
+                { 
+                    _id: reactionId
+                }
+            )
+            .exec()
+    ]
+
+    const countAttribute = `${reactionType.toLowerCase()}_count`
+    promises.push(
+        ReactionCounter.findOneAndUpdate(
             { 
-                _id: req.params.reactionId
-            }
+                content: {
+                    content_type: contentType,
+                    content_id: contentId
+                }
+            },
+            { $inc: { [countAttribute]: -1 } }
         )
-        .exec()
-    
-    let contentModel = null
+    )
 
-    if (contentType === 'BlogPost') {
-        contentModel = BlogPost
-    }
-    else if (contentType === 'Comment') {
-        contentModel = Comment
-    }
+    await Promise.all(promises)
 
-    if (reactionType === 'Like') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { 
-                $inc: { likes: -1 }
-            }
-        )
-    }
-    else if (reactionType === 'Dislike') {
-        await contentModel.findOneAndUpdate(
-            { _id: contentId },
-            { 
-                $inc: { dislikes: -1 } 
-            }
-        )
-    }
-
-    res.end()
+    res.json({ reactionId: null })
 })
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
@@ -344,11 +340,27 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     const unpublishedBlogPosts = []
 
     for (const blogPost of privateBlogPosts) {
-        const comments = await Comment
-            .find({ blogPost: blogPost._id })
-            .lean()
-            .exec()
+        const [comments, reactionCounter] = await Promise.all(
+            [
+                Comment
+                    .find({ blogPost: blogPost._id })
+                    .lean()
+                    .exec(),
+                ReactionCounter
+                    .find({
+                        content: {
+                            content_type: 'BlogPost',
+                            content_id: blogPost._id
+                        }
+                    })
+                    .lean()
+                    .exec()
+            ]
+        )
+
         blogPost.comments = comments
+        blogPost.likes = reactionCounter.like_count
+        blogPost.dislikes = reactionCounter.dislike_count
 
         if (blogPost.publish_date) {
             blogPost.publish_date = dateFormat.formatDate(
@@ -722,9 +734,7 @@ async function processBlogPostData(req, res, blogPost=null) {
             profile_pic: req.user.profile_pic ?? null
         },
         keywords: encodedInputs.keywords.split(' '),
-        content: encodedInputs.content,
-        likes: 0,
-        dislikes: 0,
+        content: encodedInputs.content
     }
 
     // delete uploaded thumbnail

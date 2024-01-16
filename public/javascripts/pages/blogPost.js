@@ -2,7 +2,7 @@ import { formFetch } from '../utils/fetch.js'
 
 function blogPostReactionFormListeners() {
     const reaction = backendData.blogPost.reaction
-    const reactionId = reaction ? reaction._id : null
+    let reactionId = reaction ? reaction._id : null
     const reactionType = reaction ? reaction.reaction_type : null
     
     const likeButtons = document.querySelectorAll(
@@ -39,9 +39,24 @@ function blogPostReactionFormListeners() {
         form.addEventListener('submit', (event) => {
             event.preventDefault()
 
-            addHiddenData(form, backendData.blogPost._id, 'BlogPost')
-            fetchReaction(form, disliked, liked, reactionId)
-            updateButtonColor(disliked, liked, likeButtons, dislikeButtons)
+            fetchReaction(
+                form, 
+                disliked, 
+                liked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            updateReactionButtons(
+                disliked, 
+                liked, 
+                likeButtons, 
+                dislikeButtons
+            )
+
+            disliked = false
+            liked = !liked
         })
     }
     const dislikeReactionForms = document.querySelectorAll(
@@ -52,9 +67,24 @@ function blogPostReactionFormListeners() {
         form.addEventListener('submit', (event) => {
             event.preventDefault()
 
-            addHiddenData(form, backendData.blogPost._id, 'BlogPost')
-            fetchReaction(form, liked, disliked, reactionId)
-            updateButtonColor(liked, disliked, dislikeButtons, likeButtons)
+            fetchReaction(
+                form, 
+                liked, 
+                disliked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            updateReactionButtons(
+                liked, 
+                disliked, 
+                dislikeButtons, 
+                likeButtons
+            )
+
+            liked = false
+            disliked = !disliked
         })
     }
 }
@@ -68,70 +98,33 @@ function commentReactionFormListeners() {
     // replies are available from the comment replied to
     const comments = backendData.blogPost.comments
 
-    for (let i=0, j=0; i<commentCards.length; i++) {
+    for (let i=0, j=0, k=0; i<commentCards.length; i++) {
         const commentCard = commentCards[i]
-        let commentData = comments[i]
+        let commentData = comments[j]
+        const replies = commentData.replies
 
-        if (commentData.replies) {
-            if (j > 0) {
-                commentData = comments[i-j].replies[j-1]
-            }
-
-            if (j === comments[i-j].replies.length) {
-                j = 0
-            }
-            else {
+        if (!replies) {
+            j++
+        }
+        else if (k > 0) {
+            commentData = commentData.replies[k-1]
+            k++
+            
+            if (k === replies.length + 1) {
+                k = 0
                 j++
             }
         }
-
-        const likeButton = commentCard.querySelector(
-            '.comment-card__like-button'
-        )
-        const dislikeButton = commentCard.querySelector(
-            '.comment-card__dislike-button'
-        )
-
-        const reaction = commentData.reaction
-
-        if (reaction) {
-            if (reaction.reaction_type === 'Like') {
-                likeButton.classList.add('-colorful')
-            }
-            else if (reaction.reaction_type === 'Dislike') {
-                dislikeButton.classList.add('-colorful')
-            }
+        else {
+            k++
         }
 
-        const likeReactionForm = commentCard.querySelector(
-            '.comment-card__like-reaction-form'
-        )
-        likeReactionForm.addEventListener('submit', (event) => {
-            event.preventDefault()
-
-            addHiddenData(form, commentCard.id, 'Comment')
-            fetchReaction(form, disliked, liked, reaction._id)
-            updateButtonColor(disliked, liked, [likeButton], [dislikeButton])
-        })
-
-        const dislikeReactionForm = commentCard.querySelector(
-            '.comment-card__like-reaction-form'
-        )
-        dislikeReactionForm.addEventListener('submit', (event) => {
-            event.preventDefault()
-
-            addHiddenData(form, commentCard.id, 'Comment')
-            fetchReaction(form, liked, disliked, reaction._id)
-            updateButtonColor(liked, disliked, [dislikeButton], [likeButton])
-        })
-
-        const viewRepliesButton = commentCard.querySelector(
-            '.comment-card__view-replies-button'
-        )
-
-        if (commentData.replies.length) {
+        if (commentData.replies && commentData.replies.length) {
+            const viewRepliesButton = commentCard.querySelector(
+                '.comment-card__view-replies-button'
+            )
             viewRepliesButton.addEventListener('click', () => {
-                const replyContainer = commentCard.nextElementSibling
+                const replyContainer = commentCard.parentElement.nextSibling
 
                 if (replyContainer.classList.contains('-gone')) {
                     replyContainer.classList.remove('-gone')
@@ -152,78 +145,160 @@ function commentReactionFormListeners() {
                 // The reply-create-form is created when clicking 
                 // any comment reply button
                 const replyCreateForm = document.querySelector(
-                    'blog-post-page__reply-create-form'
+                    '.blog-post-page__reply-create-form'
                 )
 
                 if (replyCreateForm) {
-                    document.removeChild(replyCreateForm)
+                    replyCreateForm.parentElement.removeChild(replyCreateForm)
                 }
 
                 createCommentCreateForm(commentCard, commentData)
             })
         }
-        
+
+        const likeButton = commentCard.querySelector(
+            '.comment-card__like-button'
+        )
+        const dislikeButton = commentCard.querySelector(
+            '.comment-card__dislike-button'
+        )
+
+        const reaction = commentData.reaction
+        let reactionId = reaction ? reaction._id : null
+        const reactionType = reaction ? reaction.reaction_type : null
+        let liked = false
+        let disliked = false
+
+        if (reactionType === 'Like') {
+            liked = true
+            likeButton.classList.add('-colorful')
+        }
+        else if (reactionType === 'Dislike') {
+            disliked = true
+            dislikeButton.classList.add('-colorful')
+        }
+
+        const likeReactionForm = commentCard.querySelector(
+            '.comment-card__like-reaction-form'
+        )
+        likeReactionForm.addEventListener('submit', (event) => {
+            event.preventDefault()
+
+            fetchReaction(
+                likeReactionForm, 
+                disliked, 
+                liked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            updateReactionButtons(
+                disliked, 
+                liked, 
+                [likeButton], 
+                [dislikeButton]
+            )
+
+            disliked = false
+            liked = !liked
+        })
+
+        const dislikeReactionForm = commentCard.querySelector(
+            '.comment-card__dislike-reaction-form'
+        )
+        dislikeReactionForm.addEventListener('submit', (event) => {
+            event.preventDefault()
+
+            fetchReaction(
+                dislikeReactionForm, 
+                liked, 
+                disliked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            updateReactionButtons(
+                liked, 
+                disliked, 
+                [dislikeButton], 
+                [likeButton]
+            )
+
+            liked = false
+            disliked = !disliked
+        })
     }
 }
 
-function addHiddenData(form, contentId, contentType) {
-    const contentTypeInput = document.createElement('input')
-    contentTypeInput.name = 'content-type'
-    contentTypeInput.type = 'hidden'
-    contentTypeInput.value = contentType
-
-    const contentIdInput = document.createElement('input')
-    contentIdInput.name = 'content-id'
-    contentIdInput.type = 'hidden'
-    contentIdInput.value = contentId
-
-    form.append(contentIdInput, contentTypeInput)
-}
-
-function updateButtonColor(
+function updateReactionButtons(
     toggleReaction, removeReaction, primaryButtons, secondaryButtons
 ) {
     if (removeReaction) {
         for (const button of primaryButtons) {
             button.classList.remove('-colorful')
+
+            const label = button.querySelector('.icon-element__label')
+            label.textContent = parseInt(label.textContent) - 1
         }
     }
     else if (toggleReaction) {
         for (const button of primaryButtons) {
             button.classList.add('-colorful')
+
+            const label = button.querySelector('.icon-element__label')
+            label.textContent = parseInt(label.textContent) + 1
         }
 
         for (const button of secondaryButtons) {
             button.classList.remove('-colorful')
+
+            const label = button.querySelector('.icon-element__label')
+            label.textContent = parseInt(label.textContent) - 1
         }
     }
     else {
         for (const button of primaryButtons) {
             button.classList.add('-colorful')
+
+            const label = button.querySelector('.icon-element__label')
+            label.textContent = parseInt(label.textContent) + 1
         }
     }
 }
 
-function fetchReaction(form, toggleReaction, removeReaction, reactionId) {
+// Whenever (toggleReaction && removeReaction) = false, reactionId = null
+function fetchReaction(
+    form, toggleReaction, removeReaction, reactionId, onResponseJson
+) {
+    const reactionsPath = `/users/${backendData.mainUser.username}/reactions`
+
     if (removeReaction) {
         formFetch(
-            `/users/${backendData.mainUser.username}/reactions/${reactionId}`,
+            `${reactionsPath}/${reactionId}`,
             'delete',
-            form
+            form,
+            false,
+            onResponseJson
         )
     }
     else if (toggleReaction) {
         formFetch(
-            `/users/${backendData.mainUser.username}/reactions/${reactionId}`,
+            `${reactionsPath}/${reactionId}`,
             'put',
-            form
+            form,
+            false,
+            onResponseJson
         )
     }
     else {
         formFetch(
-            `/users/${backendData.mainUser.username}/reactions`,
+            reactionsPath,
             'post',
-            form
+            form,
+            false,
+            onResponseJson
         )
     }  
 }
@@ -278,6 +353,7 @@ function commentCreateFormSubmitListeners() {
                 `/blog-posts/${backendData.blogPost._id}/comments`,
                 'post',
                 form,
+                false,
                 (data) => {
     
                     if (data.errors) {
@@ -285,7 +361,7 @@ function commentCreateFormSubmitListeners() {
                             '.form-textarea__error-container'
                         )
     
-                        for (const error of errors) {
+                        for (const error of data.errors) {
                             const errorDiv = document.createElement('div')
                             errorDiv.classList.add('.form-textarea__error')
                             errorDiv.textContent = error.msg
@@ -307,7 +383,7 @@ function commentCreateFormSubmitListeners() {
                         const nextSibling = form.nextSibling
     
                         if (form.classList.contains(
-                            '.blog-post-page__reply-create-form'
+                            'blog-post-page__reply-create-form'
                         )) {
                             nextSibling.prepend(commentContainer)
                         }
@@ -319,11 +395,13 @@ function commentCreateFormSubmitListeners() {
     
                         // Remove reply-create-form, if it exists
                         const replyCreateForm = document.querySelector(
-                            'blog-post-page__reply-create-form'
+                            '.blog-post-page__reply-create-form'
                         )
     
                         if (replyCreateForm) {
-                            document.removeChild(replyCreateForm)
+                            replyCreateForm
+                                .parentElement
+                                .removeChild(replyCreateForm)
                         }
                     }
                 }

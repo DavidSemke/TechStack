@@ -92,14 +92,15 @@ function blogPostFormSubmitListeners() {
     
     blogPostForm.addEventListener('submit', (event) => {
         event.preventDefault()
+        
+        let method = 'POST'
 
         // blogPost param is empty object if posting, else putting
         if (Object.keys(backendData.blogPost).length) {
-            formFetch(window.location.href, 'PUT', blogPostForm)
+            method = 'PUT'
         }
-        else {
-            formFetch(window.location.href, 'POST', blogPostForm)
-        }
+
+        formFetch(window.location.href, method, blogPostForm, true)
     })
 }
 

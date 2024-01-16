@@ -28,12 +28,16 @@ mixin commentCard(comment, isReply=false, attrs={})
             .comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar
-            form.comment-card__like-reaction-form
+            form(
+                method='post'
+                enctype='multipart/form-data'
+            ).comment-card__like-reaction-form
                 +iconElement(
                     'button',
                     '/images/likeIcon.png',
                     comment.likes,
                     {
+                        'type': 'submit',
                         'class': [
                             `comment-card__like-button`,
                             '-small',
@@ -47,12 +51,26 @@ mixin commentCard(comment, isReply=false, attrs={})
                     type='hidden'
                     value='Like'
                 )
-            form.comment-card__dislike-reaction-form
+                input(
+                    name='content-id'
+                    type='hidden'
+                    value=comment._id
+                )
+                input(
+                    name='content-type'
+                    type='hidden'
+                    value='Comment'
+                )
+            form(
+                method='post'
+                enctype='multipart/form-data'
+            ).comment-card__dislike-reaction-form
                 +iconElement(
                     'button',
                     '/images/dislikeIcon.png',
                     comment.dislikes,
                     {
+                        'type': 'submit',
                         'class': [
                             `comment-card__dislike-button`,
                             '-small',
@@ -65,6 +83,16 @@ mixin commentCard(comment, isReply=false, attrs={})
                     name='reaction-type' 
                     type='hidden'
                     value='Dislike'
+                )
+                input(
+                    name='content-id'
+                    type='hidden'
+                    value=comment._id
+                )
+                input(
+                    name='content-type'
+                    type='hidden'
+                    value='Comment'
                 )
             
             if !isReply
