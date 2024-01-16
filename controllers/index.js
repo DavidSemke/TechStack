@@ -7,47 +7,34 @@ const dateFormat = require('../utils/dateFormat')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
     const blogPosts = await BlogPost
-        .aggregate([
-            {
-                $match: {
-                    public_version: { $exists: false },
-                    publish_date: { $exists: true } 
-                }
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'author',
-                    foreignField: '_id',
-                    as: 'author'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'reactionCounters',
-                    localField: '_id',
-                    foreignField: 'content.content_id',
-                    as: 'reactionCounter'
-                }
-            },
-            {
-                $addFields: {
-                    like_count: '$reactionCounter.like_count',
-                    dislike_count: '$reactionCounter.dislike_count',
-                }
-            },
-            {
-                $sort: { like_count: -1 }
-            }
-        ])
+        .find({
+            public_version: { $exists: false },
+            publish_date: { $exists: true } 
+        })
+        .sort({ likes: 'desc' })
+        .populate('author')
+        .lean()
         .exec();
     
     for (const blogPost of blogPosts) {
-        const comments = await Comment
-            .find({ blogPost: blogPost._id })
-            .lean()
-            .exec()
+        const [comments, reactionCounter] = await Promise.all([
+            Comment
+                .find({ blogPost: blogPost._id })
+                .lean()
+                .exec(),
+            ReactionCounter
+                .findOne({
+                    content: {
+                        content_type: 'BlogPost',
+                        content_id: blogPost._id
+                    }
+                })
+                .lean()
+                .exec()
+        ])
         blogPost.comments = comments
+        blogPost.likes = reactionCounter.like_count
+        blogPost.dislikes = reactionCounter.dislike_count
 
         if (blogPost.publish_date) {
             blogPost.publish_date = dateFormat.formatDate(
@@ -57,6 +44,7 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
         else {
             blogPost.publish_date = 'N/A'
         }
+        
     }
 
     const safeData = {
