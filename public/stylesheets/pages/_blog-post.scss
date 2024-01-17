@@ -15,9 +15,10 @@
         border-bottom: 4px solid colors.$bg2;
     }
 
-    &__comment {
-        padding-bottom: 1rem;
-        border-bottom: 2px solid colors.$bg2;
+    &__comment-create-form, &__reply-create-form  {
+        .form-textarea {
+            margin-bottom: 1rem;
+        }
     }
 
     &__reply-container {

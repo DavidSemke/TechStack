@@ -6,6 +6,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
+const path = require('path')
 const pug = require('pug')
 const { Types } = require('mongoose')
 
@@ -139,27 +140,43 @@ exports.postComment = [
         ),
 
     asyncHandler(async (req, res, next) => {
+        const blogPostId = new Types.ObjectId(req.params.blogPostId)
         const content = req.body.content
         const replyTo = req.body['reply-to']
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(400).json({ errors: errors.array() })
+            res.json({ errors: errors.array() })
         } 
         else {
             const commentData = {
-                author: req.user._id,
-                blogPost: req.params.blogPostId,
+                blogPost: blogPostId,
                 publish_date: Date.now(),
                 content: ents.encode(content),
+            }
+
+            if (req.user) {
+                commentData.author = req.user._id
             }
 
             if (replyTo) {
                 commentData.reply_to = replyTo
             }
 
-            const comment = new Comment({ commentData })
+            let comment = new Comment(commentData)
             await comment.save()
+            
+            comment = await Comment
+                .findById(comment._id)
+                .populate('author')
+                .lean()
+                .exec()
+            comment.publish_date = dateFormat.formatDate(
+                comment.publish_date
+            )
+            comment.likes = 0
+            comment.dislikes = 0
+            comment.replies = []
 
             const reactionCounter = new ReactionCounter({
                 content: {
@@ -171,21 +188,25 @@ exports.postComment = [
             })
             await reactionCounter.save()
 
-            commentData.likes = 0
-            commentData.dislikes = 0
-
-            pug.compileFile(
-                '../views/components/card/commentCard.pug'
+            const mixinPath = path.join(
+                process.cwd(),
+                'views',
+                'components',
+                'card',
+                'commentCard.pug'
             )
-            const template = `
-            include commentCard
-            +commentCard(commentData, isReply)
-            `
+            const pugString = `include ${mixinPath}\n+commentCard(comment, isReply)`
+            const template = pug.compile(
+                pugString,
+                { filename: 'commentCardTemplate' }
+            )
             const isReply = Boolean(replyTo)
-            const compiledTemplate = pug.compile(template)
-            const renderedHTML = compiledTemplate({ commentData, isReply })
-
-            res.json({ renderedHTML })
+            const renderedHTML = template({
+                comment,
+                isReply 
+            })
+            
+            res.json({ renderedHTML, commentData: comment })
         }
     }),
 ];

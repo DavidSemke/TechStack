@@ -5,26 +5,39 @@ mixin commentCard(comment, isReply=false, attrs={})
     .comment-card&attributes(attrs)
         .comment-card__author-date 
             .comment-card__author-details
-                - const author = comment.author
+                - let author = comment.author
                 - let profileIcon = '/images/profileIcon.png'
 
-                if author.profile_pic
-                    - const pic = author.profile_pic
-                    - const base64 = pic.data.toString('base64')
-                    - profileIcon = `data:${pic.contentType};base64,${base64}`
+                if author
+                    if author.profile_pic
+                        - const pic = author.profile_pic
+                        - const base64 = pic.data.toString('base64')
+                        - profileIcon = `data:${pic.contentType};base64,${base64}`
 
-                +iconElement(
-                    'a',
-                    profileIcon,
-                    author.username,
-                    {
-                        'href': `/users/${author.username}`,
-                        'class': [
-                            '-avatar',
-                            '-gap-small'
-                        ]
-                    }
-                )
+                    +iconElement(
+                        'a',
+                        profileIcon,
+                        author.username,
+                        {
+                            'href': `/users/${author.username}`,
+                            'class': [
+                                '-avatar',
+                                '-gap-small'
+                            ]
+                        }
+                    )
+                else
+                    +iconElement(
+                        'div',
+                        profileIcon,
+                        'Anonymous',
+                        {
+                            'class': [
+                                '-avatar',
+                                '-gap-small'
+                            ]
+                        }
+                    )
             .comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar

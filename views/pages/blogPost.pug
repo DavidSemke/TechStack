@@ -67,7 +67,10 @@ block page
                 )
         
         h2#comment-section-heading.blog-post-page__post-blog-post-heading Comments
-        form.blog-post-page__comment-create-form
+        form(
+            method='post'
+            enctype='multipart/form-data'
+        ).blog-post-page__comment-create-form
             +formTextarea(
                 'content',
                 '',
@@ -79,13 +82,13 @@ block page
                     }
                 }
             )
+            button(type='submit') Submit
 
         each comment in blogPost.comments
-            .blog-post-page__comment
+            .blog-post-page__comment-string
                 +commentCard(comment)
             
-            if comment.replies.length
-                .blog-post-page__reply-container.-gone
-                    each reply in comment.replies
-                        .blog-post-page__comment
+                if comment.replies.length
+                    .blog-post-page__reply-container.-gone
+                        each reply in comment.replies
                             +commentCard(reply, true)

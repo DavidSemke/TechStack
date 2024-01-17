@@ -85,8 +85,8 @@ function blogPostFormSubmitListeners() {
 
     // in this case, enter key submission is harmful - prevent it
     blogPostForm.addEventListener('keypress', (event) => {
-        if (e.key === 'Enter') {
-            e.preventDefault()
+        if (event.key === 'Enter') {
+            event.preventDefault()
         }
     })
     

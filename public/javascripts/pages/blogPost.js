@@ -89,11 +89,10 @@ function blogPostReactionFormListeners() {
     }
 }
 
-function commentReactionFormListeners() {
+function allCommentsReactionFormListeners() {
     const commentCards = document.querySelectorAll(
         '.comment-card'
     )
-
     // note that blogPost comments are non-replies only
     // replies are available from the comment replied to
     const comments = backendData.blogPost.comments
@@ -103,11 +102,11 @@ function commentReactionFormListeners() {
         let commentData = comments[j]
         const replies = commentData.replies
 
-        if (!replies) {
+        if (!replies.length) {
             j++
         }
         else if (k > 0) {
-            commentData = commentData.replies[k-1]
+            commentData = replies[k-1]
             k++
             
             if (k === replies.length + 1) {
@@ -119,118 +118,135 @@ function commentReactionFormListeners() {
             k++
         }
 
-        if (commentData.replies && commentData.replies.length) {
-            const viewRepliesButton = commentCard.querySelector(
-                '.comment-card__view-replies-button'
-            )
-            viewRepliesButton.addEventListener('click', () => {
-                const replyContainer = commentCard.parentElement.nextSibling
-
-                if (replyContainer.classList.contains('-gone')) {
-                    replyContainer.classList.remove('-gone')
-                }
-                else {
-                    replyContainer.classList.add('-gone')
-                }
-            })
-        }
-
-        const replyButton = commentCard.querySelector(
-            '.comment-card__reply-button'
-        )
-
-        if (replyButton) {
-            replyButton.addEventListener('click', () => {
-                // Remove reply-create-form, if it exists
-                // The reply-create-form is created when clicking 
-                // any comment reply button
-                const replyCreateForm = document.querySelector(
-                    '.blog-post-page__reply-create-form'
-                )
-
-                if (replyCreateForm) {
-                    replyCreateForm.parentElement.removeChild(replyCreateForm)
-                }
-
-                createCommentCreateForm(commentCard, commentData)
-            })
-        }
-
-        const likeButton = commentCard.querySelector(
-            '.comment-card__like-button'
-        )
-        const dislikeButton = commentCard.querySelector(
-            '.comment-card__dislike-button'
-        )
-
-        const reaction = commentData.reaction
-        let reactionId = reaction ? reaction._id : null
-        const reactionType = reaction ? reaction.reaction_type : null
-        let liked = false
-        let disliked = false
-
-        if (reactionType === 'Like') {
-            liked = true
-            likeButton.classList.add('-colorful')
-        }
-        else if (reactionType === 'Dislike') {
-            disliked = true
-            dislikeButton.classList.add('-colorful')
-        }
-
-        const likeReactionForm = commentCard.querySelector(
-            '.comment-card__like-reaction-form'
-        )
-        likeReactionForm.addEventListener('submit', (event) => {
-            event.preventDefault()
-
-            fetchReaction(
-                likeReactionForm, 
-                disliked, 
-                liked, 
-                reactionId,
-                (data) => {
-                    reactionId = data.reactionId
-                }
-            )
-            updateReactionButtons(
-                disliked, 
-                liked, 
-                [likeButton], 
-                [dislikeButton]
-            )
-
-            disliked = false
-            liked = !liked
-        })
-
-        const dislikeReactionForm = commentCard.querySelector(
-            '.comment-card__dislike-reaction-form'
-        )
-        dislikeReactionForm.addEventListener('submit', (event) => {
-            event.preventDefault()
-
-            fetchReaction(
-                dislikeReactionForm, 
-                liked, 
-                disliked, 
-                reactionId,
-                (data) => {
-                    reactionId = data.reactionId
-                }
-            )
-            updateReactionButtons(
-                liked, 
-                disliked, 
-                [dislikeButton], 
-                [likeButton]
-            )
-
-            liked = false
-            disliked = !disliked
-        })
+        commentReactionFormListeners(commentCard, commentData)
     }
 }
+
+function commentReactionFormListeners(commentCard, commentData) {
+    if (commentData.replies && commentData.replies.length) {
+        const viewRepliesButton = commentCard.querySelector(
+            '.comment-card__view-replies-button'
+        )
+        viewRepliesButton.addEventListener('click', () => {
+            const sibling = commentCard.nextSibling
+            let replyContainer = sibling
+
+            if (sibling.classList.contains(
+                'blog-post-page__reply-create-form'
+            )) {
+                replyContainer = sibling.nextSibling
+            }
+
+            if (replyContainer.classList.contains('-gone')) {
+                replyContainer.classList.remove('-gone')
+            }
+            else {
+                replyContainer.classList.add('-gone')
+            }
+        })
+    }
+
+    const replyButton = commentCard.querySelector(
+        '.comment-card__reply-button'
+    )
+
+    if (replyButton) {
+        replyButton.addEventListener('click', () => {
+            // Remove reply-create-form, if it exists
+            // The reply-create-form is created when clicking 
+            // any comment reply button
+            const replyCreateForm = document.querySelector(
+                '.blog-post-page__reply-create-form'
+            )
+
+            if (replyCreateForm) {
+                if (replyCreateForm.previousSibling !== commentCard) {
+                    createCommentCreateForm(commentCard, commentData)
+                }
+
+                replyCreateForm.parentElement.removeChild(replyCreateForm)
+            }
+            else {
+                createCommentCreateForm(commentCard, commentData)
+            }
+        })
+    }
+
+    const likeButton = commentCard.querySelector(
+        '.comment-card__like-button'
+    )
+    const dislikeButton = commentCard.querySelector(
+        '.comment-card__dislike-button'
+    )
+
+    const reaction = commentData.reaction
+    let reactionId = reaction ? reaction._id : null
+    const reactionType = reaction ? reaction.reaction_type : null
+    let liked = false
+    let disliked = false
+
+    if (reactionType === 'Like') {
+        liked = true
+        likeButton.classList.add('-colorful')
+    }
+    else if (reactionType === 'Dislike') {
+        disliked = true
+        dislikeButton.classList.add('-colorful')
+    }
+
+    const likeReactionForm = commentCard.querySelector(
+        '.comment-card__like-reaction-form'
+    )
+    likeReactionForm.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        fetchReaction(
+            likeReactionForm, 
+            disliked, 
+            liked, 
+            reactionId,
+            (data) => {
+                reactionId = data.reactionId
+            }
+        )
+        updateReactionButtons(
+            disliked, 
+            liked, 
+            [likeButton], 
+            [dislikeButton]
+        )
+
+        disliked = false
+        liked = !liked
+    })
+
+    const dislikeReactionForm = commentCard.querySelector(
+        '.comment-card__dislike-reaction-form'
+    )
+    dislikeReactionForm.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        fetchReaction(
+            dislikeReactionForm, 
+            liked, 
+            disliked, 
+            reactionId,
+            (data) => {
+                reactionId = data.reactionId
+            }
+        )
+        updateReactionButtons(
+            liked, 
+            disliked, 
+            [dislikeButton], 
+            [likeButton]
+        )
+
+        liked = false
+        disliked = !disliked
+    })
+}
+
 
 function updateReactionButtons(
     toggleReaction, removeReaction, primaryButtons, secondaryButtons
@@ -321,94 +337,113 @@ function createCommentCreateForm(replyToCard, replyToData) {
     formClone.classList.add(
         'blog-post-page__reply-create-form'
     )
-    formClone.addEventListener('submit', (event) => {
-        event.preventDefault()
+    commentCreateFormListeners(formClone)
 
-    })
+    const commentString = replyToCard.parentElement
 
-    replyToCard.parentElement.insertBefore(
+    commentString.insertBefore(
         formClone, replyToCard.nextSibling
     )
 }
 
-function commentCreateFormSubmitListeners() {
-    const commentCreateForm = document.querySelector(
+function defaultCommentCreateFormListeners() {
+    const form = document.querySelector(
         '.blog-post-page__comment-create-form'
     )
-    const replyCreateForm = document.querySelector(
-        '.blog-post-page__reply-create-form'
-    )
+    commentCreateFormListeners(form)
+}
 
-    const forms = [commentCreateForm]
+function commentCreateFormListeners(commentCreateForm) {
+    commentCreateForm.addEventListener('submit', (event) => {
+        event.preventDefault()
 
-    if (replyCreateForm) {
-        forms.push(replyCreateForm)
-    }
+        formFetch(
+            `/blog-posts/${backendData.blogPost._id}/comments`,
+            'post',
+            commentCreateForm,
+            false,
+            (data) => {
+                // remove previous errors if present
+                const errorContainer = commentCreateForm.querySelector(
+                    '.form-textarea__error-container'
+                )
 
-    for (const form of forms) {
-        form.addEventListener('submit', (event) => {
-            event.preventDefault()
-    
-            formFetch(
-                `/blog-posts/${backendData.blogPost._id}/comments`,
-                'post',
-                form,
-                false,
-                (data) => {
-    
-                    if (data.errors) {
-                        const errorContainer = form.querySelector(
-                            '.form-textarea__error-container'
-                        )
-    
-                        for (const error of data.errors) {
-                            const errorDiv = document.createElement('div')
-                            errorDiv.classList.add('.form-textarea__error')
-                            errorDiv.textContent = error.msg
-    
-                            errorContainer.append(errorDiv)
+                if (errorContainer) {
+                    errorContainer.parentElement.removeChild(errorContainer)
+                }
+
+                if (data.errors) {
+                    const errorContainer = document.createElement('div')
+                    errorContainer.classList.add('form-textarea__error-container')
+
+                    for (const error of data.errors) {
+                        const errorDiv = document.createElement('div')
+                        errorDiv.classList.add('form-textarea__error')
+                        errorDiv.textContent = error.msg
+                        errorContainer.append(errorDiv)
+                    }
+
+                    const formTextarea = commentCreateForm.querySelector(
+                        '.form-textarea'
+                    )
+                    formTextarea.append(errorContainer)
+                }
+                else {
+                    if (commentCreateForm.classList.contains(
+                        'blog-post-page__reply-create-form'
+                    )) {
+                        let replyContainer = commentCreateForm.nextSibling
+
+                        if (!replyContainer) {
+                            replyContainer = document.createElement('div')
+                            replyContainer.classList.add(
+                                'blog-post-page__reply-container'
+                            )
+                            commentCreateForm.parentElement.append(replyContainer)
                         }
+
+                        const replyCards = replyContainer.querySelectorAll(
+                            '.comment-card'
+                        )
+                        replyContainer.innerHTML = data.renderedHTML
+                        const newCommentCard = replyContainer.querySelector(
+                            '.comment-card'
+                        )
+                        commentReactionFormListeners(
+                            newCommentCard, 
+                            data.commentData
+                        )
+                        
+                        for (const replyCard of replyCards) {
+                            replyContainer.append(replyCard)
+                        }
+
+                        if (replyContainer.classList.contains('-gone')) {
+                            replyContainer.classList.remove('-gone')
+                        }
+
+                        commentCreateForm.parentElement.removeChild(commentCreateForm)
                     }
                     else {
-                        // remove previous errors if present
-                        const errorContainer = form.querySelector(
-                            '.form-textarea__error-container'
+                        const commentString = document.createElement('div')
+                        commentString.classList.add('blog-post-page__comment-string')
+                        commentString.innerHTML = data.renderedHTML
+                        const newCommentCard = commentString.querySelector(
+                            '.comment-card'
                         )
-                        errorContainer.innerHTML = ''
-    
-                        const commentContainer = document.createElement('div')
-                        commentContainer.classList.add('blog-post-page__comment')
-                        commentContainer.append(data.renderedHTML)
-    
-                        const nextSibling = form.nextSibling
-    
-                        if (form.classList.contains(
-                            'blog-post-page__reply-create-form'
-                        )) {
-                            nextSibling.prepend(commentContainer)
-                        }
-                        else {
-                            form.parentElement.insertBefore(
-                                commentContainer, nextSibling
-                            )
-                        }
-    
-                        // Remove reply-create-form, if it exists
-                        const replyCreateForm = document.querySelector(
-                            '.blog-post-page__reply-create-form'
+                        commentReactionFormListeners(
+                            newCommentCard, 
+                            data.commentData
                         )
-    
-                        if (replyCreateForm) {
-                            replyCreateForm
-                                .parentElement
-                                .removeChild(replyCreateForm)
-                        }
+                        commentCreateForm.parentElement.insertBefore(
+                            commentString, commentCreateForm.nextSibling
+                        )
                     }
                 }
-            )
-        })
-    }
- }
+            }
+        )
+    })
+}
 
 function blogPostSetup() {
     const blogPostPage = document.querySelector(
@@ -420,8 +455,8 @@ function blogPostSetup() {
     }
 
     blogPostReactionFormListeners()
-    commentReactionFormListeners()
-    commentCreateFormSubmitListeners()
+    defaultCommentCreateFormListeners()
+    allCommentsReactionFormListeners()
 }
 
 
