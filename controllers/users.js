@@ -31,7 +31,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
     if (
         req.user 
-        && user.username === req.user.username
+        && user._id === req.user._id
     ) {
         title = 'Your Profile'
         isMainUser = true
@@ -489,9 +489,9 @@ exports.postBlogPost = [
 
 // On blog post delete
 // Public blog posts do not depend on private counterparts existing
-exports.deleteBlogPost = [
+// Comments should not be deleted - shared by public and private versions
+exports.deletePrivateBlogPost = [
     asyncHandler(async (req, res, next) => {
-        await Comment.deleteMany({blogPost: req.params.blogPostId}).exec()
         await BlogPost.findOneAndDelete({ _id: req.params.blogPostId }).exec()
         res.end();
     })

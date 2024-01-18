@@ -14,14 +14,6 @@ const UserSchema = new Schema({
         ref: 'BlogPost',
       }
     ], 
-  },
-  blog_posts_written: { 
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'BlogPost',
-      }
-    ], 
   }
 });
 

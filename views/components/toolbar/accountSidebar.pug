@@ -1,12 +1,29 @@
 include ../list/iconElementList
+include ../icon/iconElement
 
 .account-sidebar.sidebar.-closed
     .sidebar__title Account
     if mainUser
-        .account-sidebar__overview 
-            .account-sidebar__avatar
-                img(src='/images/profileIcon.png')
-            .account-sidebar__username= mainUser.username
+        - let icon = '/images/profileIcon.png'
+        
+        if mainUser.profile_pic
+            - const pic = mainUser.profile_pic
+            - const base64 = pic.data.toString('base64')
+            - icon = `data:${pic.contentType};base64,${base64}`
+            
+        +iconElement(
+            'div',
+            icon,
+            mainUser.username,
+            {
+                'class': [
+                    'account-sidebar__overview',
+                    '-avatar',
+                    '-large',
+                    '-gap-medium'
+                ]
+            }
+        )
         +iconElementList(
             [{
                 'tag': 'a',
@@ -14,20 +31,28 @@ include ../list/iconElementList
                 'label': 'Your Profile',
                 'attrs': {
                     'href': `/users/${mainUser.username}`,
-                    'class': '-gap-small'
                 }
-            }]
-        )
-        +iconElementList(
-            [{
+            },
+            {
                 'tag': 'a',
                 'icon': '/images/blogPostIcon.png',
                 'label': 'Your Blog Posts',
                 'attrs': {
                     'href': `/users/${mainUser.username}/blog-posts`,
+                }
+            }],
+            {
+                'iconElementList': {
+                    'class': [
+                        '-gap-small',
+                        '-column',
+                        '-align-start'
+                    ]
+                },
+                'iconElement': {
                     'class': '-gap-small'
                 }
-            }]
+            }
         )
         .account-sidebar__logout
             a(href='/logout') Logout

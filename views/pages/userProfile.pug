@@ -110,6 +110,8 @@ block page
                 .profile__browser-details
                     .profile__heading Recent Reads
                     .profile__body
+                        
+
                         +iconElementList(
                             [{
                                 'tag': 'a',
@@ -126,7 +128,21 @@ block page
                                 'attrs': {
                                     'href': `#`,
                                 } 
-                            }]
+                            }],
+                            {
+                                'iconElementList': {
+                                    'class': [
+                                        '-column',
+                                        '-gap-small',
+                                        '-align-start'
+                                    ]
+                                },
+                                'iconElement': {
+                                    'class': [
+                                        '-gap-small'
+                                    ]
+                                }
+                            }
                         )
                 
                 if user.blog_posts_written && user.blog_posts_written.length

@@ -101,7 +101,6 @@ async function createUsers() {
                 username: 'aaaaaa', 
                 password: 'aaaaaa',
                 profile_pic
-
             }
         ),
         userCreate(
@@ -258,7 +257,7 @@ async function createComments() {
             0,
             {
                 author: users[2],
-                blogPost: blogPosts[0],
+                blog_post: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Yay puppies!',
             }
@@ -267,7 +266,7 @@ async function createComments() {
             1,
             {
                 author: users[3],
-                blogPost: blogPosts[0],
+                blog_post: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Everyone loves puppies!',
             }
@@ -276,7 +275,7 @@ async function createComments() {
             2,
             {
                 author: users[1],
-                blogPost: blogPosts[1],
+                blog_post: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I am a thug and I am keeping my car!',
             }
@@ -285,7 +284,7 @@ async function createComments() {
             3,
             {
                 author: users[2],
-                blogPost: blogPosts[1],
+                blog_post: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'Thugs be tripping.',
             }
@@ -297,7 +296,7 @@ async function createComments() {
             4,
             {
                 author: users[0],
-                blogPost: blogPosts[0],
+                blog_post: blogPosts[0],
                 publish_date: Date.now(),
                 content: 'Puppies!',
                 reply_to: comments[0]
@@ -307,7 +306,7 @@ async function createComments() {
             5,
             {
                 author: users[1],
-                blogPost: blogPosts[1],
+                blog_post: blogPosts[1],
                 publish_date: Date.now(),
                 content: 'I will become mayor and take your car!',
                 reply_to: comments[2]

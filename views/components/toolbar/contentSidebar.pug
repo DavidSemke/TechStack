@@ -11,7 +11,6 @@ include ../list/iconElementList
                 'label': 'Blog Post 1',
                 'attrs': {
                     'href': '/',
-                    'class': '-gap-small'
                 }     
             },
             {
@@ -20,9 +19,20 @@ include ../list/iconElementList
                 'label': 'Blog Post 2',
                 'attrs': {
                     'href': '/',
-                    'class': '-gap-small'
                 }    
-            }]
+            }],
+            {
+                'iconElementList': {
+                    'class': [
+                        '-column',
+                        '-gap-small',
+                        '-align-start'
+                    ]
+                },
+                'iconElement': {
+                    'class': '-gap-small'
+                }
+            }
         )
     .content-sidebar__heading Suggested
     .content-sidebar__section
@@ -33,7 +43,6 @@ include ../list/iconElementList
                 'label': 'Blog Post 1',
                 'attrs': {
                     'href': '/',
-                    'class': '-gap-small'
                 }      
             },
             {
@@ -42,7 +51,18 @@ include ../list/iconElementList
                 'label': 'Blog Post 2',
                 'attrs': {
                     'href': '/',
-                    'class': '-gap-small'
                 } 
-            }]
+            }],
+            {
+                'iconElementList': {
+                    'class': [
+                        '-column',
+                        '-gap-small',
+                        '-align-start'
+                    ]
+                },
+                'iconElement': {
+                    'class': '-gap-small'
+                }
+            }
         )

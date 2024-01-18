@@ -84,7 +84,7 @@ router.put(
 router.delete(
     '/:username/blog-posts/:blogPostId',
     // checkAuthorization, 
-    controller.deleteBlogPost
+    controller.deletePrivateBlogPost
 )
 
 router.post(
