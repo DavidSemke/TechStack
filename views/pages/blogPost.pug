@@ -48,47 +48,47 @@ block page
             .blog-post__content= blogPost.content
             .blog-post__post-blog-separator
                 include ../components/list/blogPostReactionList
-        
-        h2.blog-post-page__post-blog-post-heading More Blogs
-        .blog-post-card-pair
-            a(href=`/blog-posts/${blogPost._id}`)
-                +blogPostCard(
-                    blogPost, 
+        .blog-post-page__more-blogs
+            h2.blog-post-page__post-heading More Blogs
+            .blog-post-card-pair
+                a(href=`/blog-posts/${blogPost._id}`)
+                    +blogPostCard(
+                        blogPost, 
+                        {
+                            'class': '-small'
+                        }
+                    )
+                a(href=`/blog-posts/${blogPost._id}`)
+                    +blogPostCard(
+                        blogPost,
+                        {
+                            'class': '-small'
+                        }
+                    )
+        #comment-section.blog-post-page__comment-section
+            h2.blog-post-page__post-heading Comments
+            form(
+                method='post'
+                enctype='multipart/form-data'
+            ).blog-post-page__comment-create-form
+                +formTextarea(
+                    'content',
+                    '',
+                    [],
                     {
-                        'class': '-small'
+                        'textarea': {
+                            'rows': '2',
+                            'placeholder': 'Add a comment...',
+                        }
                     }
                 )
-            a(href=`/blog-posts/${blogPost._id}`)
-                +blogPostCard(
-                    blogPost,
-                    {
-                        'class': '-small'
-                    }
-                )
-        
-        h2#comment-section-heading.blog-post-page__post-blog-post-heading Comments
-        form(
-            method='post'
-            enctype='multipart/form-data'
-        ).blog-post-page__comment-create-form
-            +formTextarea(
-                'content',
-                '',
-                [],
-                {
-                    'textarea': {
-                        'rows': '2',
-                        'placeholder': 'Add a comment...',
-                    }
-                }
-            )
-            button(type='submit') Submit
+                button(type='submit') Submit
 
-        each comment in blogPost.comments
-            .blog-post-page__comment-string
-                +commentCard(comment)
-            
-                if comment.replies.length
-                    .blog-post-page__reply-container.-gone
-                        each reply in comment.replies
-                            +commentCard(reply, true)
+            each comment in blogPost.comments
+                .blog-post-page__comment-string
+                    +commentCard(comment)
+                
+                    if comment.replies.length
+                        .blog-post-page__reply-container.-gone
+                            each reply in comment.replies
+                                +commentCard(reply, true)

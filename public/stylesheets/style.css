@@ -84,6 +84,7 @@
   flex-direction: column;
   gap: 1rem;
   padding-bottom: 1rem;
+  margin-bottom: 1rem;
   border-bottom: 2px solid rgb(36, 36, 36);
 }
 .comment-card__author-date {
@@ -507,20 +508,18 @@
 }
 
 .blog-post-page {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  width: 100%;
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-.blog-post-page__post-blog-post-heading {
-  margin: 0;
+.blog-post-page__post-heading {
   font-size: 2rem;
   border-bottom: 4px solid rgb(36, 36, 36);
 }
 .blog-post-page__comment-create-form, .blog-post-page__reply-create-form {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 2rem;
+}
+.blog-post-page__comment-create-form .form-textarea, .blog-post-page__reply-create-form .form-textarea {
+  margin-bottom: 1rem;
 }
 .blog-post-page__reply-container {
   margin-left: 4rem;

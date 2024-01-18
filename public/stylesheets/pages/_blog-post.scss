@@ -3,19 +3,17 @@
 @use '../globals/font-sizes' as fSizes;
 
 .blog-post-page {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-    padding: 1rem;
-
-    &__post-blog-post-heading {
-        margin: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    
+    &__post-heading {
         font-size: fSizes.$xlarge;
         border-bottom: 4px solid colors.$bg2;
     }
 
     &__comment-create-form, &__reply-create-form  {
+        margin-bottom: 2rem;
+
         .form-textarea {
             margin-bottom: 1rem;
         }
