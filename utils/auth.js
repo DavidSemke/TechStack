@@ -41,7 +41,17 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findById(id).lean().exec();
+        const user = await User
+            .findById(id)
+            .populate('blog_posts_recently_read')
+            .populate({
+                path: 'blog_posts_recently_read',
+                populate: {
+                    path: 'author'
+                }
+            })
+            .lean()
+            .exec();
         done(null, user);
     } 
     catch(err) {

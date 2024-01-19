@@ -14,6 +14,7 @@ const flash = require('connect-flash')
 const mongoose = require("mongoose")
 const mongoSanitize = require('express-mongo-sanitize')
 const ents = require('./utils/htmlEntities')
+const BlogPost = require("./models/blogPost");
 
 // for testing
 const User = require("./models/user");
@@ -45,6 +46,7 @@ app.use(
     }
   })
 )
+
 //set CSP with nonce
 // app.use((req, res, next) => {
 //   const nonce = crypto.randomBytes(16).toString('base64');
@@ -91,6 +93,13 @@ app.use(flash());
 app.use(async (req, res, next) => {
   const autologUser = await User
     .findOne({ username: 'aaaaaa' })
+    .populate('blog_posts_recently_read')
+    .populate({
+        path: 'blog_posts_recently_read',
+        populate: {
+            path: 'author'
+        }
+    })
     .lean()
     .exec();
 
@@ -111,10 +120,37 @@ app.use((req, res, next) => {
 
   const rawUser = ents.decodeObject(
     req.user,
-    (key, value) => key !== 'profile_pic'
+    (key, value) => key !== 'profile_pic' && key != 'thumbnail'
   )
 
   res.locals.mainUser = rawUser
+  next()
+})
+
+// add user blog post suggestions local
+app.use(async (req, res, next) => {
+  if (!req.user) {
+    return next()
+  }
+
+  // Find up to 5 public blog posts not written by current user
+  let suggestions = await BlogPost
+    .find({ 
+      author: { $ne: req.user._id },
+      public_version: { $exists: false },
+      publish_date: { $exists: true } 
+    })
+    .populate('author')
+    .limit(5)
+    .lean()
+    .exec()
+
+  suggestions = ents.decodeObject(
+    suggestions,
+    (key, value) => key !== 'profile_pic' && key != 'thumbnail'
+  )
+
+  res.locals.suggestions = suggestions
   next()
 })
 

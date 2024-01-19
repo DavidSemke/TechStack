@@ -2,67 +2,93 @@ include ../list/iconElementList
 
 .content-sidebar.sidebar.-closed
     .sidebar__title Content
-    .content-sidebar__heading Recent
-    .content-sidebar__section
-        +iconElementList(
-            [{
-                'tag': 'a',
-                'icon': '/images/profileIcon.png',
-                'label': 'Blog Post 1',
-                'attrs': {
-                    'href': '/',
-                }     
-            },
-            {
-                'tag': 'a',
-                'icon': '/images/profileIcon.png',
-                'label': 'Blog Post 2',
-                'attrs': {
-                    'href': '/',
-                }    
-            }],
-            {
-                'iconElementList': {
-                    'class': [
-                        '-column',
-                        '-gap-small',
-                        '-align-start'
-                    ]
-                },
-                'iconElement': {
-                    'class': '-gap-small'
+
+    if !mainUser
+        .content-sidebar__heading Not Logged In
+        .content-sidebar__section Log in for content history and suggestions. 
+    else
+        .content-sidebar__heading Recent
+        .content-sidebar__section
+            - const recentReads = mainUser.blog_posts_recently_read
+
+            if recentReads.length
+                - const recentReadsIconElements = []
+
+                each blogPost in recentReads
+                    - let icon = '/images/profileIcon.png'
+                    - const pic = blogPost.author.profile_pic
+
+                    if pic
+                        - const base64 = pic.data.toString('base64')
+                        - icon = `data:${pic.contentType};base64,${base64}`
+                    - 
+                        recentReadsIconElements.push(
+                            {
+                                'tag': 'a',
+                                'icon': icon,
+                                'label': blogPost.title,
+                                'attrs': {
+                                    'href': `/blog-posts/${blogPost._id}`,
+                                }
+                            }
+                        )
+                +iconElementList(
+                    recentReadsIconElements,
+                    {
+                        'iconElementList': {
+                            'class': [
+                                '-column',
+                                '-gap-small',
+                                '-align-start'
+                            ]
+                        },
+                        'iconElement': {
+                            'class': [
+                                '-gap-small',
+                                '-avatar'
+                            ]
+                        }
+                    }
+                )
+            else 
+                | No recent reads available.
+        .content-sidebar__heading Suggested
+        .content-sidebar__section
+            - const suggestionsIconElements = []
+
+            each blogPost in suggestions
+                - let icon = '/images/profileIcon.png'
+                - const pic = blogPost.author.profile_pic
+
+                if pic
+                    - const base64 = pic.data.toString('base64')
+                    - icon = `data:${pic.contentType};base64,${base64}`
+                - 
+                    suggestionsIconElements.push(
+                        {
+                            'tag': 'a',
+                            'icon': icon,
+                            'label': blogPost.title,
+                            'attrs': {
+                                'href': `/blog-posts/${blogPost._id}`,
+                            }
+                        }
+                    )
+            +iconElementList(
+                suggestionsIconElements,
+                {
+                    'iconElementList': {
+                        'class': [
+                            '-column',
+                            '-gap-small',
+                            '-align-start'
+                        ]
+                    },
+                    'iconElement': {
+                        'class': [
+                            '-gap-small',
+                            '-avatar'
+                        ]
+                    }
                 }
-            }
-        )
-    .content-sidebar__heading Suggested
-    .content-sidebar__section
-        +iconElementList(
-            [{
-                'tag': 'a',
-                'icon': '/images/profileIcon.png',
-                'label': 'Blog Post 1',
-                'attrs': {
-                    'href': '/',
-                }      
-            },
-            {
-                'tag': 'a',
-                'icon': '/images/profileIcon.png',
-                'label': 'Blog Post 2',
-                'attrs': {
-                    'href': '/',
-                } 
-            }],
-            {
-                'iconElementList': {
-                    'class': [
-                        '-column',
-                        '-gap-small',
-                        '-align-start'
-                    ]
-                },
-                'iconElement': {
-                    'class': '-gap-small'
-                }
-            }
-        )
+            )

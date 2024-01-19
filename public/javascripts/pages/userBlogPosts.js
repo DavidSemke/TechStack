@@ -236,7 +236,7 @@ function onItemClick(event, rightPanel) {
         ...backendData.unpublishedBlogPosts
     ]
     const blogPost = blogPosts.find(
-        (blogPost) => blogPost._id === itemId
+        (blogPost) => blogPost._id.toString() === itemId
     )
 
     const fragmentTitle = document.querySelector(

@@ -110,25 +110,30 @@ block page
                 .profile__browser-details
                     .profile__heading Recent Reads
                     .profile__body
-                        
+                        - const recentReads = user.blog_posts_recently_read
+                        - const recentReadsIconElements = []
+
+                        each blogPost in recentReads
+                            - let icon = '/images/profileIcon.png'
+                            - const pic = blogPost.author.profile_pic
+        
+                            if pic
+                                - const base64 = pic.data.toString('base64')
+                                - icon = `data:${pic.contentType};base64,${base64}`
+                            - 
+                                recentReadsIconElements.push(
+                                    {
+                                        'tag': 'a',
+                                        'icon': icon,
+                                        'label': blogPost.title,
+                                        'attrs': {
+                                            'href': `/blog-posts/${blogPost._id}`,
+                                        }
+                                    }
+                                )
 
                         +iconElementList(
-                            [{
-                                'tag': 'a',
-                                'icon': '/images/profileIcon.png',
-                                'label': 'Blog Post 1',
-                                'attrs': {
-                                    'href': `#`,
-                                }
-                            },
-                            {
-                                'tag': 'a',
-                                'icon': '/images/profileIcon.png',
-                                'label': 'Blog Post 2',
-                                'attrs': {
-                                    'href': `#`,
-                                } 
-                            }],
+                            recentReadsIconElements,
                             {
                                 'iconElementList': {
                                     'class': [
@@ -145,7 +150,7 @@ block page
                             }
                         )
                 
-                if user.blog_posts_written && user.blog_posts_written.length
+                if user.blog_posts_written.length
                     .profile__author-details
                         - let heading = `Blog Posts Written by ${user.username}`
                         
@@ -154,21 +159,40 @@ block page
                         
                         .profile__heading= heading
                         .profile__body
-                            +iconLinkList(
-                                [{
-                                    'tag': 'a',
-                                    'icon': '/images/profileIcon.png',
-                                    'label': 'Blog Post 1',
-                                    'attrs': {
-                                        'href': `#`,
-                                    }
-                                },
+                            - const blogPostsWrittenIconElements = []
+
+                            each blogPost in user.blog_posts_written
+                                - let icon = '/images/profileIcon.png'
+                                - const pic = blogPost.author.profile_pic
+            
+                                if pic
+                                    - const base64 = pic.data.toString('base64')
+                                    - icon = `data:${pic.contentType};base64,${base64}`
+                                - 
+                                    blogPostsWrittenIconElements.push(
+                                        {
+                                            'tag': 'a',
+                                            'icon': icon,
+                                            'label': blogPost.title,
+                                            'attrs': {
+                                                'href': `/blog-posts/${blogPost._id}`,
+                                            }
+                                        }
+                                    )
+                            +iconElementList(
+                                blogPostsWrittenIconElements,
                                 {
-                                    'tag': 'a',
-                                    'icon': '/images/profileIcon.png',
-                                    'label': 'Blog Post 2',
-                                    'attrs': {
-                                        'href': `#`,
-                                    } 
-                                }]
+                                    'iconElementList': {
+                                        'class': [
+                                            '-column',
+                                            '-gap-small',
+                                            '-align-start'
+                                        ]
+                                    },
+                                    'iconElement': {
+                                        'class': [
+                                            '-gap-small'
+                                        ]
+                                    }
+                                }
                             )

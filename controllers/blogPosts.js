@@ -66,12 +66,17 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
 
         // Add blog post to current user's recently read list
         // Only do this if the blog post's author is not current user
-        if (blogPost.author._id !== req.user._id) {
-            const recentlyRead = req.user.blog_posts_recently_read
+        // If the blog post is already in the list, remove it and place
+        // it at the front
+        if (blogPost.author._id.toString() !== req.user._id.toString()) {
+            let recentlyRead = req.user.blog_posts_recently_read
+            recentlyRead = recentlyRead.filter(
+                recentRead => recentRead._id.toString() !== blogPost._id.toString()
+            )
             const recentlyReadTotal = recentlyRead.unshift(blogPost._id)
 
-            // enforce a maximum of 10 blog posts in recently read
-            if (recentlyReadTotal > 10) {
+            // enforce a maximum of 5 blog posts in recently read
+            if (recentlyReadTotal > 5) {
                 recentlyRead.pop()
             }
 

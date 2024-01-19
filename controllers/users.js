@@ -16,6 +16,13 @@ const { Types } = require('mongoose')
 exports.getUser = asyncHandler(async (req, res, next) => {
     const user = await User
         .findOne({ username: req.params.username })
+        .populate('blog_posts_recently_read')
+        .populate({
+            path: 'blog_posts_recently_read',
+            populate: {
+                path: 'author'
+            }
+        })
         .lean()
         .exec()
 
@@ -26,12 +33,22 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
+    // find public blog posts only
+    user.blog_posts_written = await BlogPost
+        .find({
+            author:  user._id,
+            public_version: { $exists: false },
+            publish_date: { $exists: true } 
+        })
+        .lean()
+        .exec()
+
     let title = `${user.username}'s Profile`
     let isMainUser = false
 
     if (
         req.user 
-        && user._id === req.user._id
+        && user._id.toString() === req.user._id.toString()
     ) {
         title = 'Your Profile'
         isMainUser = true
@@ -46,7 +63,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     }
     const data = ents.decodeObject(
         safeData,
-        (key, value) => key !== 'profile_pic'
+        (key, value) => key !== 'profile_pic' && key !== 'thumbnail'
     )
 
     res.render("pages/userProfile", { data, safeData });
@@ -181,7 +198,12 @@ exports.updateUser = [
             )
         }
 
-        await User.findOneAndUpdate(filter, update).lean().exec()
+        const updatedUser = await User
+            .findOneAndUpdate(
+                filter, update, { new: true }
+            )
+            .lean()
+            .exec()
 
         res.redirect(303, `/users/${updatedUser.username}`)
     })
