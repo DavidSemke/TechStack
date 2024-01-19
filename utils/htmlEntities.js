@@ -3,50 +3,60 @@ const _ = require('lodash')
 
 function decodeObject(obj, filter=null) {
     const clone = _.cloneDeep(obj)
+    filter = filter || ((k, v)=>true)
 
-    for (const [key, value] of Object.entries(clone)) {
+    return decodeObjectInner(clone, filter)
+}
 
-        if (filter !== null && !filter(key, value)) {
+function decodeObjectInner(obj, filter) {
+    for (const [key, value] of Object.entries(obj)) {
+
+        if (!filter(key, value)) {
             continue
         }
         
         if (typeof value === 'string') {
-            clone[key] = decode(value)
+            obj[key] = decode(value)
         }
         else if (typeof value === 'object' && value !== null) {
-            decodeObject(value, filter)
+            obj[key] = decodeObject(value, filter)
         }
     }
 
-    return clone
-}
-
-function encodeObject(obj, filter=null) {
-    const clone = _.cloneDeep(obj)
-
-    for (const [key, value] of Object.entries(clone)) {
-
-        if (filter !== null && !filter(key, value)) {
-            continue
-        }
-        
-        if (typeof value === 'string') {
-            clone[key] = encode(value)
-        }
-        else if (typeof value === 'object' && value !== null) {
-            encodeObject(value, filter)
-        }
-    }
-
-    return clone
-}
-
-function encode(str) {
-    return entities.encodeHTML(str)
+    return obj
 }
 
 function decode(str) {
     return entities.decodeHTML(str)
+}
+
+function encodeObject(obj, filter=null) {
+    const clone = _.cloneDeep(obj)
+    filter = filter || ((k, v)=>true)
+
+    return encodeObjectInner(clone, filter)
+}
+
+function encodeObjectInner(obj, filter) {
+    for (const [key, value] of Object.entries(obj)) {
+
+        if (!filter(key, value)) {
+            continue
+        }
+        
+        if (typeof value === 'string') {
+            obj[key] = encode(value)
+        }
+        else if (typeof value === 'object' && value !== null) {
+            obj[key] = encodeObjectInner(value, filter)
+        }
+    }
+
+    return obj
+}
+
+function encode(str) {
+    return entities.encodeHTML(str)
 }
 
 module.exports = {

@@ -423,12 +423,7 @@ exports.getBlogPostCreateForm = [
             errors: [],
             blogPost: {}
         }
-        const data = {
-            title: "Create Blog Post",
-            inputs: {},
-            errors: [],
-            blogPost: {}
-        }
+        const data = safeData
         
         res.render("pages/blogPostForm",  { data, safeData })
     }
@@ -436,7 +431,7 @@ exports.getBlogPostCreateForm = [
     
 // On blog post create
 exports.postBlogPost = [
-    // files processed after body middleware
+    // Files validated after body middleware
     body("title")
         .trim()
         .isLength({ min: 60, max: 100 })
@@ -452,6 +447,8 @@ exports.postBlogPost = [
             return !(wordCount < 1 || wordCount > 10)
         })
         .withMessage('Must have 1 to 10 keywords.'),
+    body("content")
+        .trim(),
     body("word-count")
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -466,10 +463,10 @@ exports.postBlogPost = [
                 res.redirect(303, `/users/${req.user.username}/blog-posts`)
                 break
             case 'save':
-                await post(req, res)
+                await post(req, res, ['title'])
                 break
             case 'publish':
-                await post(req, res, true)
+                await post(req, res, null, true)
                 break
             default:
                 const err = new Error(
@@ -481,14 +478,18 @@ exports.postBlogPost = [
                 return next(err);
         }
 
-        async function post(req, res, publishing=false) {
-            const data = await processBlogPostData(req, res)
+        // if validationPaths = null, all paths are considered
+        async function post(req, res, validationPaths=null, publishing=false) {
+            const data = await processBlogPostData(
+                req, res, null, validationPaths
+            )
 
             // data is null or an object
             if (!data) {
                 return
             }
 
+            // if pre-method = publish
             if (publishing) {
                 data.publish_date = Date.now()
 
@@ -546,7 +547,10 @@ exports.getBlogPostUpdateForm = [
             errors: [],
             blogPost
         }
-        const data = ents.decodeObject(safeData)
+        const data = ents.decodeObject(
+            safeData,
+            (key, value) => key !== 'thumbnail'
+        )
     
         res.render("pages/blogPostForm", { data, safeData });
     })
@@ -570,6 +574,8 @@ exports.updateBlogPost = [
             return !(wordCount < 1 || wordCount > 10)
         })
         .withMessage('Must have 1 to 10 keywords.'),
+    body("content")
+        .trim(),
     body("word-count")
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -590,10 +596,10 @@ exports.updateBlogPost = [
                 await backwardUpdate(req, res, blogPost)
                 break
             case 'save':
-                await forwardUpdate(req, res, blogPost)
+                await forwardUpdate(req, res, blogPost, ['title'])
                 break
             case 'publish':
-                await forwardUpdate(req, res, blogPost, true)
+                await forwardUpdate(req, res, blogPost, null, true)
                 break
             default:
                 const err = new Error(
@@ -628,8 +634,12 @@ exports.updateBlogPost = [
             res.redirect(303, `/users/${req.user.username}/blog-posts`)
         }
 
-        async function forwardUpdate(req, res, blogPost, publishing=false) {
-            const data = await processBlogPostData(req, res, blogPost)
+        async function forwardUpdate(
+            req, res, blogPost, validationPaths=null, publishing=false
+        ) {
+            const data = await processBlogPostData(
+                req, res, blogPost, validationPaths
+            )
 
             // data is null or an object
             if (!data) {
@@ -692,7 +702,9 @@ exports.updateBlogPost = [
 ];
 
 
-async function processBlogPostData(req, res, blogPost=null) {
+async function processBlogPostData(
+    req, res, blogPost, validationPaths
+) {
     const errors = []
 
     if (req.fileTypeError) {
@@ -720,7 +732,19 @@ async function processBlogPostData(req, res, blogPost=null) {
         content: req.body.content
     }
 
-    const nonFileErrors = validationResult(req).array()
+    // remove weird tinymce phenomenon
+    if (inputs.content === '<p><br data-mce-bogus="1"></p>') {
+        inputs.content = ''
+    }
+
+    let nonFileErrors = validationResult(req).array()
+
+    if (validationPaths) {
+        nonFileErrors = nonFileErrors.filter(
+            error => validationPaths.includes(error.path)
+        )
+    }
+
     errors.push(...nonFileErrors)
 
     if (errors.length) {
@@ -741,7 +765,17 @@ async function processBlogPostData(req, res, blogPost=null) {
 
     const blogPostData = {
         title: encodedInputs.title,
-        thumbnail: {
+        author: req.user._id,
+        content: encodedInputs.content,
+        last_modified_date: Date.now()
+    }
+
+    if (encodedInputs.keywords !== '') {
+        blogPostData.keywords = encodedInputs.keywords.split(' ')
+    }
+
+    if (req.file) {
+        blogPostData.thumbnail = {
             data: fs.readFileSync(
                 path.join(
                     process.cwd(),
@@ -750,28 +784,22 @@ async function processBlogPostData(req, res, blogPost=null) {
                 )
             ),
             contentType: req.file.mimetype
-        },
-        author: {
-            name: req.user.username,
-            profile_pic: req.user.profile_pic ?? null
-        },
-        keywords: encodedInputs.keywords.split(' '),
-        content: encodedInputs.content
-    }
-
-    // delete uploaded thumbnail
-    fs.unlink(
-        path.join(
-            process.cwd(),
-            'uploads',
-            req.file.filename
-        ),
-        (err) => {
-            if (err) {
-                throw err
-            }
         }
-    )
+
+        // delete uploaded thumbnail
+        fs.unlink(
+            path.join(
+                process.cwd(),
+                'uploads',
+                req.file.filename
+            ),
+            (err) => {
+                if (err) {
+                    throw err
+                }
+            }
+        )
+    }
 
     return blogPostData
 }

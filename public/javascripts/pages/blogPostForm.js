@@ -71,8 +71,12 @@ function blogPostFormSubmitListeners() {
     })
 
     function addPreMethod(preMethod) {
-        if (document.querySelector('.blog-post-form__pre-method')) {
-            return
+        const preMethodInput = blogPostForm.querySelector(
+            '.blog-post-form__pre-method'
+        )
+
+        if (preMethodInput) {
+            blogPostForm.removeChild(preMethodInput)
         }
 
         const input = document.createElement('input')
@@ -93,14 +97,18 @@ function blogPostFormSubmitListeners() {
     blogPostForm.addEventListener('submit', (event) => {
         event.preventDefault()
         
-        let method = 'POST'
+        let method = 'PUT'
+        let href = window.location.href
 
         // blogPost param is empty object if posting, else putting
-        if (Object.keys(backendData.blogPost).length) {
-            method = 'PUT'
+        if (!Object.keys(backendData.blogPost).length) {
+            method = 'POST'
+            const hrefWords = href.split('/')
+            hrefWords.pop() // remove the ending /new-blog-post
+            href = hrefWords.join('/')
         }
 
-        formFetch(window.location.href, method, blogPostForm, true)
+        formFetch(href, method, blogPostForm, true)
     })
 }
 

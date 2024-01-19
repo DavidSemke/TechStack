@@ -242,7 +242,7 @@ function onItemClick(event, rightPanel) {
     const fragmentTitle = document.querySelector(
         '.blog-post-fragment__title'
     )
-    fragmentTitle.textContent = blogPost.title
+    fragmentTitle.innerHTML = blogPost.title
 
     const fragmentThumbnail = document.querySelector(
         '.blog-post-fragment__thumbnail'
