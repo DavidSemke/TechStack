@@ -369,7 +369,7 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
                     .lean()
                     .exec(),
                 ReactionCounter
-                    .find({
+                    .findOne({
                         content: {
                             content_type: 'BlogPost',
                             content_id: blogPost._id
@@ -506,6 +506,16 @@ exports.postBlogPost = [
 
             const privateBlogPost = new BlogPost(data)
             await privateBlogPost.save();
+
+            const reactionCounter = new ReactionCounter({
+                content: {
+                    content_type: 'BlogPost',
+                    content_id: privateBlogPost._id
+                },
+                like_count: 0,
+                dislike_count: 0
+            })
+            await reactionCounter.save()
         }
     }) 
 ];

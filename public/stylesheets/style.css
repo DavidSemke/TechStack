@@ -198,6 +198,7 @@
   align-items: center;
 }
 .icon-element__icon {
+  flex: none;
   height: 2rem;
   width: 2rem;
 }
