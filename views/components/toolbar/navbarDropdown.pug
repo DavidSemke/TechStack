@@ -1,0 +1,37 @@
+include ../list/iconElementList 
+
+.navbar-dropdown
+    if !blogPosts.length
+        | No blog posts found.
+    else
+        - const iconElements = []
+        - const defaultIcon = '/images/profileIcon.png'
+
+        each blogPost in blogPosts
+            - 
+                iconElements.push({
+                    'tag': 'a',
+                    'icon': blogPost.author.profile_pic || defaultIcon,
+                    'label': blogPost.title,
+                    'attrs': {
+                        'href': `/blog-posts/${blogPost._id}`,
+                    }
+                })
+
+        +iconElementList(
+            iconElements,
+            {
+                'iconElementList': {
+                    'class': [
+                        '-column',
+                        '-align-start'
+                    ]
+                },
+                'iconElement': {
+                    'class': [
+                        '-gap-small',
+                        '-avatar'
+                    ]
+                }
+            }
+        )

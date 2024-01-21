@@ -11,6 +11,51 @@ const path = require('path')
 const pug = require('pug')
 const { Types } = require('mongoose')
 
+
+exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
+    const keywordsParam = req.query.keywords
+
+    if (!keywordsParam) {
+        return res.end()
+    }
+
+    const keywords = keywordsParam.split(',')
+    const queryConditions = []
+
+    for (const keyword of keywords) {
+        queryConditions.push({
+            $or: [
+                { title: { $regex: new RegExp(keyword, 'i') } },
+                { keywords: { $regex: new RegExp(`^${keyword}$`, 'i') } }
+            ]
+        })
+    }
+
+    const finalQuery = {
+        $and: queryConditions,
+        public_version: { $exists: false },
+        publish_date: { $exists: true } 
+    }
+    
+    const blogPosts = await BlogPost
+        .find(finalQuery)
+        .lean()
+        .exec()
+    
+    const pugPath = path.join(
+        process.cwd(),
+        'views',
+        'components',
+        'toolbar',
+        'navbarDropdown.pug'
+    )
+    const template = pug.compileFile(pugPath)
+    const renderedHTML = template({
+        blogPosts 
+    })
+    
+    res.json({ renderedHTML })
+})
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {

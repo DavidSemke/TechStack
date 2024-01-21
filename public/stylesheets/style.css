@@ -149,9 +149,6 @@
   min-height: 1.5rem;
   min-width: 1.5rem;
 }
-.searchbar__form {
-  width: 100%;
-}
 .searchbar__input {
   width: 100%;
   font-size: 1.2rem;
@@ -437,6 +434,22 @@
   align-items: center;
   gap: 1rem;
   font-size: 1.2rem;
+}
+
+.navbar-dropdown-container {
+  display: flex;
+  position: fixed;
+  height: 50%;
+  width: 50%;
+  padding-top: max(8vh, 4rem);
+  border: 2px solid rgb(36, 36, 36);
+  background-color: black;
+  overflow: hidden;
+}
+
+.navbar-dropdown {
+  width: 100%;
+  overflow-y: auto;
 }
 
 .blog-post-form-page {

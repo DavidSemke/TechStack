@@ -2,14 +2,17 @@
 @use '../globals/font-sizes' as fSizes;
 @use '../globals/icon-sizes' as iSizes;
 
+$navbar-height: 8vh;
+$navbar-min-height: 4rem;
+
 .navbar {
     display: flex;
     align-items: center;
     position: sticky;
     top: 0;
     padding: 1rem;
-    height: 8vh;
-    min-height: 4rem;
+    height: $navbar-height;
+    min-height: $navbar-min-height;
     width: 100%;
     z-index: 10;
     border-bottom: 2px solid colors.$bg2;
@@ -68,4 +71,20 @@
     align-items: center;
     gap: 1rem;
     font-size: fSizes.$large;
-  }
+}
+
+.navbar-dropdown-container {
+    display: flex;
+    position: fixed;
+    height: 50%;
+    width: 50%;
+    padding-top: max($navbar-height, $navbar-min-height);
+    border: 2px solid colors.$bg2;
+    background-color: colors.$bg0;
+    overflow: hidden;
+}
+
+.navbar-dropdown {
+    width: 100%;
+    overflow-y: auto;
+}

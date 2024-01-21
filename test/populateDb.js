@@ -155,7 +155,7 @@ async function createBlogPosts() {
                 author: users[0],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
-                keywords: ['puppies'],
+                keywords: ['dog', 'adoption'],
                 content: 'Puppies adopted, everyone is happy!',
             }
         ),
@@ -167,8 +167,56 @@ async function createBlogPosts() {
                 author: users[1],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
-                keywords: ['thugs', 'cars'],
+                keywords: ['bully', 'vehicle', 'drive-by'],
                 content: 'Thug cars are really loud! They must go!',
+            }
+        ),
+        blogPostCreate(
+            2, 
+            { 
+                title: 'I have ants in my pants!',
+                thumbnail,
+                author: users[0],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['pest', 'clothes'],
+                content: 'Please call a doctor. Or an exterminator? Call one of them. Or maybe both.',
+            }
+        ),
+        blogPostCreate(
+            3, 
+            { 
+                title: 'Why Humanity Should Make Wasps Go Extinct',
+                thumbnail,
+                author: users[1],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['insect', 'bully'],
+                content: 'Wasps suck.',
+            }
+        ),
+        blogPostCreate(
+            4, 
+            { 
+                title: 'How to Make a Proper PB and J',
+                thumbnail,
+                author: users[0],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['food', 'tasting'],
+                content: 'First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.',
+            }
+        ),
+        blogPostCreate(
+            5, 
+            { 
+                title: 'Why You Don\'t Need to Go to the Doctor.',
+                thumbnail,
+                author: users[1],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['healthcare', 'medicine'],
+                content: 'Eat an apple and take a bath, hippie.',
             }
         )
     ]);
@@ -176,73 +224,124 @@ async function createBlogPosts() {
     // private versions (last 4 indexes are NOT published)
     await Promise.all([
         blogPostCreate(
-            2, 
+            6, 
             { 
                 title: 'Local puppies adopted!',
                 thumbnail,
                 author: users[0],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
-                keywords: ['puppies'],
+                keywords: ['dog', 'adoption'],
                 content: 'Puppies adopted, everyone is happy!',
                 public_version: blogPosts[0]
             }
         ),
         blogPostCreate(
-            3, 
+            7, 
             { 
                 title: 'Thugs have cars!',
                 thumbnail,
                 author: users[1],
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
-                keywords: ['thugs', 'cars'],
+                keywords: ['bully', 'vehicle', 'drive-by'],
                 content: 'Thug cars are really loud! They must go!',
                 public_version: blogPosts[1]
             }
         ),
         blogPostCreate(
-            4, 
+            8, 
+            { 
+                title: 'I have ants in my pants!',
+                thumbnail,
+                author: users[0],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['pest', 'clothes'],
+                content: 'Please call a doctor. Or an exterminator? Call one of them. Or maybe both.',
+                public_version: blogPosts[2]
+            }
+        ),
+        blogPostCreate(
+            9, 
+            { 
+                title: 'Why Humanity Should Make Wasps Go Extinct',
+                thumbnail,
+                author: users[1],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['insect', 'bully'],
+                content: 'Wasps suck.',
+                public_version: blogPosts[3]
+            }
+        ),
+        blogPostCreate(
+            10, 
+            { 
+                title: 'How to Make a Proper PB and J',
+                thumbnail,
+                author: users[0],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['food', 'tasting'],
+                content: 'First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.',
+                public_version: blogPosts[4]
+            }
+        ),
+        blogPostCreate(
+            11, 
+            { 
+                title: 'Why You Don\'t Need to Go to the Doctor.',
+                thumbnail,
+                author: users[1],
+                publish_date: Date.now(),
+                last_modified_date: Date.now(),
+                keywords: ['healthcare', 'medicine'],
+                content: 'Eat an apple and take a bath, hippie.',
+                public_version: blogPosts[5]
+            }
+        ),
+        blogPostCreate(
+            12, 
             { 
                 title: 'Spiders in my basement!',
                 thumbnail,
                 author: users[0],
                 last_modified_date: Date.now(),
-                keywords: ['spiders'],
+                keywords: ['arachnid', 'scary'],
                 content: 'Adventurer, I need you to squish 80 spiders!',
             }
         ),
         blogPostCreate(
-            5, 
+            13, 
             { 
                 title: 'Only you can prevent forest fires!',
                 thumbnail,
                 author: users[1],
                 last_modified_date: Date.now(),
-                keywords: ['fire', 'forest'],
+                keywords: ['burn', 'wood'],
                 content: 'I smoked a forest yesterday and dreamt of magical jacuzzi.',
             }
         ),
-        // public versions
         blogPostCreate(
-            6, 
+            14, 
             { 
                 title: 'I shipped my pants!',
                 thumbnail,
                 author: users[0],
                 last_modified_date: Date.now(),
-                keywords: ['puppies'],
+                keywords: ['amazon', 'bezos'],
                 content: 'I did not like my Amazon order so I am returning the pants, thanks Obama.',
             }
         ),
         blogPostCreate(
-            7, 
+            15, 
             { 
                 title: 'Don\'t worry guys I\'m 6ft!',
                 thumbnail,
                 author: users[1],
                 last_modified_date: Date.now(),
-                keywords: ['thugs', 'cars'],
+                keywords: ['tall', 'short'],
                 content: 'I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!',
             }
         ),

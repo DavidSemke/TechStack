@@ -164,7 +164,7 @@ block page
 
                             each blogPost in user.blog_posts_written
                                 - let icon = '/images/profileIcon.png'
-                                - const pic = blogPost.author.profile_pic
+                                - const pic = mainUser.profile_pic
             
                                 if pic
                                     - const base64 = pic.data.toString('base64')

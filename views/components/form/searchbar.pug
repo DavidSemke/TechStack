@@ -2,7 +2,6 @@ mixin searchbar(placeholder, attrs={})
     .searchbar&attributes(attrs)
         .searchbar__icon
             img(src='/images/searchIcon.png')
-        form.searchbar__form
-            input.searchbar__input(
-                type='text', placeholder=placeholder
-            )
+        input.searchbar__input(
+            type='text', placeholder=placeholder
+        )
