@@ -6,6 +6,7 @@
 @use 'components/form/logging-form';
 @use 'components/form/searchbar';
 @use 'components/fragment/blog-post-fragment';
+@use 'components/grid/blog-post-grid';
 @use 'components/icon/icon-element';
 @use 'components/list/blog-post-list';
 @use 'components/list/button-list';
@@ -117,19 +118,10 @@ textarea {
   resize: none;
 }
 
-
 ul, ol {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
-}
-
-.blog-post-card-pair {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4rem;
 }
 
 .-hidden {

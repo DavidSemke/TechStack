@@ -1,7 +1,8 @@
 include ../list/iconElementList
+include ../icon/iconElement
 
 mixin blogPostCard(blogPost, attrs={})
-  .blog-post-card&attributes(attrs)
+  a.blog-post-card(href=`/blog-posts/${blogPost._id}`)&attributes(attrs)
     .blog-post-card__stat-list
       +iconElementList(
         [{
@@ -46,10 +47,25 @@ mixin blogPostCard(blogPost, attrs={})
       )
     .blog-post-card__overview
       .blog-post-card__author-date
-        .blog-post-card__author-details
-          .blog-post-card__avatar
-            img(src='/images/profileIcon.png')
-          .blog-post-card__username= blogPost.author.username
+        - let icon = '/images/profileIcon.png'
+        - const { profile_pic: pic , username } = blogPost.author
+          
+          if pic
+              - const base64 = pic.data.toString('base64')
+              - icon = `data:${pic.contentType};base64,${base64}`
+              
+          +iconElement(
+              'div',
+              icon,
+              username,
+              {
+                  'class': [
+                      '-avatar',
+                      '-medium',
+                      '-gap-small'
+                  ]
+              }
+          )
         .blog-post-card__date= blogPost.publish_date
       .blog-post-card__content-overview
         h1.blog-post-card__title= blogPost.title

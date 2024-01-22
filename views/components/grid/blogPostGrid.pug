@@ -1,0 +1,7 @@
+include ../card/blogPostCard
+
+mixin blogPostGrid(blogPosts, attrs={})
+    .blog-post-grid&attributes(attrs.blogPostGrid)
+        each blogPost in blogPosts
+            .blog-post-grid__cell
+                +blogPostCard(blogPost, attrs.blogPostCard)

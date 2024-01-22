@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const BlogPost = require("../models/blogPost");
-const Comment = require('../models/comment')
 const Reaction = require('../models/reaction')
 const ReactionCounter = require('../models/reactionCounter')
 const asyncHandler = require("express-async-handler");
@@ -8,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
-const dateFormat = require('../utils/dateFormat')
+const query = require('../utils/query')
 const { Types } = require('mongoose')
 
 // Display user profile
@@ -362,42 +361,16 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     const unpublishedBlogPosts = []
 
     for (const blogPost of privateBlogPosts) {
-        const [comments, reactionCounter] = await Promise.all(
-            [
-                Comment
-                    .find({ blogPost: blogPost._id })
-                    .lean()
-                    .exec(),
-                ReactionCounter
-                    .findOne({
-                        content: {
-                            content_type: 'BlogPost',
-                            content_id: blogPost._id
-                        }
-                    })
-                    .lean()
-                    .exec()
-            ]
+        await query.completeBlogPost(
+            blogPost, req.user, false, false
         )
 
-        blogPost.comments = comments
-        blogPost.likes = reactionCounter.like_count
-        blogPost.dislikes = reactionCounter.dislike_count
-
-        if (blogPost.publish_date) {
-            blogPost.publish_date = dateFormat.formatDate(
-                blogPost.publish_date
-            )
-
+        if (blogPost.publish_date !== 'N/A') {
             publishedBlogPosts.push(blogPost)
         }
         else {
             unpublishedBlogPosts.push(blogPost)
         }
-        
-        blogPost.last_modified_date = dateFormat.formatDate(
-            blogPost.last_modified_date
-        )
     }
     
     const safeData = {

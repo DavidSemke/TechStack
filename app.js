@@ -14,6 +14,7 @@ const flash = require('connect-flash')
 const mongoose = require("mongoose")
 const mongoSanitize = require('express-mongo-sanitize')
 const ents = require('./utils/htmlEntities')
+const query = require('./utils/query')
 const BlogPost = require("./models/blogPost");
 
 // for testing
@@ -144,10 +145,16 @@ app.use(async (req, res, next) => {
     .limit(5)
     .lean()
     .exec()
+  
+  for (const suggestion of suggestions) {
+    await query.completeBlogPost(
+      suggestion, req.user, false, false
+    )
+  }
 
   suggestions = ents.decodeObject(
     suggestions,
-    (key, value) => key !== 'profile_pic' && key != 'thumbnail'
+    (key, value) => key !== 'profile_pic' && key !== 'thumbnail'
   )
 
   res.locals.suggestions = suggestions

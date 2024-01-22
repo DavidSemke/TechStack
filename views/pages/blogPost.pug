@@ -1,6 +1,6 @@
 extends ../layouts/browser 
 include ../components/icon/iconElement
-include ../components/card/blogPostCard
+include ../components/grid/blogPostGrid
 include ../components/card/commentCard
 include ../components/form/formTextarea
 
@@ -50,21 +50,14 @@ block page
                 include ../components/list/blogPostReactionList
         .blog-post-page__more-blogs
             h2.blog-post-page__post-heading More Blogs
-            .blog-post-card-pair
-                a(href=`/blog-posts/${blogPost._id}`)
-                    +blogPostCard(
-                        blogPost, 
-                        {
-                            'class': '-small'
-                        }
-                    )
-                a(href=`/blog-posts/${blogPost._id}`)
-                    +blogPostCard(
-                        blogPost,
-                        {
-                            'class': '-small'
-                        }
-                    )
+            +blogPostGrid(
+                suggestions.slice(1),
+                {
+                    'blogPostCard': {
+                        'class': '-small'
+                    }
+                }
+            )
         #comment-section.blog-post-page__comment-section
             h2.blog-post-page__post-heading Comments
             form(

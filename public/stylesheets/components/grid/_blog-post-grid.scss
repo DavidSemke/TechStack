@@ -1,0 +1,13 @@
+.blog-post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 4rem;
+
+    &__cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+

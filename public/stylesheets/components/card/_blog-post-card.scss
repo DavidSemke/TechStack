@@ -3,9 +3,9 @@
 @use '../../globals/icon-sizes' as iSizes;
 
 .blog-post-card {
-    height: 20rem;
-    width: 30rem;
     display: flex;
+    width: 30rem;
+    height: 20rem;
     border: 2px solid colors.$bg2;
 
     &__stat-list {

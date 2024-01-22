@@ -76,9 +76,13 @@ $navbar-min-height: 4rem;
 .navbar-dropdown-container {
     display: flex;
     position: fixed;
-    height: 50%;
+    height: 20rem;
     width: 50%;
-    padding-top: max($navbar-height, $navbar-min-height);
+    min-width: 40rem;
+    padding-top: calc(max($navbar-height, $navbar-min-height) + 1rem);
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     border: 2px solid colors.$bg2;
     background-color: colors.$bg0;
     overflow: hidden;

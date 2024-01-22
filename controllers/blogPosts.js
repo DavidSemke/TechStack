@@ -7,6 +7,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
+const query = require('../utils/query')
 const path = require('path')
 const pug = require('pug')
 const { Types } = require('mongoose')
@@ -60,7 +61,6 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
     const blogPostId = new Types.ObjectId(req.params.blogPostId)
-  
     const blogPost = await BlogPost
         .findById(blogPostId)
         .populate('author')
@@ -74,41 +74,9 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    const [comments, reactionCounter] = await Promise.all([
-        Comment.find({ 
-            blogPost: blogPostId
-        })
-            .populate('author')
-            .lean()
-            .exec(),
-        ReactionCounter.findOne({
-            content: {
-                content_type: 'BlogPost',
-                content_id: blogPostId
-            }
-        })
-            .lean()
-            .exec()
-    ])
-
-    blogPost.publish_date = dateFormat.formatDate(
-        blogPost.publish_date
-    )
-    blogPost.likes = reactionCounter.like_count
-    blogPost.dislikes = reactionCounter.dislike_count
+    await query.completeBlogPost(blogPost, req.user)
 
     if (req.user) {
-        // Add reaction data if current user reacted to blog post
-        blogPost.reaction = await Reaction.findOne({
-            user: req.user._id,
-            content: {
-                content_type: 'BlogPost',
-                content_id: blogPost._id
-            }
-        })
-            .lean()
-            .exec()
-
         // Add blog post to current user's recently read list
         // Only do this if the blog post's author is not current user
         // If the blog post is already in the list, remove it and place
@@ -131,58 +99,6 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
             )
         }
     }
-    
-    const replyMap = {};
-    const nonReplies = []
-
-    for (const comment of comments) {
-        const reactionCounter = await ReactionCounter.findOne({
-            content: {
-                content_type: 'Comment',
-                content_id: comment._id
-            }
-        })
-            .lean()
-            .exec()
-
-        comment.publish_date = dateFormat.formatDate(
-            comment.publish_date
-        )
-        comment.likes = reactionCounter.like_count
-        comment.dislikes = reactionCounter.dislike_count
-
-        // check if current user reacted to comment
-        if (req.user) {
-            comment.reaction = await Reaction.findOne({
-                user: req.user._id,
-                content: {
-                    content_type: 'Comment',
-                    content_id: comment._id
-                }
-            })
-                .lean()
-                .exec()
-        }
-
-        if ('reply_to' in comment) {
-            
-            if (!(comment.reply_to in replyMap)) {
-                replyMap[comment.reply_to] = []
-            }
-
-            replyMap[comment.reply_to].push(comment)
-        }
-        else {
-            nonReplies.push(comment)
-            replyMap[comment._id] = []
-        }
-    }
-
-    for (const nonReply of nonReplies) {
-        nonReply.replies = replyMap[nonReply._id]
-    }
-
-    blogPost.comments = nonReplies
 
     const safeData = {
         title: blogPost.title,
