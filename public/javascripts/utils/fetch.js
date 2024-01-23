@@ -1,29 +1,33 @@
-function formFetch(
+async function formFetch(
     href, method, form, followResponse=false, onResponseJson=null
 ) {
-    fetch(href, {
-        method,
-        body: new FormData(form)
-    })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error - Status: ${res.status}`)
-            }
-            
-            if (followResponse) {
-                window.location.href = res.url
-            }
+    const res = await fetch(
+        href, 
+        {
+            method,
+            body: new FormData(form)
+        }
+    )
+    
+    if (!res.ok) {
+        throw new Error(`HTTP error - Status: ${res.status}`)
+    }
 
-            return res.json()
-        })
-        .then(data => {
-            if (onResponseJson) {
-                onResponseJson(data)
-            }
-        })
-        .catch(error => {
-            throw error
-        })
+    if (followResponse) {
+        if (window.location.href === res.url) {
+            window.location.reload()
+        }
+        else {
+            window.location.href = res.url
+        }
+    }
+
+    if (!onResponseJson) {
+        return
+    }
+
+    const data = await res.json()
+    onResponseJson(data)
 }
 
 export {

@@ -1,5 +1,3 @@
-import { decodeHTML } from '/entities/index.js'
-
 function initializeTinyMCE(selector) {
     const tinyMCEElement = document.querySelector(selector)
 
@@ -9,12 +7,7 @@ function initializeTinyMCE(selector) {
 
     // Variable backendData is data provided by backend for rendering
     // See root.pug for the script that defines it
-    // Note that backendData is escaped
-    let initialContent = ''
-
-    if (backendData.inputs.content) {
-        initialContent = decodeHTML(backendData.inputs.content)
-    }
+    let initialContent = backendData.inputs.content || ''
     
     tinymce.init({
         selector: selector,

@@ -1,11 +1,10 @@
 const passport = require('../utils/auth')
-const ents = require('../utils/htmlEntities')
 
 
 exports.getLogin = (req, res, next) => {
     const inputs = {
-        'username': req.session.username ?? '',
-        'password': req.session.password ?? ''
+        username: req.session.username ?? '',
+        password: req.session.password ?? ''
     }
 
     let errors = []
@@ -23,12 +22,11 @@ exports.getLogin = (req, res, next) => {
 
     const data = {
       title: "Log In",
-      inputs: inputs,
-      errors: errors
+      inputs,
+      errors
     }
-    const safeData = ents.encodeObject(data)
 
-    res.render("pages/loginForm", { data, safeData })
+    res.render("pages/loginForm", { data })
 }
 
 exports.postLogin = [

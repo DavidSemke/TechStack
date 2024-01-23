@@ -2,7 +2,6 @@ const User = require("../models/user");
 const bcrypt = require('bcryptjs')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const ents = require('../utils/htmlEntities')
 
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
@@ -64,9 +63,8 @@ exports.postSignup = [
                 inputs: inputs,
                 errors: errors.array(),
             }
-            const safeData = ents.encodeObject(data)
           
-          res.render("pages/signupForm", { data, safeData })
+          res.render("pages/signupForm", { data })
         
           return;
         }

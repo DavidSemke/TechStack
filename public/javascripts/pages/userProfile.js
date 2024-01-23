@@ -1,4 +1,3 @@
-import { decodeHTML } from '/entities/index.js'
 import { formFetch } from '../utils/fetch.js'
 
 function profileFormSetup() {
@@ -9,7 +8,6 @@ function profileFormSetup() {
     if (!profilePage) {
         return
     }
-
 
     const profileEditButton = document.querySelector(
         '.profile__edit-button'
@@ -40,19 +38,14 @@ function profileFormSetup() {
             const { username, bio, keywords } = backendData.user 
 
             const usernameInput = document.getElementById('username')
-            usernameInput.value = decodeHTML(username)
+            usernameInput.value = username
 
             if (bio) {
                 const bioInput = document.getElementById('bio')
-                bioInput.value = decodeHTML(bio)
+                bioInput.value = bio
             }
 
             if (keywords.length) {
-
-                for (let i=0; i<keywords.length; i++) {
-                    keywords[i] = decodeHTML(keywords[i])
-                }
-
                 const keywordsInput = document.getElementById('keywords')
                 keywordsInput.value = keywords.join(' ')
             } 
@@ -65,7 +58,8 @@ function profileFormSetup() {
         formFetch(
             `/users/${backendData.user.username}`, 
             'PUT', 
-            profileForm
+            profileForm,
+            true
         )
     })
 }

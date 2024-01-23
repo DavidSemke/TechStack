@@ -1,16 +1,17 @@
 const BlogPost = require("../models/blogPost");
 const Comment = require("../models/comment");
-const Reaction = require("../models/reaction");
 const ReactionCounter = require("../models/reactionCounter");
 const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const ents = require('../utils/htmlEntities')
 const dateFormat = require('../utils/dateFormat')
 const query = require('../utils/query')
+const createDOMPurify = require('dompurify')
+const { JSDOM } = require('jsdom')
 const path = require('path')
 const pug = require('pug')
 const { Types } = require('mongoose')
+
 
 
 exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
@@ -100,17 +101,13 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         }
     }
 
-    const safeData = {
+    const data = {
         title: blogPost.title,
         blogPost,
         mainUser: req.user
     }
-    const data = ents.decodeObject(
-        safeData,
-        (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
-    )
 
-    res.render("pages/blogPost", { data, safeData });
+    res.render("pages/blogPost", { data });
 });
     
 // On comment create
@@ -130,67 +127,65 @@ exports.postComment = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.json({ errors: errors.array() })
+            return res.json({ errors: errors.array() })
         } 
-        else {
-            const commentData = {
-                blogPost: blogPostId,
-                publish_date: Date.now(),
-                content: ents.encode(content),
-            }
 
-            if (req.user) {
-                commentData.author = req.user._id
-            }
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window);
+        const pureContent = DOMPurify.sanitize(content);
 
-            if (replyTo) {
-                commentData.reply_to = replyTo
-            }
-
-            let comment = new Comment(commentData)
-            await comment.save()
-            
-            comment = await Comment
-                .findById(comment._id)
-                .populate('author')
-                .lean()
-                .exec()
-            comment.publish_date = dateFormat.formatDate(
-                comment.publish_date
-            )
-            comment.likes = 0
-            comment.dislikes = 0
-            comment.replies = []
-
-            const reactionCounter = new ReactionCounter({
-                content: {
-                    content_type: 'Comment',
-                    content_id: comment._id
-                },
-                like_count: 0,
-                dislike_count: 0
-            })
-            await reactionCounter.save()
-
-            const mixinPath = path.join(
-                process.cwd(),
-                'views',
-                'components',
-                'card',
-                'commentCard.pug'
-            )
-            const pugString = `include ${mixinPath}\n+commentCard(comment, isReply)`
-            const template = pug.compile(
-                pugString,
-                { filename: 'commentCardTemplate' }
-            )
-            const isReply = Boolean(replyTo)
-            const renderedHTML = template({
-                comment,
-                isReply 
-            })
-            
-            res.json({ renderedHTML, commentData: comment })
+        const commentData = {
+            blogPost: blogPostId,
+            publish_date: Date.now(),
+            content: pureContent
         }
-    }),
+
+        commentData.author = req.user ? req.user._id : undefined
+        commentData.reply_to = replyTo || undefined
+
+        let comment = new Comment(commentData)
+        await comment.save()
+        
+        comment = await Comment
+            .findById(comment._id)
+            .populate('author')
+            .lean()
+            .exec()
+        comment.publish_date = dateFormat.formatDate(
+            comment.publish_date
+        )
+        comment.likes = 0
+        comment.dislikes = 0
+        comment.replies = []
+
+        const reactionCounter = new ReactionCounter({
+            content: {
+                content_type: 'Comment',
+                content_id: comment._id
+            },
+            like_count: 0,
+            dislike_count: 0
+        })
+        await reactionCounter.save()
+
+        const mixinPath = path.join(
+            process.cwd(),
+            'views',
+            'components',
+            'card',
+            'commentCard.pug'
+        )
+        const pugString = `include ${mixinPath}\n+commentCard(comment, isReply)`
+        const template = pug.compile(
+            pugString,
+            { filename: 'commentCardTemplate' }
+        )
+        const isReply = Boolean(replyTo)
+        const renderedHTML = template({
+            comment,
+            isReply 
+        })
+        
+        res.json({ renderedHTML, commentData: comment })
+    })
 ];

@@ -13,7 +13,6 @@ const passport = require('./utils/auth')
 const flash = require('connect-flash')
 const mongoose = require("mongoose")
 const mongoSanitize = require('express-mongo-sanitize')
-const ents = require('./utils/htmlEntities')
 const query = require('./utils/query')
 const BlogPost = require("./models/blogPost");
 
@@ -119,12 +118,7 @@ app.use((req, res, next) => {
     return next()
   }
 
-  const rawUser = ents.decodeObject(
-    req.user,
-    (key, value) => key !== 'profile_pic' && key != 'thumbnail'
-  )
-
-  res.locals.mainUser = rawUser
+  res.locals.mainUser = req.user
   next()
 })
 
@@ -135,7 +129,7 @@ app.use(async (req, res, next) => {
   }
 
   // Find up to 5 public blog posts not written by current user
-  let suggestions = await BlogPost
+  const suggestions = await BlogPost
     .find({ 
       author: { $ne: req.user._id },
       public_version: { $exists: false },
@@ -151,11 +145,6 @@ app.use(async (req, res, next) => {
       suggestion, req.user, false, false
     )
   }
-
-  suggestions = ents.decodeObject(
-    suggestions,
-    (key, value) => key !== 'profile_pic' && key !== 'thumbnail'
-  )
 
   res.locals.suggestions = suggestions
   next()
@@ -183,16 +172,6 @@ app.use(
     'tinymce'
   ))
 );
-app.use(
-  '/entities',
-  express.static(path.join(
-    __dirname, 
-    'node_modules', 
-    'entities',
-    'lib',
-    'esm'
-  ))
-)
 
 /* Route Setup */
 const indexRouter = require("./routes/index")

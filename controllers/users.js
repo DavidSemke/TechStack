@@ -6,11 +6,11 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const fs = require('fs')
 const path = require('path')
-const ents = require('../utils/htmlEntities')
 const query = require('../utils/query')
 const createDOMPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
 const { Types } = require('mongoose')
+
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -55,19 +55,15 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         isMainUser = true
     }
     
-    const safeData = {
+    const data = {
         title,
         user,
         isMainUser,
         inputs: {},
         errors: []
     }
-    const data = ents.decodeObject(
-        safeData,
-        (key, value) => key !== 'profile_pic' && key !== 'thumbnail'
-    )
 
-    res.render("pages/userProfile", { data, safeData });
+    res.render("pages/userProfile", { data });
 });
 
 exports.updateUser = [
@@ -76,6 +72,11 @@ exports.updateUser = [
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
+        .custom((value) => {
+            const usernameFormat = /^[-\dA-Za-z]*$/
+            return usernameFormat.test(value)
+        })
+        .withMessage("Username must only contain alphanumeric characters and '-'.")
         .custom(asyncHandler(async (value, { req }) => {
             const user = await User
                 .findOne({ username: value })
@@ -123,35 +124,40 @@ exports.updateUser = [
             )
         }
 
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window);
+
         // Cannot repopulate profile-pic input with file, so it is
         // omitted here 
         const inputs = {
-            username: req.body.username,
-            bio: req.body.bio,
-            keywords: req.body.keywords,
+            username: DOMPurify.sanitize(req.body.username),
+            bio: DOMPurify.sanitize(req.body.bio),
+            keywords: DOMPurify.sanitize(req.body.keywords),
         }
 
         const nonFileErrors = validationResult(req).array()
         errors.push(...nonFileErrors)
 
         if (errors.length) {
-            const rawUser = ents.decodeObject(
-                req.user,
-                (key, value) => key !== 'profile_pic'
-            )
             const data = {
                 title: "Your Profile",
-                user: rawUser,
+                user: req.user,
                 isMainUser: true,
                 inputs: inputs,
                 errors: errors
             }
-            const safeData = ents.encodeObject(
-                data,
-                (key, value) => key !== 'profile_pic'
-            )
+
+            // find public blog posts only
+            data.user.blog_posts_written = await BlogPost
+                .find({
+                    author:  data.user._id,
+                    public_version: { $exists: false },
+                    publish_date: { $exists: true } 
+                })
+                .lean()
+                .exec()
             
-            res.render("pages/userProfile", { data, safeData });
+            res.render("pages/userProfile", { data });
 
             return
         }
@@ -163,14 +169,10 @@ exports.updateUser = [
             username: inputs.username
         }
 
-        if (inputs.bio) {
-            update.bio = ents.encode(inputs.bio)
-        }
+        const { bio, keywords } = inputs
+        update.bio = bio || undefined
+        update.keywords = keywords ? keywords.split(' ') : undefined
 
-        if (inputs.keywords) {
-            update.keywords = ents.encode(inputs.keywords).split(' ')
-        }
-        
         // add new profile pic to update if uploaded
         if (req.file) {
             update.profile_pic = {
@@ -375,32 +377,27 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
         }
     }
     
-    const safeData = {
+    const data = {
         title: 'Your Blog Posts',
         publishedBlogPosts,
         unpublishedBlogPosts
     }
-    const data = ents.decodeObject(
-        safeData,
-        (key, value) => key !== 'thumbnail'
-    )
 
-    res.render("pages/userBlogPosts", { data, safeData });
+    res.render("pages/userBlogPosts", { data });
 })
 
 // Display blog post create form
 exports.getBlogPostCreateForm = [
     function (req, res, next) {
 
-        const safeData = {
+        const data = {
             title: "Create Blog Post",
             inputs: {},
             errors: [],
             blogPost: {}
         }
-        const data = safeData
         
-        res.render("pages/blogPostForm",  { data, safeData })
+        res.render("pages/blogPostForm",  { data })
     }
 ]
     
@@ -522,7 +519,7 @@ exports.getBlogPostUpdateForm = [
             return next(err);
         }
 
-        const safeData = {
+        const data = {
             title: 'Update Blog Post',
             inputs: {
                 title: blogPost.title,
@@ -532,12 +529,8 @@ exports.getBlogPostUpdateForm = [
             errors: [],
             blogPost
         }
-        const data = ents.decodeObject(
-            safeData,
-            (key, value) => key !== 'thumbnail'
-        )
     
-        res.render("pages/blogPostForm", { data, safeData });
+        res.render("pages/blogPostForm", { data });
     })
 ]
     
@@ -709,23 +702,18 @@ async function processBlogPostData(
         )
     }
 
-    // Cannot repopulate thumbnail input with file, so it is
-    // omitted here 
+    const window = new JSDOM('').window;
+    const DOMPurify = createDOMPurify(window);
+
     const inputs = {
-        title: req.body.title,
-        keywords: req.body.keywords,
-        content: req.body.content
+        title: DOMPurify.sanitize(req.body.title),
+        keywords: DOMPurify.sanitize(req.body.keywords),
+        content: DOMPurify.sanitize(req.body.content)
     }
 
     // remove weird tinymce phenomenon
     if (inputs.content === '<p><br data-mce-bogus="1"></p>') {
         inputs.content = ''
-    }
-    // purify user html
-    else {
-        const window = new JSDOM('').window;
-        const DOMPurify = createDOMPurify(window);
-        inputs.content = DOMPurify.sanitize(inputs.content);
     }
 
     let nonFileErrors = validationResult(req).array()
@@ -740,29 +728,26 @@ async function processBlogPostData(
 
     if (errors.length) {
         const data = {
-            title: (blogPost ? 'Update' : 'Create') + ' Blog Post' ,
+            title: (blogPost ? 'Update' : 'Create') + ' Blog Post',
             inputs,
             errors,
             blogPost: blogPost || {}
         }
-        const safeData = ents.encodeObject(data)
         
-        res.render("pages/blogPostForm", { data, safeData });
+        res.render("pages/blogPostForm", { data });
 
         return null
     }
 
-    const encodedInputs = ents.encodeObject(inputs)
-
     const blogPostData = {
-        title: encodedInputs.title,
+        title: inputs.title,
         author: req.user._id,
-        content: encodedInputs.content,
+        content: inputs.content, 
         last_modified_date: Date.now()
     }
 
-    if (encodedInputs.keywords !== '') {
-        blogPostData.keywords = encodedInputs.keywords.split(' ')
+    if (inputs.keywords) {
+        blogPostData.keywords = inputs.keywords.split(' ')
     }
 
     if (req.file) {

@@ -156,7 +156,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['dog', 'adoption'],
-                content: 'Puppies adopted, everyone is happy!',
+                content: '<p>Puppies adopted, everyone is happy!</p>',
             }
         ),
         blogPostCreate(
@@ -168,7 +168,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['bully', 'vehicle', 'drive-by'],
-                content: 'Thug cars are really loud! They must go!',
+                content: '<p>Thug cars are really loud! They must go!</p>',
             }
         ),
         blogPostCreate(
@@ -180,7 +180,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['pest', 'clothes'],
-                content: 'Please call a doctor. Or an exterminator? Call one of them. Or maybe both.',
+                content: '<p>Please call a doctor. Or an exterminator? Call one of them. Or maybe both.</p>',
             }
         ),
         blogPostCreate(
@@ -192,7 +192,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['insect', 'bully'],
-                content: 'Wasps suck.',
+                content: '<p>Wasps suck.</p>',
             }
         ),
         blogPostCreate(
@@ -204,7 +204,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['food', 'tasting'],
-                content: 'First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.',
+                content: '<p>First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.</p>',
             }
         ),
         blogPostCreate(
@@ -216,7 +216,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['healthcare', 'medicine'],
-                content: 'Eat an apple and take a bath, hippie.',
+                content: '<p>Eat an apple and take a bath, hippie.</p>',
             }
         )
     ]);
@@ -232,7 +232,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['dog', 'adoption'],
-                content: 'Puppies adopted, everyone is happy!',
+                content: '<p>Puppies adopted, everyone is happy!</p>',
                 public_version: blogPosts[0]
             }
         ),
@@ -245,7 +245,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['bully', 'vehicle', 'drive-by'],
-                content: 'Thug cars are really loud! They must go!',
+                content: '<p>Thug cars are really loud! They must go!</p>',
                 public_version: blogPosts[1]
             }
         ),
@@ -258,7 +258,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['pest', 'clothes'],
-                content: 'Please call a doctor. Or an exterminator? Call one of them. Or maybe both.',
+                content: '<p>Please call a doctor. Or an exterminator? Call one of them. Or maybe both.</p>',
                 public_version: blogPosts[2]
             }
         ),
@@ -271,7 +271,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['insect', 'bully'],
-                content: 'Wasps suck.',
+                content: '<p>Wasps suck.</p>',
                 public_version: blogPosts[3]
             }
         ),
@@ -284,7 +284,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['food', 'tasting'],
-                content: 'First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.',
+                content: '<p>First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.</p>',
                 public_version: blogPosts[4]
             }
         ),
@@ -297,7 +297,7 @@ async function createBlogPosts() {
                 publish_date: Date.now(),
                 last_modified_date: Date.now(),
                 keywords: ['healthcare', 'medicine'],
-                content: 'Eat an apple and take a bath, hippie.',
+                content: '<p>Eat an apple and take a bath, hippie.</p>',
                 public_version: blogPosts[5]
             }
         ),
@@ -309,7 +309,7 @@ async function createBlogPosts() {
                 author: users[0],
                 last_modified_date: Date.now(),
                 keywords: ['arachnid', 'scary'],
-                content: 'Adventurer, I need you to squish 80 spiders!',
+                content: '<p>Adventurer, I need you to squish 80 spiders!</p>',
             }
         ),
         blogPostCreate(
@@ -320,7 +320,7 @@ async function createBlogPosts() {
                 author: users[1],
                 last_modified_date: Date.now(),
                 keywords: ['burn', 'wood'],
-                content: 'I smoked a forest yesterday and dreamt of magical jacuzzi.',
+                content: '<p>I smoked a forest yesterday and dreamt of magical jacuzzi.</p>',
             }
         ),
         blogPostCreate(
@@ -331,7 +331,7 @@ async function createBlogPosts() {
                 author: users[0],
                 last_modified_date: Date.now(),
                 keywords: ['amazon', 'bezos'],
-                content: 'I did not like my Amazon order so I am returning the pants, thanks Obama.',
+                content: '<p>I did not like my Amazon order so I am returning the pants, thanks Obama.</p>',
             }
         ),
         blogPostCreate(
@@ -342,7 +342,7 @@ async function createBlogPosts() {
                 author: users[1],
                 last_modified_date: Date.now(),
                 keywords: ['tall', 'short'],
-                content: 'I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!',
+                content: '<p>I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!</p>',
             }
         ),
     ]);

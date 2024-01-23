@@ -1,6 +1,5 @@
 const BlogPost = require('../models/blogPost')
 const asyncHandler = require("express-async-handler");
-const ents = require('../utils/htmlEntities')
 const query = require('../utils/query')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
@@ -20,14 +19,10 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
         )
     }
 
-    const safeData = {
+    const data = {
         title: "Tech Stack",
         blogPosts
     }
-    const data = ents.decodeObject(
-        safeData,
-        (key, value) => key !== 'thumbnail' && key !== 'profile_pic'
-    )
     
-    res.render("pages/index", { data, safeData })
+    res.render("pages/index", { data })
 })
