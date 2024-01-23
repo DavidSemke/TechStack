@@ -53,6 +53,14 @@ async function completeBlogPost(
             .exec()
     }
 
+    // add blog post preview
+    blogPost.preview = ''
+    const match = blogPost.content.match(/<p.*?>(.*?)<\/p>/)
+
+    if (match) {
+        blogPost.preview = match[1]
+    }
+    
     if (!binnedReplies) {
         blogPost.comments = comments
         return

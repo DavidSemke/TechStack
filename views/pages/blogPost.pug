@@ -45,7 +45,7 @@ block page
             
             .blog-post__thumbnail
                 img(src=thumbnailImg)
-            .blog-post__content= blogPost.content
+            .blog-post__content!= blogPost.content
             .blog-post__post-blog-separator
                 include ../components/list/blogPostReactionList
         .blog-post-page__more-blogs

@@ -8,6 +8,8 @@ const fs = require('fs')
 const path = require('path')
 const ents = require('../utils/htmlEntities')
 const query = require('../utils/query')
+const createDOMPurify = require('dompurify')
+const { JSDOM } = require('jsdom')
 const { Types } = require('mongoose')
 
 // Display user profile
@@ -719,6 +721,12 @@ async function processBlogPostData(
     if (inputs.content === '<p><br data-mce-bogus="1"></p>') {
         inputs.content = ''
     }
+    // purify user html
+    else {
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window);
+        inputs.content = DOMPurify.sanitize(inputs.content);
+    }
 
     let nonFileErrors = validationResult(req).array()
 
@@ -733,8 +741,8 @@ async function processBlogPostData(
     if (errors.length) {
         const data = {
             title: (blogPost ? 'Update' : 'Create') + ' Blog Post' ,
-            inputs: inputs,
-            errors: errors,
+            inputs,
+            errors,
             blogPost: blogPost || {}
         }
         const safeData = ents.encodeObject(data)

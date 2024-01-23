@@ -30,10 +30,15 @@ function navbarListeners() {
         return
     }
 
+    const searchbarInput = navbar.querySelector('.searchbar__input')
+
+    if (!searchbarInput) {
+        return
+    }
+
     const navbarDropdownContainer = document.querySelector(
         '.navbar-dropdown-container'
     )
-    const searchbarInput = navbar.querySelector('.searchbar__input')
     searchbarInput.addEventListener('input', () => {
         const encodedWords = searchbarInput
             .value
@@ -70,7 +75,7 @@ function navbarListeners() {
         const newFocus = event.relatedTarget
         
         // check to see if link has been clicked
-        if (!newFocus || newFocus.tagName !== 'A') {
+        if (!newFocus || !navbarDropdownContainer.contains(newFocus)) {
             navbarDropdownContainer.classList.add('-gone')
         }
     })
