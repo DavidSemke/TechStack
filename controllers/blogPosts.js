@@ -135,7 +135,7 @@ exports.postComment = [
         const pureContent = DOMPurify.sanitize(content);
 
         const commentData = {
-            blogPost: blogPostId,
+            blog_post: blogPostId,
             publish_date: Date.now(),
             content: pureContent
         }

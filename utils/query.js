@@ -9,7 +9,7 @@ async function completeBlogPost(
 ) {
     const [comments, reactionCounter] = await Promise.all([
         Comment.find({ 
-            blogPost: blogPost._id
+            blog_post: blogPost._id
         })
             .populate('author')
             .lean()
