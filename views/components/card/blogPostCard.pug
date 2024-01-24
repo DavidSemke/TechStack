@@ -77,8 +77,8 @@ mixin blogPostCard(blogPost, attrs={})
             )
           .blog-post-card__date= blogPost.publish_date
         .blog-post-card__content-overview
-          h1.blog-post-card__title= blogPost.title
-          p.blog-post-card__preview= blogPost.preview
+          h1.blog-post-card__title.-ellipsis= blogPost.title
+          p.blog-post-card__preview.-ellipsis= blogPost.preview
           .blog-post-card__keywords-container
             .blog-post-card__keywords-heading Keywords:
             .blog-post-card__keywords= blogPost.keywords.join(' | ')

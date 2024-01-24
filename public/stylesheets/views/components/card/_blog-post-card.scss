@@ -1,6 +1,7 @@
 @use '../../../globals/colors';
 @use '../../../globals/font-sizes' as fSizes;
 @use '../../../globals/icon-sizes' as iSizes;
+@use '../../../mixins/text-cutoff';
 
 .blog-post-card {
     display: flex;
@@ -43,23 +44,15 @@
     }
 
     &__title {
-        $max-lines: 3;
-        $line-height: 1.4;
-
-        max-height: calc($max-lines * fSizes.$larger * $line-height);
-        line-height: $line-height;
-        overflow: hidden;
+        @include text-cutoff.ellipsis(3, 1.4, fSizes.$larger);
+        
         margin: 0;
         font-size: fSizes.$larger
     }
 
     &__preview {
-        $max-lines: 3;
-        $line-height: 1.4;
+        @include text-cutoff.ellipsis(3, 1.4, 1rem);
 
-        max-height: calc($max-lines * 1rem * $line-height);
-        line-height: $line-height;
-        overflow: hidden;
         margin: 0;
     }
 
@@ -73,9 +66,9 @@
     }
 
     &__keywords {
-        max-height: 1.5rem;
+        @include text-cutoff.ellipsis(1, 1.4, 1rem);
+
         padding-right: 1rem;
-        overflow: hidden;
     }
 
     &.-small {
@@ -87,16 +80,13 @@
         }
 
         .blog-post-card__title {
+            @include text-cutoff.ellipsis(3, 1.4, fSizes.$large);
+
             font-size: fSizes.$large;
         }
 
         .blog-post-card__preview {
-            $max-lines: 2;
-            $line-height: 1;
-
-            max-height: calc($max-lines * 1rem * $line-height);
-            line-height: $line-height;
-            overflow: hidden;
+            @include text-cutoff.ellipsis(3, 1.4, 1rem);
         }
     }
 }

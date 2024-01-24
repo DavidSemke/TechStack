@@ -1,0 +1,15 @@
+@mixin ellipsis($max-lines, $line-height, $font-size) {
+    position: relative;
+    line-height: $line-height;
+    max-height: calc($max-lines * $font-size * $line-height);
+    overflow: hidden;
+
+    &.-ellipsis {
+        &::after {
+            content: '...';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+    }
+}

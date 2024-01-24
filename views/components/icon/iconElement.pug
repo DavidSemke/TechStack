@@ -3,4 +3,4 @@ mixin iconElement(tag, icon, label=null, attrs={})
         .icon-element__icon
             img(src=icon)
         if label !== null
-            .icon-element__label= label
+            .icon-element__label.-ellipsis= label

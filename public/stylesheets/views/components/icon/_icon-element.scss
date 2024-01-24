@@ -1,5 +1,6 @@
 @use '../../../globals/font-sizes' as fSizes;
 @use '../../../globals/icon-sizes' as iSizes;
+@use '../../../mixins/text-cutoff';
 
 .icon-element {
     display: flex;
@@ -9,6 +10,10 @@
         flex: none;
         height: iSizes.$medium;
         width: iSizes.$medium;
+    }
+
+    &__label {
+        @include text-cutoff.ellipsis(2, 1.4, 1rem);
     }
 
     &.-avatar {
@@ -56,6 +61,8 @@
             width: iSizes.$small;
         }
         .icon-element__label {
+            @include text-cutoff.ellipsis(2, 1.4, fSizes.$small);
+
             font-size: fSizes.$small;
         }
     }
@@ -68,6 +75,8 @@
         }
 
         .icon-element__label {
+            @include text-cutoff.ellipsis(2, 1.4, fSizes.$large);
+
             font-size: fSizes.$large;
         }
     }
@@ -80,6 +89,8 @@
         }
 
         .icon-element__label {
+            @include text-cutoff.ellipsis(2, 1.4, fSizes.$larger);
+
             font-size: fSizes.$larger;
         }
     }

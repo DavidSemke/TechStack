@@ -34,17 +34,31 @@
   gap: 1rem;
 }
 .blog-post-card__title {
-  max-height: 6.3rem;
+  position: relative;
   line-height: 1.4;
+  max-height: 6.3rem;
   overflow: hidden;
   margin: 0;
   font-size: 1.5rem;
 }
+.blog-post-card__title.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
 .blog-post-card__preview {
-  max-height: 4.2rem;
+  position: relative;
   line-height: 1.4;
+  max-height: 4.2rem;
   overflow: hidden;
   margin: 0;
+}
+.blog-post-card__preview.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .blog-post-card__keywords-container {
   display: flex;
@@ -54,9 +68,17 @@
   font-weight: bold;
 }
 .blog-post-card__keywords {
-  max-height: 1.5rem;
-  padding-right: 1rem;
+  position: relative;
+  line-height: 1.4;
+  max-height: 1.4rem;
   overflow: hidden;
+  padding-right: 1rem;
+}
+.blog-post-card__keywords.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .blog-post-card.-small {
   height: 16rem;
@@ -66,12 +88,29 @@
   padding: 0.5rem;
 }
 .blog-post-card.-small .blog-post-card__title {
+  position: relative;
+  line-height: 1.4;
+  max-height: 5.04rem;
+  overflow: hidden;
   font-size: 1.2rem;
 }
+.blog-post-card.-small .blog-post-card__title.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
 .blog-post-card.-small .blog-post-card__preview {
-  max-height: 2rem;
-  line-height: 1;
+  position: relative;
+  line-height: 1.4;
+  max-height: 4.2rem;
   overflow: hidden;
+}
+.blog-post-card.-small .blog-post-card__preview.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 
 .comment-card {
@@ -206,6 +245,18 @@
   height: 2rem;
   width: 2rem;
 }
+.icon-element__label {
+  position: relative;
+  line-height: 1.4;
+  max-height: 2.8rem;
+  overflow: hidden;
+}
+.icon-element__label.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
 .icon-element.-avatar .icon-element__icon > img {
   border-radius: 50%;
 }
@@ -241,21 +292,51 @@
   width: 1.5rem;
 }
 .icon-element.-small .icon-element__label {
+  position: relative;
+  line-height: 1.4;
+  max-height: 2.24rem;
+  overflow: hidden;
   font-size: 0.8rem;
+}
+.icon-element.-small .icon-element__label.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .icon-element.-large .icon-element__icon {
   height: 3rem;
   width: 3rem;
 }
 .icon-element.-large .icon-element__label {
+  position: relative;
+  line-height: 1.4;
+  max-height: 3.36rem;
+  overflow: hidden;
   font-size: 1.2rem;
+}
+.icon-element.-large .icon-element__label.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .icon-element.-larger .icon-element__icon {
   height: 5rem;
   width: 5rem;
 }
 .icon-element.-larger .icon-element__label {
+  position: relative;
+  line-height: 1.4;
+  max-height: 4.2rem;
+  overflow: hidden;
   font-size: 1.5rem;
+}
+.icon-element.-larger .icon-element__label.-ellipsis::after {
+  content: "...";
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 
 .blog-post-list .blog-post-item:last-child {
