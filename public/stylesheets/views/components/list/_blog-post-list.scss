@@ -1,5 +1,5 @@
-@use '../../globals/colors';
-@use '../../globals/font-sizes' as fSizes;
+@use '../../../globals/colors';
+@use '../../../globals/font-sizes' as fSizes;
 
 .blog-post-list {
     .blog-post-item:last-child {

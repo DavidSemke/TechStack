@@ -1,6 +1,5 @@
-
-@use '../../globals/font-sizes' as fSizes;
-@use '../../globals/icon-sizes' as iSizes;
+@use '../../../globals/font-sizes' as fSizes;
+@use '../../../globals/icon-sizes' as iSizes;
 
 .icon-element {
     display: flex;
