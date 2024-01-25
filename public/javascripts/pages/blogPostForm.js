@@ -71,12 +71,12 @@ function blogPostFormSubmitListeners() {
     })
 
     function addPreMethod(preMethod) {
-        const preMethodInput = blogPostForm.querySelector(
+        const preMethodInputs = blogPostForm.querySelectorAll(
             '.blog-post-form__pre-method'
         )
 
-        if (preMethodInput) {
-            blogPostForm.removeChild(preMethodInput)
+        for (const preMethod of preMethodInputs) {
+            blogPostForm.removeChild(preMethod)
         }
 
         const input = document.createElement('input')
@@ -108,7 +108,7 @@ function blogPostFormSubmitListeners() {
             href = hrefWords.join('/')
         }
 
-        formFetch(href, method, blogPostForm, true)
+        formFetch(href, method, blogPostForm)
     })
 }
 

@@ -295,7 +295,6 @@ function fetchReaction(
             `${reactionsPath}/${reactionId}`,
             'delete',
             form,
-            false,
             onResponseJson
         )
     }
@@ -304,7 +303,6 @@ function fetchReaction(
             `${reactionsPath}/${reactionId}`,
             'put',
             form,
-            false,
             onResponseJson
         )
     }
@@ -313,7 +311,6 @@ function fetchReaction(
             reactionsPath,
             'post',
             form,
-            false,
             onResponseJson
         )
     }  
@@ -361,7 +358,6 @@ function commentCreateFormListeners(commentCreateForm) {
             `/blog-posts/${backendData.blogPost._id}/comments`,
             'post',
             commentCreateForm,
-            false,
             (data) => {
                 // remove previous errors if present
                 const errorContainer = commentCreateForm.querySelector(

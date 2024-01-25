@@ -1,5 +1,5 @@
 async function formFetch(
-    href, method, form, followResponse=false, onResponseJson=null
+    href, method, form, onResponseJson=null
 ) {
     const res = await fetch(
         href, 
@@ -13,7 +13,7 @@ async function formFetch(
         throw new Error(`HTTP error - Status: ${res.status}`)
     }
 
-    if (followResponse) {
+    if (res.redirected) {
         if (window.location.href === res.url) {
             window.location.reload()
         }

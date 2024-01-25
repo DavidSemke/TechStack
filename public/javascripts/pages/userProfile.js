@@ -58,8 +58,7 @@ function profileFormSetup() {
         formFetch(
             `/users/${backendData.user.username}`, 
             'PUT', 
-            profileForm,
-            true
+            profileForm
         )
     })
 }
