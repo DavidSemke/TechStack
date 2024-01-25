@@ -4,8 +4,6 @@ const Reaction = require('../models/reaction')
 const ReactionCounter = require('../models/reactionCounter')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const fs = require('fs')
-const path = require('path')
 const query = require('../utils/query')
 const createDOMPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
@@ -176,29 +174,9 @@ exports.updateUser = [
         // add new profile pic to update if uploaded
         if (req.file) {
             update.profile_pic = {
-                data: fs.readFileSync(
-                    path.join(
-                        process.cwd(),
-                        'uploads',
-                        req.file.filename
-                    )
-                ),
+                data: req.file.buffer,
                 contentType: req.file.mimetype
             }
-
-            // delete uploaded profile pic
-            fs.unlink(
-                path.join(
-                    process.cwd(),
-                    'uploads',
-                    req.file.filename
-                ),
-                (err) => {
-                    if (err) {
-                        return next(err)
-                    }
-                }
-            )
         }
 
         const updatedUser = await User
@@ -752,29 +730,9 @@ async function processBlogPostData(
 
     if (req.file) {
         blogPostData.thumbnail = {
-            data: fs.readFileSync(
-                path.join(
-                    process.cwd(),
-                    'uploads',
-                    req.file.filename
-                )
-            ),
+            data: req.file.buffer,
             contentType: req.file.mimetype
         }
-
-        // delete uploaded thumbnail
-        fs.unlink(
-            path.join(
-                process.cwd(),
-                'uploads',
-                req.file.filename
-            ),
-            (err) => {
-                if (err) {
-                    throw err
-                }
-            }
-        )
     }
 
     return blogPostData
