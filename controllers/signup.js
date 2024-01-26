@@ -2,15 +2,18 @@ const User = require("../models/user");
 const bcrypt = require('bcryptjs')
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const createDOMPurify = require('dompurify')
+const { JSDOM } = require('jsdom')
 
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
     const data = {
-        title: "Sign Up"
+        title: "Sign Up",
+        inputs: {},
+        errors: []
     }
-    const safeData = _.cloneDeep(data)
 
-    res.render("pages/signupForm", { data, safeData })
+    res.render("pages/signupForm", { data })
 })
 
 exports.postSignup = [
@@ -51,22 +54,23 @@ exports.postSignup = [
         ),
     
     asyncHandler(async (req, res, next) => {
+        const window = new JSDOM('').window;
+        const DOMPurify = createDOMPurify(window);
         const inputs = {
-            username: req.body.username,
-            password: req.body.password
+            username: DOMPurify.sanitize(req.body.username),
+            password: DOMPurify.sanitize(req.body.password)
         }
-        const errors = validationResult(req);
+
+        const errors = validationResult(req).array();
         
-        if (!errors.isEmpty()) {
+        if (errors.length) {
             const data = {
-                title: 'Sign Up',
-                inputs: inputs,
-                errors: errors.array(),
+                title: "Sign Up",
+                inputs,
+                errors
             }
-          
-          res.render("pages/signupForm", { data })
         
-          return;
+            return res.render("pages/signupForm", { data })
         }
 
         bcrypt.hash(req.body.password, 10, async (err, hash) => {

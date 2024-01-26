@@ -1,4 +1,4 @@
-mixin formTextarea(name, value, errors=[], attrs={})
+mixin formTextarea(name, value, attrs={})
     .form-textarea&attributes(attrs.formTextarea)
         label.form-textarea__label(
             for=name
@@ -7,7 +7,3 @@ mixin formTextarea(name, value, errors=[], attrs={})
             id=name
             name=name
         )&attributes(attrs.textarea)= value
-        if errors.length
-            .form-textarea__error-container
-                each error in errors
-                    .form-textarea__error= error

@@ -1,4 +1,5 @@
 import { formFetch } from '../utils/fetch.js'
+import { updateErrorContainer } from '../utils/formError.js'
 
 function profileFormSetup() {
     const profilePage = document.querySelector(
@@ -58,7 +59,35 @@ function profileFormSetup() {
         formFetch(
             `/users/${backendData.user.username}`, 
             'PUT', 
-            profileForm
+            profileForm,
+            (data) => {
+                const inputData = {
+                    'profile-pic': {
+                        errors: [],
+                        formCompType: 'form-input'
+                    },
+                    'username': {
+                        errors: [],
+                        formCompType: 'form-input'
+                    },
+                    'bio': {
+                        errors: [],
+                        formCompType: 'form-textarea'
+                    },
+                    'keywords': {
+                        errors: [],
+                        formCompType: 'form-textarea'
+                    }
+                }
+
+                for (const error of data.errors) {
+                    inputData[error.path].errors.push(error)
+                }
+
+                for (const [k, v] of Object.entries(inputData)) {
+                    updateErrorContainer(v.formCompType, k, v.errors)
+                }
+            }    
         )
     })
 }

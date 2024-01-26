@@ -1,19 +1,6 @@
 include formInput
 
-mixin loggingForm(action, inputs={}, errors=[]) 
-    - const usernameErrors = []
-    - const passwordErrors = []
-    - let loginErrors = []
-
-    if action === '/signup'
-        each error in errors 
-            if error.path === 'username'
-                - usernameErrors.push(error.msg)
-            else if error.path === 'password'
-                - passwordErrors.push(error.msg)
-    else 
-        - loginErrors = errors
-
+mixin loggingForm(action, inputs) 
     form.logging-form(
         action=action 
         method="post"
@@ -22,7 +9,6 @@ mixin loggingForm(action, inputs={}, errors=[])
             'username',
             'text',
             inputs.username || '',
-            usernameErrors,
             {
                 'input': {'required': ''}
             }
@@ -31,14 +17,8 @@ mixin loggingForm(action, inputs={}, errors=[])
             'password',
             'password',
             inputs.password || '',
-            passwordErrors.length ? passwordErrors : loginErrors,
             {
                 'input': {'required': ''}
             }
         )
-
-        // add more fields as desired
-        if block 
-            block
-        
         button.logging-form__submit(type='submit') Submit

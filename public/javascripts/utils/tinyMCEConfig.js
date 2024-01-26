@@ -7,7 +7,7 @@ function initializeTinyMCE(selector) {
 
     // Variable backendData is data provided by backend for rendering
     // See root.pug for the script that defines it
-    let initialContent = backendData.inputs.content || ''
+    let initialContent = backendData.blogPost.content || ''
     
     tinymce.init({
         selector: selector,

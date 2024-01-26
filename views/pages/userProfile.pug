@@ -5,26 +5,7 @@ include ../components/form/formTextarea
 include ../components/list/buttonList
 
 block page
-    - const {title, user, isMainUser, inputs, errors} = data
-
-    - const profilePicErrors = []
-    - const usernameErrors = []
-    - const bioErrors = []
-    - const keywordErrors = []
-
-    each error in errors 
-        if error.path === 'profile-pic'
-            - profilePicErrors.push(error.msg)
-        else if error.path === 'username'
-            - usernameErrors.push(error.msg)
-        else if error.path === 'bio'
-            - biorrors.push(error.msg)
-        else if error.path === 'keywords'
-            - keywordErrors.push(error.msg)
-    
-    - let updatingProfile = false 
-    if Object.keys(inputs).length
-        - updatingProfile = true
+    - const {title, user, isMainUser} = data
     
     .profile-page
         h1.profile-page__heading= title
@@ -41,9 +22,7 @@ block page
                         img(src='/images/profileIcon.png')
 
                 .profile__username= user.username
-            .profile__secondary(
-                class= updatingProfile ? '-gone' : ''
-            )
+            .profile__secondary
                 .profile__bio
                     .profile__heading Bio 
                     p.profile__body= user.bio || 'None'
@@ -61,27 +40,23 @@ block page
                         button.profile__edit-button Edit Profile
             
             if isMainUser
-                form.profile-form(
+                form.profile-form.-gone(
                     method='post' 
                     enctype='multipart/form-data'
-                    class= updatingProfile ? '' : '-gone'
                 )
                     +formInput(
                         'profile-pic',
                         'file',
-                        '',
-                        profilePicErrors
+                        ''
                     )
                     +formInput(
                         'username',
                         'text',
-                        inputs.username || mainUser.username,
-                        usernameErrors
+                        mainUser.username
                     )
                     +formTextarea(
                         'bio',
-                        inputs.bio || mainUser.bio,
-                        bioErrors,
+                        mainUser.bio,
                         {
                             'textarea': {
                                 'rows': '5'
@@ -90,8 +65,7 @@ block page
                     )
                     +formTextarea(
                         'keywords',
-                        inputs.keywords || mainUser.keywords.join(' '),
-                        keywordErrors,
+                        mainUser.keywords.join(' '),
                         {
                             'textarea': {
                                 'rows': '2'

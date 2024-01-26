@@ -56,9 +56,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     const data = {
         title,
         user,
-        isMainUser,
-        inputs: {},
-        errors: []
+        isMainUser
     }
 
     res.render("pages/userProfile", { data });
@@ -137,27 +135,7 @@ exports.updateUser = [
         errors.push(...nonFileErrors)
 
         if (errors.length) {
-            const data = {
-                title: "Your Profile",
-                user: req.user,
-                isMainUser: true,
-                inputs: inputs,
-                errors: errors
-            }
-
-            // find public blog posts only
-            data.user.blog_posts_written = await BlogPost
-                .find({
-                    author:  data.user._id,
-                    public_version: { $exists: false },
-                    publish_date: { $exists: true } 
-                })
-                .lean()
-                .exec()
-            
-            res.render("pages/userProfile", { data });
-
-            return
+            return res.json({ errors })
         }
 
         const filter = {
@@ -370,8 +348,6 @@ exports.getBlogPostCreateForm = [
 
         const data = {
             title: "Create Blog Post",
-            inputs: {},
-            errors: [],
             blogPost: {}
         }
         
@@ -431,10 +407,10 @@ exports.postBlogPost = [
         // if validationPaths = null, all paths are considered
         async function post(req, res, validationPaths=null, publishing=false) {
             const data = await processBlogPostData(
-                req, res, null, validationPaths
+                req, res, validationPaths
             )
 
-            // data is null or an object
+            // data is undefined or an object
             if (!data) {
                 return
             }
@@ -499,12 +475,6 @@ exports.getBlogPostUpdateForm = [
 
         const data = {
             title: 'Update Blog Post',
-            inputs: {
-                title: blogPost.title,
-                keywords: blogPost.keywords.join(' '),
-                content: blogPost.content
-            },
-            errors: [],
             blogPost
         }
     
@@ -594,10 +564,10 @@ exports.updateBlogPost = [
             req, res, blogPost, validationPaths=null, publishing=false
         ) {
             const data = await processBlogPostData(
-                req, res, blogPost, validationPaths
+                req, res, validationPaths
             )
 
-            // data is null or an object
+            // data is undefined or an object
             if (!data) {
                 return
             }
@@ -659,7 +629,7 @@ exports.updateBlogPost = [
 
 
 async function processBlogPostData(
-    req, res, blogPost, validationPaths
+    req, res, validationPaths
 ) {
     const errors = []
 
@@ -705,16 +675,8 @@ async function processBlogPostData(
     errors.push(...nonFileErrors)
 
     if (errors.length) {
-        const data = {
-            title: (blogPost ? 'Update' : 'Create') + ' Blog Post',
-            inputs,
-            errors,
-            blogPost: blogPost || {}
-        }
-        
-        res.render("pages/blogPostForm", { data });
-
-        return null
+        res.json({ errors })
+        return
     }
 
     const blogPostData = {

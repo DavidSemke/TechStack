@@ -1,5 +1,6 @@
 import { formFetch } from '../utils/fetch.js'
 import { initializeTinyMCE } from '../utils/tinyMCEConfig.js'
+import { updateErrorContainer } from '../utils/formError.js'
 
 function blogPostFormTabListeners() {
     const metadata = document.querySelector(
@@ -80,7 +81,7 @@ function blogPostFormSubmitListeners() {
         }
 
         const input = document.createElement('input')
-        input.class = 'blog-post-form__pre-method'
+        input.classList.add('blog-post-form__pre-method')
         input.name = 'pre-method'
         input.type = 'hidden'
         input.value = preMethod
@@ -108,7 +109,48 @@ function blogPostFormSubmitListeners() {
             href = hrefWords.join('/')
         }
 
-        formFetch(href, method, blogPostForm)
+        formFetch(
+            href, 
+            method, 
+            blogPostForm,
+            (data) => {
+                const inputData = {
+                    'title': {
+                        errors: [],
+                        formCompType: 'form-input'
+                    },
+                    'thumbnail': {
+                        errors: [],
+                        formCompType: 'form-input'
+                    },
+                    'keywords': {
+                        errors: [],
+                        formCompType: 'form-textarea'
+                    },
+                    'content': {
+                        errors: [],
+                        formCompType: 'form-textarea'
+                    },
+                    'word-count': {
+                        errors: [],
+                        formCompType: null
+                    }
+                }
+
+                for (const error of data.errors) {
+                    inputData[error.path].errors.push(error)
+                }
+
+                inputData.content.errors.push(
+                    ...inputData['word-count'].errors
+                )
+                delete inputData['word-count']
+
+                for (const [k, v] of Object.entries(inputData)) {
+                    updateErrorContainer(v.formCompType, k, v.errors)
+                }
+            }
+        )
     })
 }
 
@@ -138,7 +180,7 @@ function blogPostFormSetup() {
     blogPostFormTabListeners()
     blogPostFormMetadataListeners()
     blogPostFormSubmitListeners()
-    initializeTinyMCE('#tinymce-app')
+    initializeTinyMCE('.tinymce-app')
 }
 
 export {

@@ -5,22 +5,7 @@ include ../components/form/formTextarea
 include ../components/fragment/blogPostFragment
 
 block page
-    - const {inputs, errors, blogPost} = data
-
-    - const titleErrors = []
-    - const thumbnailErrors = []
-    - const keywordErrors = []
-    - const contentErrors = []
-
-    each error in errors 
-        if error.path === 'title'
-            - titleErrors.push(error.msg)
-        else if error.path === 'thumbnail'
-            - thumbnailErrors.push(error.msg)
-        else if error.path === 'keywords'
-            - keywordErrors.push(error.msg)
-        else if error.path === 'content' || error.path === 'word-count'
-            - contentErrors.push(error.msg)
+    - const {blogPost} = data
 
     .blog-post-form-page
         .blog-post-form-page__left
@@ -47,31 +32,32 @@ block page
                         +formInput(
                             'title',
                             'text',
-                            inputs.title || '',
-                            titleErrors
+                            blogPost.title || ''
                         )
                         +formInput(
                             'thumbnail',
                             'file',
-                            '',
-                            thumbnailErrors
+                            ''
                         )
-                        +formInput(
+                        
+                        - const keywords = blogPost.keywords
+                        +formTextarea(
                             'keywords',
-                            'text',
-                            inputs.keywords || '',
-                            keywordErrors
+                            keywords ? keywords.split(' ') : '',
+                            {
+                                'textarea': {
+                                    'rows': '2'
+                                }
+                            }
                         )
                         p * Keywords should be separated by spaces.
 
                     .blog-post-form__content.-gone
                         +formTextarea(
                             'content',
-                            inputs.content || '',
-                            contentErrors,
+                            blogPost.content || '',
                             {
                                 'textarea': {
-                                    'id': 'tinymce-app',
                                     'class': 'tinymce-app'
                                 }
                             }

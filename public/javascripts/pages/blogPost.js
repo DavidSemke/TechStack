@@ -1,4 +1,5 @@
 import { formFetch } from '../utils/fetch.js'
+import { updateErrorContainer } from '../utils/formError.js'
 
 function blogPostReactionFormListeners() {
     const reaction = backendData.blogPost.reaction
@@ -359,83 +360,63 @@ function commentCreateFormListeners(commentCreateForm) {
             'post',
             commentCreateForm,
             (data) => {
-                // remove previous errors if present
-                const errorContainer = commentCreateForm.querySelector(
-                    '.form-textarea__error-container'
-                )
-
-                if (errorContainer) {
-                    errorContainer.parentElement.removeChild(errorContainer)
-                }
+                updateErrorContainer('form-textarea', 'content', data.errors)
 
                 if (data.errors) {
-                    const errorContainer = document.createElement('div')
-                    errorContainer.classList.add('form-textarea__error-container')
+                    return
+                }
+                
+                if (commentCreateForm.classList.contains(
+                    'blog-post-page__reply-create-form'
+                )) {
+                    let replyContainer = commentCreateForm.nextSibling
 
-                    for (const error of data.errors) {
-                        const errorDiv = document.createElement('div')
-                        errorDiv.classList.add('form-textarea__error')
-                        errorDiv.textContent = error.msg
-                        errorContainer.append(errorDiv)
+                    if (!replyContainer) {
+                        replyContainer = document.createElement('div')
+                        replyContainer.classList.add(
+                            'blog-post-page__reply-container'
+                        )
+                        commentCreateForm.parentElement.append(replyContainer)
                     }
 
-                    const formTextarea = commentCreateForm.querySelector(
-                        '.form-textarea'
+                    const replyCards = replyContainer.querySelectorAll(
+                        '.comment-card'
                     )
-                    formTextarea.append(errorContainer)
+                    replyContainer.innerHTML = data.renderedHTML
+                    const newCommentCard = replyContainer.querySelector(
+                        '.comment-card'
+                    )
+                    commentReactionFormListeners(
+                        newCommentCard, 
+                        data.commentData
+                    )
+                    
+                    for (const replyCard of replyCards) {
+                        replyContainer.append(replyCard)
+                    }
+
+                    if (replyContainer.classList.contains('-gone')) {
+                        replyContainer.classList.remove('-gone')
+                    }
+
+                    commentCreateForm.parentElement.removeChild(commentCreateForm)
                 }
                 else {
-                    if (commentCreateForm.classList.contains(
-                        'blog-post-page__reply-create-form'
-                    )) {
-                        let replyContainer = commentCreateForm.nextSibling
-
-                        if (!replyContainer) {
-                            replyContainer = document.createElement('div')
-                            replyContainer.classList.add(
-                                'blog-post-page__reply-container'
-                            )
-                            commentCreateForm.parentElement.append(replyContainer)
-                        }
-
-                        const replyCards = replyContainer.querySelectorAll(
-                            '.comment-card'
-                        )
-                        replyContainer.innerHTML = data.renderedHTML
-                        const newCommentCard = replyContainer.querySelector(
-                            '.comment-card'
-                        )
-                        commentReactionFormListeners(
-                            newCommentCard, 
-                            data.commentData
-                        )
-                        
-                        for (const replyCard of replyCards) {
-                            replyContainer.append(replyCard)
-                        }
-
-                        if (replyContainer.classList.contains('-gone')) {
-                            replyContainer.classList.remove('-gone')
-                        }
-
-                        commentCreateForm.parentElement.removeChild(commentCreateForm)
-                    }
-                    else {
-                        const commentString = document.createElement('div')
-                        commentString.classList.add('blog-post-page__comment-string')
-                        commentString.innerHTML = data.renderedHTML
-                        const newCommentCard = commentString.querySelector(
-                            '.comment-card'
-                        )
-                        commentReactionFormListeners(
-                            newCommentCard, 
-                            data.commentData
-                        )
-                        commentCreateForm.parentElement.insertBefore(
-                            commentString, commentCreateForm.nextSibling
-                        )
-                    }
+                    const commentString = document.createElement('div')
+                    commentString.classList.add('blog-post-page__comment-string')
+                    commentString.innerHTML = data.renderedHTML
+                    const newCommentCard = commentString.querySelector(
+                        '.comment-card'
+                    )
+                    commentReactionFormListeners(
+                        newCommentCard, 
+                        data.commentData
+                    )
+                    commentCreateForm.parentElement.insertBefore(
+                        commentString, commentCreateForm.nextSibling
+                    )
                 }
+                
             }
         )
     })

@@ -124,10 +124,10 @@ exports.postComment = [
         const blogPostId = new Types.ObjectId(req.params.blogPostId)
         const content = req.body.content
         const replyTo = req.body['reply-to']
-        const errors = validationResult(req);
+        const errors = validationResult(req).array();
 
-        if (!errors.isEmpty()) {
-            return res.json({ errors: errors.array() })
+        if (errors.length) {
+            return res.json({ errors })
         } 
 
         const window = new JSDOM('').window;

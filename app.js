@@ -176,8 +176,7 @@ app.use(
 /* Route Setup */
 const indexRouter = require("./routes/index")
 const signupRouter = require("./routes/signup")
-// passport is argument here to authenticate login
-const loginRouter = require("./routes/login")(passport)
+const loginRouter = require("./routes/login")
 const logoutRouter = require("./routes/logout")
 const usersRouter = require("./routes/users")
 const blogPostsRouter = require("./routes/blogPosts")

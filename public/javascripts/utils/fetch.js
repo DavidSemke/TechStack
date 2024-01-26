@@ -22,7 +22,13 @@ async function formFetch(
         }
     }
 
-    if (!onResponseJson) {
+    const contentType = res.headers.get('content-type');
+
+    if (
+        !contentType 
+        || !contentType.includes('application/json')
+        || !onResponseJson
+    ) {
         return
     }
 
