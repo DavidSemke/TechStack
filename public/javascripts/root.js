@@ -4,7 +4,6 @@ import { blogPostSetup } from './pages/blogPost.js'
 import { blogPostFormSetup } from './pages/blogPostForm.js'
 import { profileFormSetup } from './pages/userProfile.js'
 import { userBlogPostsSetup } from './pages/userBlogPosts.js'
-import { filterEllipses } from './utils/textCutoff.js'
 
 // layout setup
 navbarListeners()
@@ -23,6 +22,3 @@ blogPostSetup()
 blogPostFormSetup()
 profileFormSetup()
 userBlogPostsSetup()
-
-// other setup
-filterEllipses()

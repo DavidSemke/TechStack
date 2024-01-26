@@ -44,14 +44,14 @@
     }
 
     &__title {
-        @include text-cutoff.ellipsis(3, 1.4, fSizes.$larger);
+        @include text-cutoff.cut(3);
         
         margin: 0;
         font-size: fSizes.$larger
     }
 
     &__preview {
-        @include text-cutoff.ellipsis(3, 1.4, 1rem);
+        @include text-cutoff.cut(3);
 
         margin: 0;
     }
@@ -66,8 +66,7 @@
     }
 
     &__keywords {
-        @include text-cutoff.ellipsis(1, 1.4, 1rem);
-
+        @include text-cutoff.cut(1);
         padding-right: 1rem;
     }
 
@@ -80,13 +79,17 @@
         }
 
         .blog-post-card__title {
-            @include text-cutoff.ellipsis(3, 1.4, fSizes.$large);
+            @include text-cutoff.cut(3);
 
             font-size: fSizes.$large;
         }
 
         .blog-post-card__preview {
-            @include text-cutoff.ellipsis(3, 1.4, 1rem);
+            @include text-cutoff.cut(3);
+        }
+
+        .blog-post-card__keywords {
+            @include text-cutoff.cut(1)
         }
     }
 }

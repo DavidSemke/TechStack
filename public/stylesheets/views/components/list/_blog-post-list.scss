@@ -1,5 +1,6 @@
 @use '../../../globals/colors';
 @use '../../../globals/font-sizes' as fSizes;
+@use '../../../mixins/text-cutoff';
 
 .blog-post-list {
     .blog-post-item:last-child {
@@ -28,6 +29,8 @@
     }
 
     &__title {
+        @include text-cutoff.cut(3);
+
         flex: 3;
         font-size: fSizes.$large;
     }

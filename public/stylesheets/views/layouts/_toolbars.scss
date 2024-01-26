@@ -76,6 +76,7 @@ $navbar-min-height: 4rem;
 .navbar-dropdown-container {
     display: flex;
     position: fixed;
+    z-index: 1;
     height: 20rem;
     width: 50%;
     min-width: 40rem;

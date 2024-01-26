@@ -13,7 +13,7 @@
     }
 
     &__label {
-        @include text-cutoff.ellipsis(2, 1.4, 1rem);
+        @include text-cutoff.cut(2);
     }
 
     &.-avatar {
@@ -61,7 +61,7 @@
             width: iSizes.$small;
         }
         .icon-element__label {
-            @include text-cutoff.ellipsis(2, 1.4, fSizes.$small);
+            @include text-cutoff.cut(2);
 
             font-size: fSizes.$small;
         }
@@ -75,7 +75,7 @@
         }
 
         .icon-element__label {
-            @include text-cutoff.ellipsis(2, 1.4, fSizes.$large);
+            @include text-cutoff.cut(2);
 
             font-size: fSizes.$large;
         }
@@ -89,7 +89,7 @@
         }
 
         .icon-element__label {
-            @include text-cutoff.ellipsis(2, 1.4, fSizes.$larger);
+            @include text-cutoff.cut(2);
 
             font-size: fSizes.$larger;
         }

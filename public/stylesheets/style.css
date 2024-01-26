@@ -34,31 +34,19 @@
   gap: 1rem;
 }
 .blog-post-card__title {
-  position: relative;
-  line-height: 1.4;
-  max-height: 6.3rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
   margin: 0;
   font-size: 1.5rem;
 }
-.blog-post-card__title.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-}
 .blog-post-card__preview {
-  position: relative;
-  line-height: 1.4;
-  max-height: 4.2rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
   margin: 0;
-}
-.blog-post-card__preview.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 .blog-post-card__keywords-container {
   display: flex;
@@ -68,17 +56,11 @@
   font-weight: bold;
 }
 .blog-post-card__keywords {
-  position: relative;
-  line-height: 1.4;
-  max-height: 1.4rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   padding-right: 1rem;
-}
-.blog-post-card__keywords.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 .blog-post-card.-small {
   height: 16rem;
@@ -88,29 +70,23 @@
   padding: 0.5rem;
 }
 .blog-post-card.-small .blog-post-card__title {
-  position: relative;
-  line-height: 1.4;
-  max-height: 5.04rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
   font-size: 1.2rem;
 }
-.blog-post-card.-small .blog-post-card__title.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-}
 .blog-post-card.-small .blog-post-card__preview {
-  position: relative;
-  line-height: 1.4;
-  max-height: 4.2rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
-.blog-post-card.-small .blog-post-card__preview.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
+.blog-post-card.-small .blog-post-card__keywords {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
 }
 
 .comment-card {
@@ -246,16 +222,10 @@
   width: 2rem;
 }
 .icon-element__label {
-  position: relative;
-  line-height: 1.4;
-  max-height: 2.8rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-}
-.icon-element__label.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 .icon-element.-avatar .icon-element__icon > img {
   border-radius: 50%;
@@ -292,51 +262,33 @@
   width: 1.5rem;
 }
 .icon-element.-small .icon-element__label {
-  position: relative;
-  line-height: 1.4;
-  max-height: 2.24rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 0.8rem;
-}
-.icon-element.-small .icon-element__label.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 .icon-element.-large .icon-element__icon {
   height: 3rem;
   width: 3rem;
 }
 .icon-element.-large .icon-element__label {
-  position: relative;
-  line-height: 1.4;
-  max-height: 3.36rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 1.2rem;
-}
-.icon-element.-large .icon-element__label.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 .icon-element.-larger .icon-element__icon {
   height: 5rem;
   width: 5rem;
 }
 .icon-element.-larger .icon-element__label {
-  position: relative;
-  line-height: 1.4;
-  max-height: 4.2rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 1.5rem;
-}
-.icon-element.-larger .icon-element__label.-ellipsis::after {
-  content: "...";
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 
 .blog-post-list .blog-post-item:last-child {
@@ -361,6 +313,10 @@
   justify-content: space-between;
 }
 .blog-post-item__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
   flex: 3;
   font-size: 1.2rem;
 }
@@ -532,6 +488,7 @@
 .navbar-dropdown-container {
   display: flex;
   position: fixed;
+  z-index: 1;
   height: 20rem;
   width: 50%;
   min-width: 40rem;
