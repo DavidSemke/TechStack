@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const query = require('../utils/query')
 
 exports.getIndex = asyncHandler(async (req, res, next) => {
-    const blogPosts = await BlogPost
+    let blogPosts = await BlogPost
         .find({
             public_version: { $exists: false },
             publish_date: { $exists: true } 
@@ -13,11 +13,13 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
         .lean()
         .exec();
     
-    for (const blogPost of blogPosts) {
-        await query.completeBlogPost(
-            blogPost, req.user, false, false
-        )
-    }
+    blogPosts = await Promise.all(
+        blogPosts.map((blogPost) => {
+            return query.completeBlogPost(
+                blogPost, req.user, false, false
+            )
+        })
+    )
 
     const data = {
         title: "Tech Stack",

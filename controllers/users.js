@@ -306,7 +306,7 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
 
     // get all private blog posts 
     // (private blog post can be unpublished or edit of published)
-    const privateBlogPosts = await BlogPost
+    let privateBlogPosts = await BlogPost
         .find({ 
             author: user._id,
             $or: [
@@ -314,24 +314,29 @@ exports.getBlogPosts = asyncHandler(async (req, res, next) => {
                 { publish_date: { $exists: false} }
             ]
         })
+        .populate('public_version')
         .lean()
         .exec()
 
     const publishedBlogPosts = []
     const unpublishedBlogPosts = []
 
-    for (const blogPost of privateBlogPosts) {
-        await query.completeBlogPost(
-            blogPost, req.user, false, false
-        )
+    privateBlogPosts = await Promise.all(
+        privateBlogPosts.map(async (blogPost) => {
+            blogPost = await query.completeBlogPost(
+                blogPost, req.user, false, false
+            )
 
-        if (blogPost.publish_date !== 'N/A') {
-            publishedBlogPosts.push(blogPost)
-        }
-        else {
-            unpublishedBlogPosts.push(blogPost)
-        }
-    }
+            if (blogPost.publish_date !== 'N/A') {
+                publishedBlogPosts.push(blogPost)
+            }
+            else {
+                unpublishedBlogPosts.push(blogPost)
+            }
+
+            return blogPost
+        })
+    )
     
     const data = {
         title: 'Your Blog Posts',

@@ -418,10 +418,11 @@ async function createReactionCounters() {
     console.log("Adding reaction counters");
 
     const reactionCounters = []
+    // only first 6 blog posts
     const postGroups = [
         {
             type: 'BlogPost',
-            collection: blogPosts
+            collection: blogPosts.slice(0, 6)
         },
         {
             type: 'Comment',
@@ -469,7 +470,7 @@ async function createReactions() {
     const postGroups = [
         {
             type: 'BlogPost',
-            collection: blogPosts
+            collection: blogPosts.slice(0, 6)
         },
         {
             type: 'Comment',

@@ -129,7 +129,7 @@ app.use(async (req, res, next) => {
   }
 
   // Find up to 5 public blog posts not written by current user
-  const suggestions = await BlogPost
+  let suggestions = await BlogPost
     .find({ 
       author: { $ne: req.user._id },
       public_version: { $exists: false },
@@ -140,11 +140,13 @@ app.use(async (req, res, next) => {
     .lean()
     .exec()
   
-  for (const suggestion of suggestions) {
-    await query.completeBlogPost(
-      suggestion, req.user, false, false
-    )
-  }
+  suggestions = await Promise.all(
+    suggestions.map((suggestion) => {
+      return query.completeBlogPost(
+        suggestion, req.user, false, false
+      )
+    })
+  )
 
   res.locals.suggestions = suggestions
   next()

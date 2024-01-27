@@ -62,7 +62,7 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
     const blogPostId = new Types.ObjectId(req.params.blogPostId)
-    const blogPost = await BlogPost
+    let blogPost = await BlogPost
         .findById(blogPostId)
         .populate('author')
         .lean()
@@ -75,7 +75,7 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    await query.completeBlogPost(blogPost, req.user)
+    blogPost = await query.completeBlogPost(blogPost, req.user)
 
     if (req.user) {
         // Add blog post to current user's recently read list

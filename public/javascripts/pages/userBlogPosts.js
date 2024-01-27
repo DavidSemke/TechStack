@@ -3,7 +3,7 @@ function userBlogPostsSearchbarListeners() {
         '.user-blog-posts-page__searchbar .searchbar__input'
     )
 
-    searchbar.addEventListener('change', (event) => {
+    searchbar.addEventListener('input', (event) => {
         const blogPostItems = document.querySelectorAll('.blog-post-item')
         const searchValue = event
             .currentTarget
@@ -110,10 +110,10 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
             case 'likes':
                 blogPostItems.sort((a, b) => {
                     const likesA = a.querySelector(
-                        '.blog-post-item__likes .icon-list__label'
+                        '.blog-post-item__likes .icon-element__label'
                     ).textContent
                     const likesB = b.querySelector(
-                        '.blog-post-item__likes .icon-list__label'
+                        '.blog-post-item__likes .icon-element__label'
                     ).textContent
 
                     return parseInt(likesA) - parseInt(likesB)
@@ -122,10 +122,10 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
             case 'dislikes':
                 blogPostItems.sort((a, b) => {
                     const dislikesA = a.querySelector(
-                        '.blog-post-item__dislikes .icon-list__label'
+                        '.blog-post-item__dislikes .icon-element__label'
                     ).textContent
                     const dislikesB = b.querySelector(
-                        '.blog-post-item__dislikes .icon-list__label'
+                        '.blog-post-item__dislikes .icon-element__label'
                     ).textContent
 
                     return parseInt(dislikesA) - parseInt(dislikesB)
@@ -134,10 +134,10 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
             case 'total-comments':
                 blogPostItems.sort((a, b) => {
                     const commentsA = a.querySelector(
-                        '.blog-post-item__total-comments .icon-list__label'
+                        '.blog-post-item__total-comments .icon-element__label'
                     ).textContent
                     const commentsB = b.querySelector(
-                        '.blog-post-item__total-comments .icon-list__label'
+                        '.blog-post-item__total-comments .icon-element__label'
                     ).textContent
 
                     return parseInt(commentsA) - parseInt(commentsB)

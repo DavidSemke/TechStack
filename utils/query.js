@@ -7,10 +7,39 @@ const dateFormat = require('../utils/dateFormat')
 async function completeBlogPost(
     blogPost, mainUser, userReactions=true, binnedReplies=true
 ) {
+    blogPost = blogPost.public_version || blogPost
+    blogPost.last_modified_date = dateFormat.formatDate(
+        blogPost.last_modified_date
+    )
+    blogPost.likes = 0
+    blogPost.dislikes = 0
+    blogPost.comments = []
+
+    // get preview of content
+    blogPost.preview = ''
+    const regex = new RegExp('<p.*?>(.*?)</p>')
+    const match = blogPost.content.match(regex)
+
+    if (match) {
+        blogPost.preview = match[1]
+    }
+
+    // remainder of data is only available to published blog posts
+    if (!blogPost.publish_date) {
+        blogPost.publish_date = 'N/A'
+        
+        return blogPost
+    }
+    
+    blogPost.publish_date = dateFormat.formatDate(
+        blogPost.publish_date
+    )
+    
     const [comments, reactionCounter] = await Promise.all([
-        Comment.find({ 
-            blog_post: blogPost._id
-        })
+        Comment
+            .find({ 
+                blog_post: blogPost._id
+            })
             .populate('author')
             .lean()
             .exec(),
@@ -24,22 +53,9 @@ async function completeBlogPost(
             .exec()
     ])
 
-    blogPost.last_modified_date = dateFormat.formatDate(
-        blogPost.last_modified_date
-    )
-
-    if (blogPost.publish_date) {
-        blogPost.publish_date = dateFormat.formatDate(
-            blogPost.publish_date
-        )
-    }
-    else {
-        blogPost.publish_date = 'N/A'
-    }
-
     blogPost.likes = reactionCounter.like_count
     blogPost.dislikes = reactionCounter.dislike_count
-
+    
     if (mainUser && userReactions) {
         // Add reaction data if current user reacted to blog post
         blogPost.reaction = await Reaction.findOne({
@@ -52,18 +68,11 @@ async function completeBlogPost(
             .lean()
             .exec()
     }
-
-    // add blog post preview
-    blogPost.preview = ''
-    const match = blogPost.content.match(/<p.*?>(.*?)<\/p>/)
-
-    if (match) {
-        blogPost.preview = match[1]
-    }
     
     if (!binnedReplies) {
         blogPost.comments = comments
-        return
+        
+        return blogPost
     }
 
     const replyMap = {};
@@ -117,6 +126,8 @@ async function completeBlogPost(
     }
 
     blogPost.comments = nonReplies
+
+    return blogPost
 }
 
 
