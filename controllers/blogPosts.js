@@ -13,7 +13,6 @@ const pug = require('pug')
 const { Types } = require('mongoose')
 
 
-
 exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
     const keywordsParam = req.query.keywords
 

@@ -1,5 +1,9 @@
 import { formFetch } from '../utils/fetch.js'
 import { updateErrorContainer } from '../utils/formError.js'
+import { PromiseQueue } from '../utils/queue.js'
+
+// used to queue reactions
+const reactionQueue = PromiseQueue()
 
 function blogPostReactionFormListeners() {
     const reaction = backendData.blogPost.reaction
@@ -32,32 +36,41 @@ function blogPostReactionFormListeners() {
         }
     }
 
+    let responsiveLike = liked
+    let responsiveDislike = disliked
     const likeReactionForms = document.querySelectorAll(
         '.blog-post__like-reaction-form'
     )
     
     for (const form of likeReactionForms) {
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault()
 
-            fetchReaction(
-                form, 
-                disliked, 
-                liked, 
-                reactionId,
-                (data) => {
-                    reactionId = data.reactionId
-                }
-            )
             updateReactionButtons(
-                disliked, 
-                liked, 
+                responsiveDislike, 
+                responsiveLike, 
                 likeButtons, 
                 dislikeButtons
             )
+            responsiveDislike = false
+            responsiveLike = !responsiveLike
 
-            disliked = false
-            liked = !liked
+            reactionQueue.enqueue(async () => {
+                await fetchReaction(
+                    form, 
+                    disliked, 
+                    liked, 
+                    reactionId,
+                    (data) => {
+                        reactionId = data.reactionId
+                    }
+                )
+                disliked = false
+                liked = !liked
+            })
+            
+
+            
         })
     }
     const dislikeReactionForms = document.querySelectorAll(
@@ -65,27 +78,31 @@ function blogPostReactionFormListeners() {
     )
     
     for (const form of dislikeReactionForms) {
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault()
 
-            fetchReaction(
-                form, 
-                liked, 
-                disliked, 
-                reactionId,
-                (data) => {
-                    reactionId = data.reactionId
-                }
-            )
             updateReactionButtons(
-                liked, 
-                disliked, 
+                responsiveLike, 
+                responsiveDislike, 
                 dislikeButtons, 
                 likeButtons
             )
+            responsiveLike = false
+            responsiveDislike = !responsiveDislike
 
-            liked = false
-            disliked = !disliked
+            reactionQueue.enqueue(async () => {
+                await fetchReaction(
+                    form, 
+                    liked, 
+                    disliked, 
+                    reactionId,
+                    (data) => {
+                        reactionId = data.reactionId
+                    }
+                )
+                liked = false
+                disliked = !disliked
+            })                
         })
     }
 }
@@ -195,59 +212,70 @@ function commentReactionFormListeners(commentCard, commentData) {
         dislikeButton.classList.add('-colorful')
     }
 
+    let responsiveLike = liked
+    let responsiveDislike = disliked
     const likeReactionForm = commentCard.querySelector(
         '.comment-card__like-reaction-form'
     )
-    likeReactionForm.addEventListener('submit', (event) => {
+    likeReactionForm.addEventListener('submit', async (event) => {
         event.preventDefault()
 
-        fetchReaction(
-            likeReactionForm, 
-            disliked, 
-            liked, 
-            reactionId,
-            (data) => {
-                reactionId = data.reactionId
-            }
-        )
         updateReactionButtons(
-            disliked, 
-            liked, 
+            responsiveDislike, 
+            responsiveLike, 
             [likeButton], 
             [dislikeButton]
         )
+        responsiveDislike = false
+        responsiveLike = !responsiveLike
+        
+        reactionQueue.enqueue(async () => {
+            await fetchReaction(
+                likeReactionForm, 
+                disliked, 
+                liked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            disliked = false
+            liked = !liked
+        })
 
-        disliked = false
-        liked = !liked
+            
     })
 
     const dislikeReactionForm = commentCard.querySelector(
         '.comment-card__dislike-reaction-form'
     )
-    dislikeReactionForm.addEventListener('submit', (event) => {
+    dislikeReactionForm.addEventListener('submit', async (event) => {
         event.preventDefault()
 
-        fetchReaction(
-            dislikeReactionForm, 
-            liked, 
-            disliked, 
-            reactionId,
-            (data) => {
-                reactionId = data.reactionId
-            }
-        )
         updateReactionButtons(
-            liked, 
-            disliked, 
+            responsiveLike, 
+            responsiveDislike, 
             [dislikeButton], 
             [likeButton]
         )
+        responsiveLike = false
+        responsiveDislike = !responsiveDislike
 
-        liked = false
-        disliked = !disliked
+        reactionQueue.enqueue(async () => {
+            await fetchReaction(
+                dislikeReactionForm, 
+                liked, 
+                disliked, 
+                reactionId,
+                (data) => {
+                    reactionId = data.reactionId
+                }
+            )
+            liked = false
+            disliked = !disliked
+        })
     })
 }
-
 
 function updateReactionButtons(
     toggleReaction, removeReaction, primaryButtons, secondaryButtons
@@ -286,13 +314,13 @@ function updateReactionButtons(
 }
 
 // Whenever (toggleReaction && removeReaction) = false, reactionId = null
-function fetchReaction(
+async function fetchReaction(
     form, toggleReaction, removeReaction, reactionId, onResponseJson
 ) {
     const reactionsPath = `/users/${backendData.mainUser.username}/reactions`
 
     if (removeReaction) {
-        formFetch(
+        await formFetch(
             `${reactionsPath}/${reactionId}`,
             'delete',
             form,
@@ -300,7 +328,7 @@ function fetchReaction(
         )
     }
     else if (toggleReaction) {
-        formFetch(
+        await formFetch(
             `${reactionsPath}/${reactionId}`,
             'put',
             form,
@@ -308,7 +336,7 @@ function fetchReaction(
         )
     }
     else {
-        formFetch(
+        await formFetch(
             reactionsPath,
             'post',
             form,
