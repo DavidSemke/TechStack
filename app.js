@@ -11,22 +11,13 @@ const logger = require("morgan")
 const session = require("express-session")
 const passport = require('./utils/auth')
 const flash = require('connect-flash')
-const mongoose = require("mongoose")
 const mongoSanitize = require('express-mongo-sanitize')
 const query = require('./utils/query')
 const BlogPost = require("./models/blogPost");
+require('./mongoConfig')
 
 // for testing
 const User = require("./models/user");
-
-/* MongoDB Setup */
-const connecter = process.env.MONGO_DB_CONNECT
-
-main().catch((err) => console.log(err));
-
-async function main() {
-  await mongoose.connect(connecter);
-}
 
 const app = express()
 

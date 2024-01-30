@@ -1,12 +1,13 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
-const User = require("../models/user");
-const BlogPost = require("../models/blogPost");
-const Comment = require("../models/comment");
-const ReactionCounter = require("../models/reactionCounter");
-const Reaction = require("../models/reaction");
+const User = require("../../../models/user");
+const BlogPost = require("../../../models/blogPost");
+const Comment = require("../../../models/comment");
+const ReactionCounter = require("../../../models/reactionCounter");
+const Reaction = require("../../../models/reaction");
 const path = require('path')
 const fs = require('fs')
+const readline = require('readline')
 
 const users = []
 const blogPosts = []
@@ -87,6 +88,8 @@ async function createUsers() {
             path.join(
                 process.cwd(),
                 'test',
+                'database',
+                'populate',
                 'images',
                 'hero-image.webp'
             )
@@ -138,6 +141,8 @@ async function createBlogPosts() {
             path.join(
                 process.cwd(),
                 'test',
+                'database',
+                'populate',
                 'images',
                 'hero-image.webp'
             )
@@ -145,162 +150,107 @@ async function createBlogPosts() {
         contentType: 'image/webp'
     }
 
-    // public versions
-    await Promise.all([
-        blogPostCreate(
-            0, 
-            { 
-                title: 'Local puppies adopted!',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['dog', 'adoption'],
-                content: '<p>Puppies adopted, everyone is happy!</p>',
-            }
-        ),
-        blogPostCreate(
-            1, 
-            { 
-                title: 'Thugs have cars!',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['bully', 'vehicle', 'drive-by'],
-                content: '<p>Thug cars are really loud! They must go!</p>',
-            }
-        ),
-        blogPostCreate(
-            2, 
-            { 
-                title: 'I have ants in my pants!',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['pest', 'clothes'],
-                content: '<p>Please call a doctor. Or an exterminator? Call one of them. Or maybe both.</p>',
-            }
-        ),
-        blogPostCreate(
-            3, 
-            { 
-                title: 'Why Humanity Should Make Wasps Go Extinct',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['insect', 'bully'],
-                content: '<p>Wasps suck.</p>',
-            }
-        ),
-        blogPostCreate(
-            4, 
-            { 
-                title: 'How to Make a Proper PB and J',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['food', 'tasting'],
-                content: '<p>First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.</p>',
-            }
-        ),
-        blogPostCreate(
-            5, 
-            { 
-                title: 'Why You Don\'t Need to Go to the Doctor.',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['healthcare', 'medicine'],
-                content: '<p>Eat an apple and take a bath, hippie.</p>',
-            }
-        )
-    ]);
+    const filenames = [
+        'puppyShelter.txt',
+        'thugsWithCars.txt',
+        'antsInPants.txt',
+        'waspsExtinct.txt',
+        'pBAndJ.txt',
+        'squidward.txt'
+    ]
+    const textPath = path.join(
+        process.cwd(),
+        'test',
+        'database',
+        'populate',
+        'text'
+    )
+    const contents = await Promise.all(
+        filenames.map(async (filename) => {
+            const filePath = textPath + '/' + filename
 
-    // private versions (last 4 indexes are NOT published)
+            return new Promise((resolve) => {
+                const lineReader = readline.createInterface({
+                    input: fs.createReadStream(filePath)
+                })
+                let content = ''
+    
+                lineReader.on('line', (line) => {
+                    if (line) {
+                        content += `<p>${line}</p>`
+                    } 
+                })
+                lineReader.on('close', () => {
+                    resolve(content)
+                })
+            })
+        })
+    )
+
+    const variantDatas = [
+        {
+            title: 'Local Puppies Adopted from the Local Shelter Next to the Local Bean Store',
+            keywords: ['dog', 'adopt'],
+            content: contents[0]
+        },
+        {
+            title: 'Thugs Should Not Be Driving Cars! Their Cars Make Too Much Noise!',
+            keywords: ['bully', 'vehicle'],
+            content: contents[1]
+        },
+        {
+            title: 'Boy Gets Ants in His Pants: Neighbors Concerned That They Could be Next',
+            keywords: ['ants', 'pants'],
+            content: contents[2]
+        },
+        {
+            title: 'Wasps Suck, so Why Should Humanity Not Make Wasps Go Extinct?',
+            keywords: ['wasps', 'extinct'],
+            content: contents[3]
+        },
+        {
+            title: 'How to Make a Proper Peanut Butter and Jelly Sandwich: A Lengthy Tutorial',
+            keywords: ['food', 'taste'],
+            content: contents[4]
+        },
+        {
+            title: 'Bikini Bottom News: A Day in the Life of Squidward Tentacles',
+            keywords: ['squidward', 'spongebob'],
+            content: contents[5]
+        },
+    ]
+
+    let userIndex = 0;
+    const completeDatas = variantDatas.map(data => {
+        userIndex = userIndex ? 0 : 1
+
+        return {
+            title: data.title,
+            thumbnail,
+            author: users[userIndex],
+            publish_date: Date.now(),
+            last_modified_date: Date.now(),
+            keywords: data.keywords,
+            content: data.content,
+        }
+    })
+
+    // public versions
+    await Promise.all(
+        completeDatas.map(async (data, index) => {
+            return blogPostCreate(index, data)
+        })
+    )
+
+    // private, published versions
+    await Promise.all(
+        completeDatas.map(async (data, index) => {
+            data.public_version = blogPosts[index]
+            return blogPostCreate(index + 6, data)
+        })
+    )
+    // private versions (not published)
     await Promise.all([
-        blogPostCreate(
-            6, 
-            { 
-                title: 'Local puppies adopted!',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['dog', 'adoption'],
-                content: '<p>Puppies adopted, everyone is happy!</p>',
-                public_version: blogPosts[0]
-            }
-        ),
-        blogPostCreate(
-            7, 
-            { 
-                title: 'Thugs have cars!',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['bully', 'vehicle', 'drive-by'],
-                content: '<p>Thug cars are really loud! They must go!</p>',
-                public_version: blogPosts[1]
-            }
-        ),
-        blogPostCreate(
-            8, 
-            { 
-                title: 'I have ants in my pants!',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['pest', 'clothes'],
-                content: '<p>Please call a doctor. Or an exterminator? Call one of them. Or maybe both.</p>',
-                public_version: blogPosts[2]
-            }
-        ),
-        blogPostCreate(
-            9, 
-            { 
-                title: 'Why Humanity Should Make Wasps Go Extinct',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['insect', 'bully'],
-                content: '<p>Wasps suck.</p>',
-                public_version: blogPosts[3]
-            }
-        ),
-        blogPostCreate(
-            10, 
-            { 
-                title: 'How to Make a Proper PB and J',
-                thumbnail,
-                author: users[0],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['food', 'tasting'],
-                content: '<p>First you slather on the peanut butter. Then you add the jam on the other half. Then you smoosh both halves together. You\'re welcome.</p>',
-                public_version: blogPosts[4]
-            }
-        ),
-        blogPostCreate(
-            11, 
-            { 
-                title: 'Why You Don\'t Need to Go to the Doctor.',
-                thumbnail,
-                author: users[1],
-                publish_date: Date.now(),
-                last_modified_date: Date.now(),
-                keywords: ['healthcare', 'medicine'],
-                content: '<p>Eat an apple and take a bath, hippie.</p>',
-                public_version: blogPosts[5]
-            }
-        ),
         blogPostCreate(
             12, 
             { 
@@ -418,11 +368,10 @@ async function createReactionCounters() {
     console.log("Adding reaction counters");
 
     const reactionCounters = []
-    // only first 6 blog posts
     const postGroups = [
         {
             type: 'BlogPost',
-            collection: blogPosts.slice(0, 6)
+            collection: blogPosts
         },
         {
             type: 'Comment',
@@ -431,13 +380,20 @@ async function createReactionCounters() {
     ]
     const combns = [[1, 1], [1, 0], [0, 1], [0, 0]]
     let combnIndex = 0
+    const publicBlogPostsCount = 6
 
     for (const postGroup of postGroups) {
         const { type: postType, collection: posts } = postGroup
         
-        for (const post of posts) {
-            const combn = combns[combnIndex % combns.length]
-            const [likeCount, dislikeCount] = combn
+        for (let i=0; i<posts.length; i++) {
+            const post = posts[i]
+            let likeCount = 0
+            let dislikeCount = 0
+        
+            // first 6 blog posts are public and thus can have likes/dislikes
+            if (i < publicBlogPostsCount) {
+                [likeCount, dislikeCount] = combns[combnIndex % combns.length]
+            }
 
             reactionCounters.push(
                 {

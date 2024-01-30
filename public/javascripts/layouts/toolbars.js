@@ -1,6 +1,3 @@
-import { formFetch } from '../utils/fetch.js'
-
-
 function sidebarListeners(sidebarSelector, sidebarButtonSelector) {
     const sidebar = document.querySelector(sidebarSelector)
 
