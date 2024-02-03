@@ -33,6 +33,9 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = [
     function (req, res, next) {
+      req.body.username = String(req.body.username)
+      req.body.password = String(req.body.password)
+
       const window = new JSDOM('').window;
       const DOMPurify = createDOMPurify(window);
   

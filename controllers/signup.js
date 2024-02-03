@@ -18,6 +18,10 @@ exports.getSignup = asyncHandler(async (req, res, next) => {
 
 exports.postSignup = [
     body("username")
+        .isString()
+        .withMessage(
+            'Username must be a string.'
+        )
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
@@ -38,6 +42,10 @@ exports.postSignup = [
         }))
         .withMessage('Username already exists.'),
     body("password")
+        .isString()
+        .withMessage(
+            'Password must be a string.'
+        )
         .trim()
         .isLength({ min: 8 })
         .withMessage("Password must have at least 8 characters.")
@@ -70,7 +78,8 @@ exports.postSignup = [
                 errors
             }
         
-            return res.render("pages/signupForm", { data })
+            res.status(400).render("pages/signupForm", { data })
+            return 
         }
 
         bcrypt.hash(req.body.password, 10, async (err, hash) => {

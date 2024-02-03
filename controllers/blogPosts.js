@@ -17,7 +17,10 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
     const keywordsParam = req.query.keywords
 
     if (!keywordsParam) {
-        return res.end()
+        const err = new Error("Query parameter 'keywords' not found.");
+        err.status = 400;
+        
+        return next(err)
     }
 
     const keywords = keywordsParam.split(',')
@@ -60,7 +63,18 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
-    const blogPostId = new Types.ObjectId(req.params.blogPostId)
+    let blogPostId
+
+    try {
+        blogPostId = new Types.ObjectId(req.params.blogPostId)
+    }
+    catch (error) {
+        const err = new Error("Invalid ObjectId format");
+        err.status = 400;
+
+        return next(err)
+    }
+
     let blogPost = await BlogPost
         .findById(blogPostId)
         .populate('author')
@@ -103,7 +117,7 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
     const data = {
         title: blogPost.title,
         blogPost,
-        mainUser: req.user
+        loginUser: req.user
     }
 
     res.render("pages/blogPost", { data });
@@ -111,8 +125,11 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
     
 // On comment create
 exports.postComment = [
-    
     body("content")
+        .isString()
+        .withMessage(
+            'Comment must be a string.'
+        )
         .trim()
         .isLength({ min: 1, max: 300 })
         .withMessage(
@@ -120,13 +137,28 @@ exports.postComment = [
         ),
 
     asyncHandler(async (req, res, next) => {
-        const blogPostId = new Types.ObjectId(req.params.blogPostId)
+        let blogPostId, replyTo
+
+        try {
+            blogPostId = new Types.ObjectId(req.params.blogPostId)
+
+            if (req.body['reply-to']) {
+                replyTo = new Types.ObjectId(req.body['reply-to'])
+            }
+        }
+        catch (error) {
+            const err = new Error("Invalid ObjectId format");
+            err.status = 400;
+
+            return next(err)
+        }
+        
         const content = req.body.content
-        const replyTo = req.body['reply-to']
         const errors = validationResult(req).array();
 
         if (errors.length) {
-            return res.json({ errors })
+            res.status(400).json({ errors })
+            return
         } 
 
         const window = new JSDOM('').window;
@@ -140,7 +172,22 @@ exports.postComment = [
         }
 
         commentData.author = req.user ? req.user._id : undefined
-        commentData.reply_to = replyTo || undefined
+        
+        if (replyTo) {
+            const commentRepliedTo = await Comment
+                .findById(replyTo)
+                .lean()
+                .exec()
+            
+            if (commentRepliedTo.reply_to) {
+                const err = new Error("Cannot reply to a reply");
+                err.status = 400;
+
+                return next(err)
+            }
+            
+            commentData.reply_to = replyTo
+        }
 
         let comment = new Comment(commentData)
         await comment.save()

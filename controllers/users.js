@@ -43,20 +43,20 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         .exec()
 
     let title = `${user.username}'s Profile`
-    let isMainUser = false
+    let isLoginUserProfile = false
 
     if (
         req.user 
         && user._id.toString() === req.user._id.toString()
     ) {
         title = 'Your Profile'
-        isMainUser = true
+        isLoginUserProfile = true
     }
     
     const data = {
         title,
         user,
-        isMainUser
+        isLoginUserProfile
     }
 
     res.render("pages/userProfile", { data });
@@ -65,6 +65,10 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 exports.updateUser = [
     // files processed after body middleware
     body("username")
+        .isString()
+        .withMessage(
+            'Username must be a string.'
+        )
         .trim()
         .isLength({ min: 6, max: 30 })
         .withMessage("Username must have 6 to 30 characters.")
@@ -85,10 +89,18 @@ exports.updateUser = [
         }))
         .withMessage('Username already exists.'),
     body("bio")
+        .isString()
+        .withMessage(
+            'Bio must be a string.'
+        )
         .trim()
         .isLength({ min: 0, max: 300 })
         .withMessage("Bio cannot have more than 300 characters."),
     body("keywords")
+        .isString()
+        .withMessage(
+            'Keywords must be a string.'
+        )
         .trim()
         .custom((value) => {
             const wordCount = value
@@ -135,7 +147,8 @@ exports.updateUser = [
         errors.push(...nonFileErrors)
 
         if (errors.length) {
-            return res.json({ errors })
+            res.status(400).json({ errors })
+            return 
         }
 
         const filter = {
@@ -170,8 +183,36 @@ exports.updateUser = [
 
 exports.postReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
+    let contentId
+
+    try {
+        contentId = new Types.ObjectId(req.body['content-id'])
+    }
+    catch (error) {
+        const err = new Error("Invalid ObjectId format");
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
+        const err = new Error(
+            "Content type must be in ['BlogPost', 'Comment']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
+        const err = new Error(
+            "Reaction type must be in ['Like', 'Dislike']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
 
     const promises = []
 
@@ -205,9 +246,37 @@ exports.postReaction = asyncHandler(async (req, res, next) => {
 
 exports.updateReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
-    const reactionId = new Types.ObjectId(req.params.reactionId)
+    let contentId, reactionId
+
+    try {
+        contentId = new Types.ObjectId(req.body['content-id'])
+        reactionId = new Types.ObjectId(req.params.reactionId)
+    }
+    catch (error) {
+        const err = new Error("Invalid ObjectId format");
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
+        const err = new Error(
+            "Content type must be in ['BlogPost', 'Comment']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
+        const err = new Error(
+            "Reaction type must be in ['Like', 'Dislike']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
 
     const promises = [
         Reaction
@@ -259,10 +328,38 @@ exports.updateReaction = asyncHandler(async (req, res, next) => {
 
 exports.deleteReaction = asyncHandler(async (req, res, next) => {
     const contentType = req.body['content-type']
-    const contentId = new Types.ObjectId(req.body['content-id'])
     const reactionType = req.body['reaction-type']
-    const reactionId = new Types.ObjectId(req.params.reactionId)
+    let contentId, reactionId
 
+    try {
+        contentId = new Types.ObjectId(req.body['content-id'])
+        reactionId = new Types.ObjectId(req.params.reactionId)
+    }
+    catch (error) {
+        const err = new Error("Invalid ObjectId format");
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
+        const err = new Error(
+            "Content type must be in ['BlogPost', 'Comment']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
+
+    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
+        const err = new Error(
+            "Reaction type must be in ['Like', 'Dislike']"
+        );
+        err.status = 400;
+
+        return next(err)
+    }
+    
     const promises = [
         Reaction
             .findOneAndDelete(
@@ -290,6 +387,7 @@ exports.deleteReaction = asyncHandler(async (req, res, next) => {
 
     res.json({ reactionId: null })
 })
+
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
     const user = await User
@@ -364,10 +462,18 @@ exports.getBlogPostCreateForm = [
 exports.postBlogPost = [
     // Files validated after body middleware
     body("title")
+        .isString()
+        .withMessage(
+            'Title must be a string.'
+        )
         .trim()
         .isLength({ min: 60, max: 100 })
         .withMessage("Title must have 60 to 100 characters."),
     body("keywords")
+        .isString()
+        .withMessage(
+            'Keywords must be a string.'
+        )
         .trim()
         .custom((value) => {
             const wordCount = value
@@ -379,8 +485,16 @@ exports.postBlogPost = [
         })
         .withMessage('Must have 1 to 10 keywords.'),
     body("content")
+        .isString()
+        .withMessage(
+            'Content must be a string.'
+        )
         .trim(),
     body("word-count")
+        .isString()
+        .withMessage(
+            'Word count must be a string.'
+        )
         .custom((value) => {
             let wordCount = parseInt(value)
             
@@ -456,17 +570,40 @@ exports.postBlogPost = [
 // Comments should not be deleted - shared by public and private versions
 exports.deletePrivateBlogPost = [
     asyncHandler(async (req, res, next) => {
-        await BlogPost.findOneAndDelete({ _id: req.params.blogPostId }).exec()
+        let blogPostId
+
+        try {
+            blogPostId = new Types.ObjectId(req.params.blogPostId)
+        }
+        catch (error) {
+            const err = new Error("Invalid ObjectId format");
+            err.status = 400;
+
+            return next(err)
+        }
+
+        await BlogPost.findOneAndDelete({ _id: blogPostId }).exec()
         res.end();
     })
 ]
 
 // Display blog post update form
 exports.getBlogPostUpdateForm = [
-
     asyncHandler(async (req, res, next) => {
+        let blogPostId
+
+        try {
+            blogPostId = new Types.ObjectId(req.params.blogPostId)
+        }
+        catch (error) {
+            const err = new Error("Invalid ObjectId format");
+            err.status = 400;
+
+            return next(err)
+        }
+
         const blogPost = await BlogPost
-            .findById(req.params.blogPostId)
+            .findById(blogPostId)
             .populate('public_version')
             .lean()
             .exec()
@@ -491,10 +628,18 @@ exports.getBlogPostUpdateForm = [
 exports.updateBlogPost = [
     // files processed after body middleware
     body("title")
+        .isString()
+        .withMessage(
+            'Title must be a string.'
+        )
         .trim()
         .isLength({ min: 60, max: 100 })
         .withMessage("Title must have 60 to 100 characters."),
     body("keywords")
+        .isString()
+        .withMessage(
+            'Keywords must be a string.'
+        )
         .trim()
         .custom((value) => {
             const wordCount = value
@@ -506,8 +651,16 @@ exports.updateBlogPost = [
         })
         .withMessage('Must have 1 to 10 keywords.'),
     body("content")
+        .isString()
+        .withMessage(
+            'Content must be a string.'
+        )
         .trim(),
     body("word-count")
+        .isString()
+        .withMessage(
+            'Word count must be a string.'
+        )
         .custom((value) => {
             let wordCount = parseInt(value)
             
@@ -516,11 +669,30 @@ exports.updateBlogPost = [
         .withMessage("Blog post must be 500 to 3000 words."),
         
     asyncHandler(async (req, res, next) => {
+        let blogPostId
+
+        try {
+            blogPostId = new Types.ObjectId(req.params.blogPostId)
+        }
+        catch (error) {
+            const err = new Error("Invalid ObjectId format");
+            err.status = 400;
+
+            return next(err)
+        }
+
         const blogPost = await BlogPost
-            .findById(req.params.blogPostId)
+            .findById(blogPostId)
             .populate('public_version')
             .lean()
             .exec()
+
+        if (blogPost === null) {
+            const err = new Error("Blog post not found");
+            err.status = 404;
+            
+            return next(err);
+        }
 
         switch (req.body['pre-method']) {
             case 'discard':
@@ -544,7 +716,7 @@ exports.updateBlogPost = [
 
         async function backwardUpdate(req, res, blogPost) {
             const privateFilter = {
-                _id: req.params.blogPostId
+                _id: blogPost._id
             }
 
             if (blogPost.public_version) {
@@ -578,7 +750,7 @@ exports.updateBlogPost = [
             }
 
             const privateFilter = {
-                _id: req.params.blogPostId
+                _id: blogPostId._id
             }
             const privateUpdate = {
                 title: data.title,
@@ -650,7 +822,7 @@ async function processBlogPostData(
         errors.push(
             {
                 'path': 'thumbnail',
-                'msg': req.fileLimitError.message + '.'
+                'msg': req.fileLimitError.message
             }
         )
     }
@@ -680,7 +852,7 @@ async function processBlogPostData(
     errors.push(...nonFileErrors)
 
     if (errors.length) {
-        res.json({ errors })
+        res.status(400).json({ errors })
         return
     }
 
