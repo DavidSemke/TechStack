@@ -66,7 +66,7 @@ mixin blogPostList(blogPosts, attrs={})
                             '/images/editIcon.png',
                             null,
                             {
-                                'href': `/users/${mainUser.username}/blog-posts/${blogPost._id}`,
+                                'href': `/users/${loginUser.username}/blog-posts/${blogPost._id}`,
                                 'class': [
                                     '-small',
                                     '-button',

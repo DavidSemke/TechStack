@@ -10,7 +10,6 @@ const createDOMPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
 const path = require('path')
 const pug = require('pug')
-const { Types } = require('mongoose')
 
 
 exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
@@ -63,32 +62,7 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
-    let blogPostId
-
-    try {
-        blogPostId = new Types.ObjectId(req.params.blogPostId)
-    }
-    catch (error) {
-        const err = new Error("Invalid ObjectId format");
-        err.status = 400;
-
-        return next(err)
-    }
-
-    let blogPost = await BlogPost
-        .findById(blogPostId)
-        .populate('author')
-        .lean()
-        .exec()
-
-    if (blogPost === null) {
-        const err = new Error("Blog post not found");
-        err.status = 404;
-        
-        return next(err);
-    }
-
-    blogPost = await query.completeBlogPost(blogPost, req.user)
+    const blogPost = await query.completeBlogPost(req.paramBlogPost, req.user)
 
     if (req.user) {
         // Add blog post to current user's recently read list
@@ -137,22 +111,7 @@ exports.postComment = [
         ),
 
     asyncHandler(async (req, res, next) => {
-        let blogPostId, replyTo
-
-        try {
-            blogPostId = new Types.ObjectId(req.params.blogPostId)
-
-            if (req.body['reply-to']) {
-                replyTo = new Types.ObjectId(req.body['reply-to'])
-            }
-        }
-        catch (error) {
-            const err = new Error("Invalid ObjectId format");
-            err.status = 400;
-
-            return next(err)
-        }
-        
+        const blogPostId = req.paramBlogPost._id
         const content = req.body.content
         const errors = validationResult(req).array();
 

@@ -390,23 +390,11 @@ exports.deleteReaction = asyncHandler(async (req, res, next) => {
 
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
-    const user = await User
-        .findOne({ username: req.params.username })
-        .lean()
-        .exec()
-
-    if (user === null) {
-        const err = new Error("User not found");
-        err.status = 404;
-        
-        return next(err);
-    }
-
     // get all private blog posts 
     // (private blog post can be unpublished or edit of published)
     let privateBlogPosts = await BlogPost
         .find({ 
-            author: user._id,
+            author: req.user._id,
             $or: [
                 { public_version: { $exists: true } },
                 { publish_date: { $exists: false} }
@@ -491,9 +479,11 @@ exports.postBlogPost = [
         )
         .trim(),
     body("word-count")
-        .isString()
+        .custom((value) => {
+            return typeof value === 'string' && !isNaN(parseInt(value))
+        })
         .withMessage(
-            'Word count must be a string.'
+            'Word count must be a stringified number.'
         )
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -570,19 +560,9 @@ exports.postBlogPost = [
 // Comments should not be deleted - shared by public and private versions
 exports.deletePrivateBlogPost = [
     asyncHandler(async (req, res, next) => {
-        let blogPostId
-
-        try {
-            blogPostId = new Types.ObjectId(req.params.blogPostId)
-        }
-        catch (error) {
-            const err = new Error("Invalid ObjectId format");
-            err.status = 400;
-
-            return next(err)
-        }
-
-        await BlogPost.findOneAndDelete({ _id: blogPostId }).exec()
+        await BlogPost
+            .findOneAndDelete({ _id: req.paramBlogPost._id })
+            .exec()
         res.end();
     })
 ]
@@ -590,34 +570,9 @@ exports.deletePrivateBlogPost = [
 // Display blog post update form
 exports.getBlogPostUpdateForm = [
     asyncHandler(async (req, res, next) => {
-        let blogPostId
-
-        try {
-            blogPostId = new Types.ObjectId(req.params.blogPostId)
-        }
-        catch (error) {
-            const err = new Error("Invalid ObjectId format");
-            err.status = 400;
-
-            return next(err)
-        }
-
-        const blogPost = await BlogPost
-            .findById(blogPostId)
-            .populate('public_version')
-            .lean()
-            .exec()
-    
-        if (blogPost === null) {
-            const err = new Error("Blog post not found");
-            err.status = 404;
-            
-            return next(err);
-        }
-
         const data = {
             title: 'Update Blog Post',
-            blogPost
+            blogPost: req.paramBlogPost
         }
     
         res.render("pages/blogPostForm", { data });
@@ -657,9 +612,11 @@ exports.updateBlogPost = [
         )
         .trim(),
     body("word-count")
-        .isString()
+        .custom((value) => {
+            return typeof value === 'string' && !isNaN(parseInt(value))
+        })
         .withMessage(
-            'Word count must be a string.'
+            'Word count must be a stringified number.'
         )
         .custom((value) => {
             let wordCount = parseInt(value)
@@ -669,40 +626,15 @@ exports.updateBlogPost = [
         .withMessage("Blog post must be 500 to 3000 words."),
         
     asyncHandler(async (req, res, next) => {
-        let blogPostId
-
-        try {
-            blogPostId = new Types.ObjectId(req.params.blogPostId)
-        }
-        catch (error) {
-            const err = new Error("Invalid ObjectId format");
-            err.status = 400;
-
-            return next(err)
-        }
-
-        const blogPost = await BlogPost
-            .findById(blogPostId)
-            .populate('public_version')
-            .lean()
-            .exec()
-
-        if (blogPost === null) {
-            const err = new Error("Blog post not found");
-            err.status = 404;
-            
-            return next(err);
-        }
-
         switch (req.body['pre-method']) {
             case 'discard':
-                await backwardUpdate(req, res, blogPost)
+                await backwardUpdate(req, res)
                 break
             case 'save':
-                await forwardUpdate(req, res, blogPost, ['title'])
+                await forwardUpdate(req, res, ['title'])
                 break
             case 'publish':
-                await forwardUpdate(req, res, blogPost, null, true)
+                await forwardUpdate(req, res, null, true)
                 break
             default:
                 const err = new Error(
@@ -714,7 +646,8 @@ exports.updateBlogPost = [
                 return next(err);
         }
 
-        async function backwardUpdate(req, res, blogPost) {
+        async function backwardUpdate(req, res) {
+            const blogPost = req.paramBlogPost
             const privateFilter = {
                 _id: blogPost._id
             }
@@ -738,7 +671,7 @@ exports.updateBlogPost = [
         }
 
         async function forwardUpdate(
-            req, res, blogPost, validationPaths=null, publishing=false
+            req, res, validationPaths=null, publishing=false
         ) {
             const data = await processBlogPostData(
                 req, res, validationPaths
@@ -749,8 +682,9 @@ exports.updateBlogPost = [
                 return
             }
 
+            const blogPost = req.paramBlogPost
             const privateFilter = {
-                _id: blogPostId._id
+                _id: blogPost._id
             }
             const privateUpdate = {
                 title: data.title,

@@ -103,21 +103,13 @@ app.use(async (req, res, next) => {
   next()
 })
 
-// add user local
-app.use((req, res, next) => {
-  if (!req.user) {
-    return next()
-  }
-
-  res.locals.mainUser = req.user
-  next()
-})
-
-// add user blog post suggestions local
+// add user locals
 app.use(async (req, res, next) => {
   if (!req.user) {
     return next()
   }
+
+  res.locals.loginUser = req.user
 
   // Find up to 5 public blog posts not written by current user
   let suggestions = await BlogPost

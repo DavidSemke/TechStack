@@ -317,7 +317,7 @@ function updateReactionButtons(
 async function fetchReaction(
     form, toggleReaction, removeReaction, reactionId, onResponseJson
 ) {
-    const reactionsPath = `/users/${backendData.mainUser.username}/reactions`
+    const reactionsPath = `/users/${backendData.loginUser.username}/reactions`
 
     if (removeReaction) {
         await formFetch(

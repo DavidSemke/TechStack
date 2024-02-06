@@ -79,13 +79,13 @@
         }
 
         .blog-post-card__title {
-            @include text-cutoff.cut(3);
+            @include text-cutoff.cut(2);
 
             font-size: fSizes.$large;
         }
 
         .blog-post-card__preview {
-            @include text-cutoff.cut(3);
+            @include text-cutoff.cut(2);
         }
 
         .blog-post-card__keywords {

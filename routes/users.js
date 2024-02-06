@@ -1,111 +1,90 @@
 const controller = require('../controllers/users')
 const express = require("express")
 const router = express.Router()
-const multer = require('multer')
 const upload = require('../utils/upload')
+const utils = require('../utils/router')
 
-function checkAuthorization(req, res, next) {
-    if (
-        !req.user
-        || req.user.username !== req.params.username
-    ) {
-        
-        const err = new Error("Given URL excludes current user.")
-        err.status = 403;
-        
-        return next(err);
-    }
-}
-
-// catch possible multer limit error
-function handleMulterError(err, req, res, next) {
-    if (!err) {
-        return next()
-    }
-
-    if (err instanceof multer.MulterError) {
-        req.fileLimitError = err
-        next()
-    }
-    else {
-        next(err)
-    }
-}
-
-// view depends on if user is mainUser
+// view depends on if user is loginUser
 router.get(
     '/:username', 
     controller.getUser
 )
 
+// all other paths require auth
+router.use(utils.checkAuthorization)
+
 router.put(
     '/:username',
-    // checkAuthorization,
     upload.single('profile-pic'),
-    handleMulterError, 
+    utils.handleMulterError, 
     controller.updateUser
 )
 
-// view depends on if user is mainUser ??? Not implemented
 router.get(
-    '/:username/blog-posts',
-    // checkAuthorization, 
+    '/:username/blog-posts', 
     controller.getBlogPosts
 )
 
 router.post(
     '/:username/blog-posts',
-    // checkAuthorization,
     upload.single('thumbnail'),
-    handleMulterError,
+    utils.handleMulterError,
     controller.postBlogPost
 )
 
 router.get(
     '/:username/blog-posts/new-blog-post',
-    // checkAuthorization,
     controller.getBlogPostCreateForm
-)
-
-router.get(
-    '/:username/blog-posts/:blogPostId',
-    // checkAuthorization, 
-    controller.getBlogPostUpdateForm
-)
-
-router.put(
-    '/:username/blog-posts/:blogPostId',
-    // checkAuthorization,
-    upload.single('thumbnail'),
-    handleMulterError, 
-    controller.updateBlogPost
-)
-
-router.delete(
-    '/:username/blog-posts/:blogPostId',
-    // checkAuthorization, 
-    controller.deletePrivateBlogPost
 )
 
 router.post(
     '/:username/reactions',
-    // checkAuthorization,
     upload.none(),
     controller.postReaction
 )
 
 router.put(
     '/:username/reactions/:reactionId',
-    // checkAuthorization,
     upload.none(),
     controller.updateReaction
 )
 
 router.delete(
     '/:username/reactions/:reactionId',
-    // checkAuthorization,
     upload.none(),
     controller.deleteReaction
+)
+
+// All other routes specify a blog post, which must be validated
+// Users can only manipulate private blogs that they authored
+router.use((req, res, next) => {
+    utils.setParamBlogPost(
+        {
+            author: req.user._id,
+            $or: [
+                { public_version: { $exists: true } },
+                { publish_date: { $exists: false } }
+            ]
+        },
+        ['public_version']
+    )(req, res, next)
+})
+
+router.get(
+    '/:username/blog-posts/:blogPostId', 
+    controller.getBlogPostUpdateForm
+)
+
+router.put(
+    '/:username/blog-posts/:blogPostId',
+    upload.single('thumbnail'),
+    utils.handleMulterError, 
+    controller.updateBlogPost
+)
+
+router.delete(
+    '/:username/blog-posts/:blogPostId', 
+    controller.deletePrivateBlogPost
 )
 
 module.exports = router

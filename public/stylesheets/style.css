@@ -72,14 +72,14 @@
 .blog-post-card.-small .blog-post-card__title {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 1.2rem;
 }
 .blog-post-card.-small .blog-post-card__preview {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 .blog-post-card.-small .blog-post-card__keywords {

@@ -5,7 +5,7 @@ const dateFormat = require('../utils/dateFormat')
 
 
 async function completeBlogPost(
-    blogPost, mainUser, userReactions=true, binnedReplies=true
+    blogPost, loginUser, userReactions=true, binnedReplies=true
 ) {
     blogPost = blogPost.public_version || blogPost
     blogPost.last_modified_date = dateFormat.formatDate(
@@ -56,10 +56,10 @@ async function completeBlogPost(
     blogPost.likes = reactionCounter.like_count
     blogPost.dislikes = reactionCounter.dislike_count
     
-    if (mainUser && userReactions) {
+    if (loginUser && userReactions) {
         // Add reaction data if current user reacted to blog post
         blogPost.reaction = await Reaction.findOne({
-            user: mainUser._id,
+            user: loginUser._id,
             content: {
                 content_type: 'BlogPost',
                 content_id: blogPost._id
@@ -95,9 +95,9 @@ async function completeBlogPost(
         comment.dislikes = reactionCounter.dislike_count
 
         // check if current user reacted to comment
-        if (mainUser && userReactions) {
+        if (loginUser && userReactions) {
             comment.reaction = await Reaction.findOne({
-                user: mainUser._id,
+                user: loginUser._id,
                 content: {
                     content_type: 'Comment',
                     content_id: comment._id

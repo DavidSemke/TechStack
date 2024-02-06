@@ -5,7 +5,7 @@ include ../components/form/formTextarea
 include ../components/list/buttonList
 
 block page
-    - const {title, user, isMainUser} = data
+    - const {title, user, isLoginUserProfile} = data
     
     .profile-page
         h1.profile-page__heading= title
@@ -35,11 +35,11 @@ block page
                     
                     p.profile__body= keywords
                 
-                if isMainUser
+                if isLoginUserProfile
                     .profile__edit
                         button.profile__edit-button Edit Profile
             
-            if isMainUser
+            if isLoginUserProfile
                 form.profile-form.-gone(
                     method='post' 
                     enctype='multipart/form-data'
@@ -52,11 +52,11 @@ block page
                     +formInput(
                         'username',
                         'text',
-                        mainUser.username
+                        loginUser.username
                     )
                     +formTextarea(
                         'bio',
-                        mainUser.bio,
+                        loginUser.bio,
                         {
                             'textarea': {
                                 'rows': '5'
@@ -65,7 +65,7 @@ block page
                     )
                     +formTextarea(
                         'keywords',
-                        mainUser.keywords.join(' '),
+                        loginUser.keywords.join(' '),
                         {
                             'textarea': {
                                 'rows': '2'
@@ -130,7 +130,7 @@ block page
                     .profile__author-details
                         - let heading = `Blog Posts Written by ${user.username}`
                         
-                        if isMainUser
+                        if isLoginUserProfile
                             - heading = 'Blog Posts Written by You'
                         
                         .profile__heading= heading
@@ -139,7 +139,7 @@ block page
 
                             each blogPost in user.blog_posts_written
                                 - let icon = '/images/profileIcon.png'
-                                - const pic = mainUser.profile_pic
+                                - const pic = loginUser.profile_pic
             
                                 if pic
                                     - const base64 = pic.data.toString('base64')

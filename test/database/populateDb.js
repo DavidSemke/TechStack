@@ -1,37 +1,24 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
-const User = require("../../../models/user");
-const BlogPost = require("../../../models/blogPost");
-const Comment = require("../../../models/comment");
-const ReactionCounter = require("../../../models/reactionCounter");
-const Reaction = require("../../../models/reaction");
+const User = require("../../models/user");
+const BlogPost = require("../../models/blogPost");
+const Comment = require("../../models/comment");
+const ReactionCounter = require("../../models/reactionCounter");
+const Reaction = require("../../models/reaction");
 const path = require('path')
-const fs = require('fs')
-const readline = require('readline')
 
 const users = []
 const blogPosts = []
 const comments = []
 const reactionCounters = []
 
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const connecter = process.env.MONGO_DB_CONNECT
-main().catch((err) => console.log(err));
-
-async function main() {
-    console.log("Debug: About to connect");
-    await mongoose.connect(connecter);
-    
-    console.log("Debug: Should be connected?");
-    await createUsers()
-    await createBlogPosts()
+async function populate() {
+    const imageData = await readImageFile()
+    await createUsers(imageData)
+    await createBlogPosts(imageData)
     await createComments()
     await createReactionCounters()
     await createReactions()
-
-    console.log("Debug: Closing mongoose");
-    mongoose.connection.close();
 }
 
 // uses password hashing
@@ -78,32 +65,14 @@ async function reactionCreate(reactionData) {
     await reaction.save()
 }
 
-
-
-async function createUsers() {
-    console.log("Adding users")
-
-    const profile_pic = {
-        data: fs.readFileSync(
-            path.join(
-                process.cwd(),
-                'test',
-                'database',
-                'populate',
-                'images',
-                'hero-image.webp'
-            )
-        ),
-        contentType: 'image/webp'
-    }
-
+async function createUsers(imageData) {
     await Promise.all([
         userCreate(
             0, 
             { 
                 username: 'aaaaaa', 
                 password: 'aaaaaa',
-                profile_pic
+                profile_pic: imageData
             }
         ),
         userCreate(
@@ -111,7 +80,7 @@ async function createUsers() {
             { 
                 username: 'bbbbbb', 
                 password: 'bbbbbb',
-                profile_pic 
+                profile_pic: imageData 
             }
         ),
         userCreate(
@@ -119,7 +88,7 @@ async function createUsers() {
             { 
                 username: 'cccccc', 
                 password: 'cccccc',
-                profile_pic 
+                profile_pic: imageData 
             }
         ),
         userCreate(
@@ -127,106 +96,20 @@ async function createUsers() {
             { 
                 username: 'dddddd', 
                 password: 'dddddd',
-                profile_pic 
+                profile_pic: imageData 
             }
         )
     ]);
 }
 
-async function createBlogPosts() {
-    console.log("Adding blogPosts");
-
-    const thumbnail = {
-        data: fs.readFileSync(
-            path.join(
-                process.cwd(),
-                'test',
-                'database',
-                'populate',
-                'images',
-                'hero-image.webp'
-            )
-        ),
-        contentType: 'image/webp'
-    }
-
-    const filenames = [
-        'puppyShelter.txt',
-        'thugsWithCars.txt',
-        'antsInPants.txt',
-        'waspsExtinct.txt',
-        'pBAndJ.txt',
-        'squidward.txt'
-    ]
-    const textPath = path.join(
-        process.cwd(),
-        'test',
-        'database',
-        'populate',
-        'text'
-    )
-    const contents = await Promise.all(
-        filenames.map(async (filename) => {
-            const filePath = textPath + '/' + filename
-
-            return new Promise((resolve) => {
-                const lineReader = readline.createInterface({
-                    input: fs.createReadStream(filePath)
-                })
-                let content = ''
-    
-                lineReader.on('line', (line) => {
-                    if (line) {
-                        content += `<p>${line}</p>`
-                    } 
-                })
-                lineReader.on('close', () => {
-                    resolve(content)
-                })
-            })
-        })
-    )
-
-    const variantDatas = [
-        {
-            title: 'Local Puppies Adopted from the Local Shelter Next to the Local Bean Store',
-            keywords: ['dog', 'adopt'],
-            content: contents[0]
-        },
-        {
-            title: 'Thugs Should Not Be Driving Cars! Their Cars Make Too Much Noise!',
-            keywords: ['bully', 'vehicle'],
-            content: contents[1]
-        },
-        {
-            title: 'Boy Gets Ants in His Pants: Neighbors Concerned That They Could be Next',
-            keywords: ['ants', 'pants'],
-            content: contents[2]
-        },
-        {
-            title: 'Wasps Suck, so Why Should Humanity Not Make Wasps Go Extinct?',
-            keywords: ['wasps', 'extinct'],
-            content: contents[3]
-        },
-        {
-            title: 'How to Make a Proper Peanut Butter and Jelly Sandwich: A Lengthy Tutorial',
-            keywords: ['food', 'taste'],
-            content: contents[4]
-        },
-        {
-            title: 'Bikini Bottom News: A Day in the Life of Squidward Tentacles',
-            keywords: ['squidward', 'spongebob'],
-            content: contents[5]
-        },
-    ]
-
+async function createBlogPosts(imageData) {
     let userIndex = 0;
     const completeDatas = variantDatas.map(data => {
         userIndex = userIndex ? 0 : 1
 
         return {
             title: data.title,
-            thumbnail,
+            thumbnail: imageData,
             author: users[userIndex],
             publish_date: Date.now(),
             last_modified_date: Date.now(),
@@ -235,27 +118,32 @@ async function createBlogPosts() {
         }
     })
 
-    // public versions
+    // Public versions
+    // Keywords is changed for a private-public difference
     await Promise.all(
-        completeDatas.map(async (data, index) => {
-            return blogPostCreate(index, data)
-        })
+        completeDatas
+            .map(data => {
+                return {...data, keywords: data.keywords.slice(0, 1)}
+            })
+            .map(async (data, index) => {
+                return blogPostCreate(index, data)
+            })
     )
 
-    // private, published versions
-    await Promise.all(
-        completeDatas.map(async (data, index) => {
+    const privatePublished = completeDatas
+        .map((data, index) => {
             data.public_version = blogPosts[index]
             return blogPostCreate(index + 6, data)
         })
-    )
-    // private versions (not published)
+
     await Promise.all([
+        ...privatePublished,
+        // Private, unpublished versions
         blogPostCreate(
             12, 
             { 
                 title: 'Spiders in my basement!',
-                thumbnail,
+                thumbnail: imageData,
                 author: users[0],
                 last_modified_date: Date.now(),
                 keywords: ['arachnid', 'scary'],
@@ -266,7 +154,7 @@ async function createBlogPosts() {
             13, 
             { 
                 title: 'Only you can prevent forest fires!',
-                thumbnail,
+                thumbnail: imageData,
                 author: users[1],
                 last_modified_date: Date.now(),
                 keywords: ['burn', 'wood'],
@@ -277,7 +165,7 @@ async function createBlogPosts() {
             14, 
             { 
                 title: 'I shipped my pants!',
-                thumbnail,
+                thumbnail: imageData,
                 author: users[0],
                 last_modified_date: Date.now(),
                 keywords: ['amazon', 'bezos'],
@@ -288,7 +176,7 @@ async function createBlogPosts() {
             15, 
             { 
                 title: 'Don\'t worry guys I\'m 6ft!',
-                thumbnail,
+                thumbnail: imageData,
                 author: users[1],
                 last_modified_date: Date.now(),
                 keywords: ['tall', 'short'],
@@ -299,8 +187,6 @@ async function createBlogPosts() {
 }
 
 async function createComments() {
-    console.log("Adding comments");
-
     await Promise.all([
         commentCreate(
             0,
@@ -365,8 +251,6 @@ async function createComments() {
 }
 
 async function createReactionCounters() {
-    console.log("Adding reaction counters");
-
     const reactionCounters = []
     const postGroups = [
         {
@@ -420,8 +304,6 @@ async function createReactionCounters() {
 }
 
 async function createReactions() {
-    console.log("Adding reactions");
-
     const reactions = []
     const postGroups = [
         {
@@ -479,3 +361,5 @@ async function createReactions() {
         reactions.map((reaction => reactionCreate(reaction)))
     )
 }
+
+module.exports = populate

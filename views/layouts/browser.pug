@@ -34,13 +34,13 @@ block navbar
             }
         )
     .navbar__right 
-        if mainUser
+        if loginUser
             +iconElement(
                 'a',
                 '/images/writeIcon.png', 
                 'Write',
                 {
-                    'href': `/users/${mainUser.username}/blog-posts/new-blog-post`,
+                    'href': `/users/${loginUser.username}/blog-posts/new-blog-post`,
                     'class': [
                         '-button',
                         '-colorful',

@@ -18,6 +18,15 @@ async function startServer() {
   mongoose.connection.once("open", () => {
     console.log(`MongoDB successfully connected to ${mongoUri}`);
   });
+
+  return mongoServer
 }
 
-module.exports = startServer;
+async function stopServer(server) {
+  await server.stop()
+}
+
+module.exports = {
+  startServer,
+  stopServer
+};

@@ -3,13 +3,13 @@ include ../list/iconElementList
 .content-sidebar.sidebar.-closed
     .sidebar__title Content
 
-    if !mainUser
+    if !loginUser
         .content-sidebar__heading Not Logged In
         .content-sidebar__section Log in for content history and suggestions. 
     else
         .content-sidebar__heading Recent
         .content-sidebar__section
-            - const recentReads = mainUser.blog_posts_recently_read
+            - const recentReads = loginUser.blog_posts_recently_read
 
             if recentReads.length
                 - const recentReadsIconElements = []
