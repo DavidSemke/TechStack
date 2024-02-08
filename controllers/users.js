@@ -533,6 +533,17 @@ exports.postBlogPost = [
         
                 data.public_version = publicBlogPost._id
 
+                // public content should have a reaction counter
+                const reactionCounter = new ReactionCounter({
+                    content: {
+                        content_type: 'BlogPost',
+                        content_id: publicBlogPost._id
+                    },
+                    like_count: 0,
+                    dislike_count: 0
+                })
+                await reactionCounter.save()
+
                 res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
             }
             else {
@@ -541,16 +552,6 @@ exports.postBlogPost = [
 
             const privateBlogPost = new BlogPost(data)
             await privateBlogPost.save();
-
-            const reactionCounter = new ReactionCounter({
-                content: {
-                    content_type: 'BlogPost',
-                    content_id: privateBlogPost._id
-                },
-                like_count: 0,
-                dislike_count: 0
-            })
-            await reactionCounter.save()
         }
     }) 
 ];

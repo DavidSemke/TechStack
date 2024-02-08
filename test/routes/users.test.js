@@ -301,7 +301,7 @@ describe("POST /users/:username/blog-posts", () => {
                 .field('pre-method', 'save')
                 .expect(200);
             
-            // title should now be shared by three blog posts
+            // title should now be shared by two blog posts
             const blogPosts = await BlogPost
                 .find({ title })
                 .lean()
@@ -378,6 +378,8 @@ describe("POST /users/:username/blog-posts", () => {
                     keywords,
                     content
                 })
+                .lean()
+                .exec()
             
             expect(blogPosts.length).toBe(2)
         })

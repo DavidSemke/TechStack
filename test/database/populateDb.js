@@ -5,7 +5,11 @@ const BlogPost = require("../../models/blogPost");
 const Comment = require("../../models/comment");
 const ReactionCounter = require("../../models/reactionCounter");
 const Reaction = require("../../models/reaction");
-const path = require('path')
+const fileData = require('./documents/fileData')
+const userData = require('./documents/userData')
+const blogPostData = require('./documents/blogPostData')
+const commentData = require('./documents/commentData')
+
 
 const users = []
 const blogPosts = []
@@ -13,10 +17,33 @@ const comments = []
 const reactionCounters = []
 
 async function populate() {
-    const imageData = await readImageFile()
-    await createUsers(imageData)
-    await createBlogPosts(imageData)
-    await createComments()
+    const { contents, imageData } = await fileData.getData()
+    
+    const userDocs = userData.getData(imageData)
+    await createUsers(userDocs)
+    
+    const blogPostDocs = blogPostData.getData(users, contents, imageData)
+    await createBlogPosts(blogPostDocs, 6, 10, 6)
+    
+    const commentDocs = commentData.getData(users)
+    await createComments(commentDocs, 2, 2)
+    
+    await createReactionCounters()
+    await createReactions()
+}
+
+async function slimPopulate() {
+    const { contents, imageData } = await fileData.getData(4)
+    
+    const userDocs = userData.getData(imageData, 2)
+    await createUsers(userDocs)
+    
+    const blogPostDocs = blogPostData.getData(users, contents, imageData)
+    await createBlogPosts(blogPostDocs, 2, 2, 1, true)
+    
+    const commentDocs = commentData.getData(users, 2)
+    await createComments(commentDocs, 1, 1)
+    
     await createReactionCounters()
     await createReactions()
 }
@@ -65,220 +92,148 @@ async function reactionCreate(reactionData) {
     await reaction.save()
 }
 
-async function createUsers(imageData) {
-    await Promise.all([
-        userCreate(
-            0, 
-            { 
-                username: 'aaaaaa', 
-                password: 'aaaaaa',
-                profile_pic: imageData
-            }
-        ),
-        userCreate(
-            1, 
-            { 
-                username: 'bbbbbb', 
-                password: 'bbbbbb',
-                profile_pic: imageData 
-            }
-        ),
-        userCreate(
-            2, 
-            { 
-                username: 'cccccc', 
-                password: 'cccccc',
-                profile_pic: imageData 
-            }
-        ),
-        userCreate(
-            3, 
-            { 
-                username: 'dddddd', 
-                password: 'dddddd',
-                profile_pic: imageData 
-            }
-        )
-    ]);
+async function createUsers(userData) {
+    await Promise.all(
+        userData.map((data, index) => {
+            return userCreate(index, data)  
+        })
+    )
 }
 
-async function createBlogPosts(imageData) {
-    let userIndex = 0;
-    const completeDatas = variantDatas.map(data => {
-        userIndex = userIndex ? 0 : 1
+// It is assumed that blog posts, outside of a blog post private-public pair,
+// have collectively unique values
+// If allUnique is true, blog posts within a private-public pair also have
+// collectively unique values
+async function createBlogPosts(
+    blogPostData, publicCount, privateCount, pairCount, allUnique=false
+) {
+    if (publicCount < pairCount || privateCount < pairCount) {
+        throw new Error("'Pair count' requirement impossible")
+    }
 
-        return {
-            title: data.title,
-            thumbnail: imageData,
-            author: users[userIndex],
-            publish_date: Date.now(),
-            last_modified_date: Date.now(),
-            keywords: data.keywords,
-            content: data.content,
+    // These are indexes defining where in the blogPostData list to start 
+    // and stop making private blog posts
+    let privateStart = 0
+    let privateEnd = privateCount
+
+    if (allUnique) {
+        const blogPostCount = publicCount + privateCount
+
+        if (blogPostCount > blogPostData.length) {
+            throw new Error("'All unique' requirement impossible")
         }
-    })
+
+        privateStart = publicCount
+        privateEnd = blogPostCount
+    }
+    else if (Math.max(publicCount, privateCount) > blogPostData.length) {
+        throw new Error("Count requirements impossible")
+    }
 
     // Public versions
-    // Keywords is changed for a private-public difference
     await Promise.all(
-        completeDatas
-            .map(data => {
-                return {...data, keywords: data.keywords.slice(0, 1)}
-            })
-            .map(async (data, index) => {
+        blogPostData.slice(0, publicCount)
+            .map((data, index) => {
+                data.publish_date = Date.now()
                 return blogPostCreate(index, data)
             })
     )
+    // Private versions
+    await Promise.all(
+        blogPostData.slice(privateStart, privateEnd)
+            .map((data, index) => {
+                const blogPost = blogPosts[index]
 
-    const privatePublished = completeDatas
-        .map((data, index) => {
-            data.public_version = blogPosts[index]
-            return blogPostCreate(index + 6, data)
-        })
-
-    await Promise.all([
-        ...privatePublished,
-        // Private, unpublished versions
-        blogPostCreate(
-            12, 
-            { 
-                title: 'Spiders in my basement!',
-                thumbnail: imageData,
-                author: users[0],
-                last_modified_date: Date.now(),
-                keywords: ['arachnid', 'scary'],
-                content: '<p>Adventurer, I need you to squish 80 spiders!</p>',
-            }
-        ),
-        blogPostCreate(
-            13, 
-            { 
-                title: 'Only you can prevent forest fires!',
-                thumbnail: imageData,
-                author: users[1],
-                last_modified_date: Date.now(),
-                keywords: ['burn', 'wood'],
-                content: '<p>I smoked a forest yesterday and dreamt of magical jacuzzi.</p>',
-            }
-        ),
-        blogPostCreate(
-            14, 
-            { 
-                title: 'I shipped my pants!',
-                thumbnail: imageData,
-                author: users[0],
-                last_modified_date: Date.now(),
-                keywords: ['amazon', 'bezos'],
-                content: '<p>I did not like my Amazon order so I am returning the pants, thanks Obama.</p>',
-            }
-        ),
-        blogPostCreate(
-            15, 
-            { 
-                title: 'Don\'t worry guys I\'m 6ft!',
-                thumbnail: imageData,
-                author: users[1],
-                last_modified_date: Date.now(),
-                keywords: ['tall', 'short'],
-                content: '<p>I used to be 5\' 11.99" but now I\'m 6ft and no one can tell me otherwise!</p>',
-            }
-        ),
-    ]);
+                if (blogPost && index < pairCount) {
+                    data.publish_date = Date.now()
+                    data.public_version = blogPosts[index]
+                }
+                
+                return blogPostCreate(index + publicCount, data)
+            })
+    )
 }
 
-async function createComments() {
-    await Promise.all([
-        commentCreate(
-            0,
-            {
-                author: users[2],
-                blog_post: blogPosts[0],
-                publish_date: Date.now(),
-                content: 'Yay puppies!',
-            }
-        ),
-        commentCreate(
-            1,
-            {
-                author: users[3],
-                blog_post: blogPosts[0],
-                publish_date: Date.now(),
-                content: 'Everyone loves puppies!',
-            }
-        ),
-        commentCreate(
-            2,
-            {
-                author: users[1],
-                blog_post: blogPosts[1],
-                publish_date: Date.now(),
-                content: 'I am a thug and I am keeping my car!',
-            }
-        ),
-        commentCreate(
-            3,
-            {
-                author: users[2],
-                blog_post: blogPosts[1],
-                publish_date: Date.now(),
-                content: 'Thugs be tripping.',
-            }
-        )
-    ]);
+// blogPostCount is the number of public blog posts that require a comment
+// replyCount is the number of required replies
+// All comments have collectively unique values
+async function createComments(commentData, blogPostCount, replyCount) {
+    if (blogPostCount > commentData.length) {
+        throw new Error("'blogPostCount' requirement impossible")
+    }
 
-    await Promise.all([
-        commentCreate(
-            4,
-            {
-                author: users[0],
-                blog_post: blogPosts[0],
-                publish_date: Date.now(),
-                content: 'Puppies!',
-                reply_to: comments[0]
-            }
-        ),
-        commentCreate(
-            5,
-            {
-                author: users[1],
-                blog_post: blogPosts[1],
-                publish_date: Date.now(),
-                content: 'I will become mayor and take your car!',
-                reply_to: comments[2]
-            }
-        )
-    ])
+    if (replyCount >= commentData.length) {
+        throw new Error("'replyCount' requirement impossible")
+    }
+
+    const publicBlogPosts = blogPosts.filter(post => {
+        return !post.public_version && post.publish_date 
+    })
+
+    // comments can only reference a public blog post
+    if (blogPostCount > publicBlogPosts.length) {
+        throw new Error("'blogPostCount' requirement impossible")
+    }
+
+    const replyStart = commentData.length - replyCount
+
+    // create non-replies
+    await Promise.all(
+        commentData.slice(0, replyStart)
+            .map((data, index) => {
+                data.blog_post = publicBlogPosts[index % blogPostCount]
+
+                return commentCreate(index, data)
+            })
+    )
+
+    // create replies
+    await Promise.all(
+        commentData.slice(replyStart, commentData.length)
+            .map((data, index) => {
+                const replyTo = comments[index % comments.length]
+                data.reply_to = replyTo
+                data.blog_post = replyTo.blog_post
+                
+                return commentCreate(index + replyStart, data)
+            })
+    )
 }
 
 async function createReactionCounters() {
     const reactionCounters = []
+    // only public blog posts should have reaction counters
+    const publicBlogPosts = blogPosts.filter(post => {
+        return !post.public_version && post.publish_date 
+    })
+
     const postGroups = [
         {
             type: 'BlogPost',
-            collection: blogPosts
+            collection: publicBlogPosts
         },
         {
             type: 'Comment',
             collection: comments
         }
     ]
-    const combns = [[1, 1], [1, 0], [0, 1], [0, 0]]
+
+    // The [0, 0] and [1, 1] cases are more important for testing
+    // This is because the tests have these requirements:
+        // 1 - A blog post and comment must be reacted to by loginUser
+        // 2 - A blog post and comment must be NOT reacted to by loginUser
+    // As long as only two users are needed for testing, putting these two
+    // combns first in order means these requirements will always be satisfied
+    const combns = [[0, 0], [1, 1], [0, 1], [1, 0]]
     let combnIndex = 0
-    const publicBlogPostsCount = 6
 
     for (const postGroup of postGroups) {
         const { type: postType, collection: posts } = postGroup
         
         for (let i=0; i<posts.length; i++) {
             const post = posts[i]
-            let likeCount = 0
-            let dislikeCount = 0
-        
-            // first 6 blog posts are public and thus can have likes/dislikes
-            if (i < publicBlogPostsCount) {
-                [likeCount, dislikeCount] = combns[combnIndex % combns.length]
-            }
-
+            const [likeCount, dislikeCount] = combns[combnIndex % combns.length]
+            
             reactionCounters.push(
                 {
                     content: {
@@ -305,10 +260,15 @@ async function createReactionCounters() {
 
 async function createReactions() {
     const reactions = []
+    // only public blog posts should have reactions
+    const publicBlogPosts = blogPosts.filter(post => {
+        return !post.public_version && post.publish_date 
+    })
+
     const postGroups = [
         {
             type: 'BlogPost',
-            collection: blogPosts.slice(0, 6)
+            collection: publicBlogPosts
         },
         {
             type: 'Comment',
@@ -362,4 +322,7 @@ async function createReactions() {
     )
 }
 
-module.exports = populate
+module.exports = {
+    populate,
+    slimPopulate
+} 
