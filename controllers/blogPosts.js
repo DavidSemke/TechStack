@@ -3,11 +3,12 @@ const Comment = require("../models/comment");
 const ReactionCounter = require("../models/reactionCounter");
 const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const dateFormat = require('../utils/dateFormat')
 const query = require('../utils/query')
 const createDOMPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
+const validation = require('./utils/blogPostsValidation')
 const path = require('path')
 const pug = require('pug')
 
@@ -62,7 +63,10 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
   
 // Display blog post
 exports.getBlogPost = asyncHandler(async (req, res, next) => {
-    const blogPost = await query.completeBlogPost(req.paramBlogPost, req.user)
+    const blogPost = await query.completeBlogPost(
+        req.documents.blogPostId, 
+        req.user
+    )
 
     if (req.user) {
         // Add blog post to current user's recently read list
@@ -99,19 +103,11 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
     
 // On comment create
 exports.postComment = [
-    body("content")
-        .isString()
-        .withMessage(
-            'Comment must be a string.'
-        )
-        .trim()
-        .isLength({ min: 1, max: 300 })
-        .withMessage(
-            "Comment must be 1 to 300 characters."
-        ),
+    ...validation.comment,
 
     asyncHandler(async (req, res, next) => {
-        const blogPostId = req.paramBlogPost._id
+        const blogPost = req.documents.blogPostId
+        const replyTo = req.documents['reply-to']
         const content = req.body.content
         const errors = validationResult(req).array();
 
@@ -125,7 +121,7 @@ exports.postComment = [
         const pureContent = DOMPurify.sanitize(content);
 
         const commentData = {
-            blog_post: blogPostId,
+            blog_post: blogPost._id,
             publish_date: Date.now(),
             content: pureContent
         }
@@ -133,19 +129,14 @@ exports.postComment = [
         commentData.author = req.user ? req.user._id : undefined
         
         if (replyTo) {
-            const commentRepliedTo = await Comment
-                .findById(replyTo)
-                .lean()
-                .exec()
-            
-            if (commentRepliedTo.reply_to) {
+            if (replyTo.reply_to) {
                 const err = new Error("Cannot reply to a reply");
                 err.status = 400;
 
                 return next(err)
             }
             
-            commentData.reply_to = replyTo
+            commentData.reply_to = replyTo._id
         }
 
         let comment = new Comment(commentData)

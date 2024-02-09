@@ -1,15 +1,16 @@
-const BlogPost = require("../models/blogPost");
 const asyncHandler = require("express-async-handler");
 const multer = require('multer')
 const { Types } = require('mongoose')
 
 
-function setParamBlogPost(filter={}, populatePaths=[]) {
+function setObjectIdDocument(
+    reqObject, param, models, filter={}, populatePaths=[]
+) {
     return asyncHandler(async (req, res, next) => {
-        let blogPostId
+        let objectId
 
         try {
-            blogPostId = new Types.ObjectId(req.params.blogPostId)
+            objectId = new Types.ObjectId(req[reqObject][param])
         }
         catch (error) {
             const err = new Error("Invalid ObjectId format");
@@ -19,22 +20,31 @@ function setParamBlogPost(filter={}, populatePaths=[]) {
         }
 
         // first, check to see if resource exists
-        let blogPost = await BlogPost
-            .findById(blogPostId)
-            .lean()
-            .exec()
+        let validModel, document
 
-        if (blogPost === null) {
-            const err = new Error("Blog post not found");
+        for (const model of models) {
+            document = await model
+                .findById(objectId)
+                .lean()
+                .exec()
+            
+            if (document !== null) {
+                validModel = model
+                break
+            }
+        }
+        
+        if (document === null) {
+            const err = new Error("Resource not found");
             err.status = 404;
             
             return next(err);
         }
 
         // now check if resource is accessible
-        const query = BlogPost
+        const query = validModel
             .findOne({
-                _id: blogPostId,
+                _id: objectId,
                 ...filter
             })
             .lean()
@@ -43,16 +53,16 @@ function setParamBlogPost(filter={}, populatePaths=[]) {
             query.populate(path)
         }
 
-        blogPost = await query.exec()
+        document = await query.exec()
         
-        if (blogPost === null) {
+        if (document === null) {
             const err = new Error("Access to resource forbidden");
             err.status = 403;
             
             return next(err);
         }
     
-        req.paramBlogPost = blogPost
+        req.documents[param] = document
     
         next()
     })
@@ -86,8 +96,9 @@ function handleMulterError(err, req, res, next) {
     next(err)
 }
 
+
 module.exports = {
-    setParamBlogPost,
+    setObjectIdDocument,
     checkAuthorization,
     handleMulterError
 }

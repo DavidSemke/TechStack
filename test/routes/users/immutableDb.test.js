@@ -2,7 +2,7 @@ const request = require("supertest");
 const BlogPost = require("../../../models/blogPost");
 const Reaction = require("../../../models/reaction");
 const User = require("../../../models/user");
-const setupTeardown = require('../utils/setupTeardown')
+const setupTeardown = require('../../utils/setupTeardown')
 const usersRouter = require("../../../routes/users")
 
 
@@ -197,15 +197,14 @@ describe("POST /users/:username/blog-posts", () => {
         url = `/users/${loginUser.username}/blog-posts`
 
         // This blog post is public, so its properties are validated
-        const publicBlogPost = await BlogPost
+        ({ title, keywords, content } = await BlogPost
             .findOne({
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
             .lean()
             .exec()
-        
-        ({ title, keywords, content } = publicBlogPost)
+        )
     })
     
     describe('Discard', () => {

@@ -3,7 +3,7 @@ const BlogPost = require("../../../models/blogPost");
 const Comment = require("../../../models/comment");
 const Reaction = require("../../../models/reaction");
 const ReactionCounter = require("../../../models/reactionCounter");
-const setupTeardown = require('../utils/setupTeardown')
+const setupTeardown = require('../../utils/setupTeardown')
 const usersRouter = require("../../../routes/users")
 
 
@@ -56,15 +56,14 @@ describe("POST /users/:username/blog-posts", () => {
         url = `/users/${loginUser.username}/blog-posts`
 
         // This blog post is public, so its properties are validated
-        const publicBlogPost = await BlogPost
+        ({ title, keywords, content } = await BlogPost
             .findOne({
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
             .lean()
             .exec()
-
-        ({ title, keywords, content } = publicBlogPost)
+        )
     })
 
     // Requirement: Title is the only required field on save
@@ -151,7 +150,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
             .lean()
             .exec()
 
-        otherPublicBlogPost = await BlogPost
+        ({ title, keywords, content } = await BlogPost
             .findOne({
                 _id: { $ne: publicVersion._id },
                 publish_date: { $exists: true },
@@ -159,8 +158,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
             })
             .lean()
             .exec()
-
-        ({ title, keywords, content } = otherPublicBlogPost)
+        )
     })
 
     describe('Discard', () => {
@@ -628,12 +626,12 @@ describe("DELETE /users/:username/reactions/:reactionId", () => {
             .find({ user: loginUser._id })
             .lean()
             .exec()
-        const loginUserReactionIds = loginUserReactions
+        const contentIds = loginUserReactions
             .map(reaction => reaction.content.content_id)
         
         publicBlogPost = await BlogPost
             .findOne({
-                _id: { $in: loginUserReactionIds },
+                _id: { $in: contentIds },
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
@@ -641,7 +639,7 @@ describe("DELETE /users/:username/reactions/:reactionId", () => {
             .exec()
         comment = await Comment
             .findOne({
-                _id: { $in: loginUserReactionIds }
+                _id: { $in: contentIds }
             })
             .lean()
             .exec()

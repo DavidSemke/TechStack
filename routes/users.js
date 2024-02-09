@@ -2,7 +2,54 @@ const controller = require('../controllers/users')
 const express = require("express")
 const router = express.Router()
 const upload = require('../utils/upload')
-const utils = require('../utils/router')
+const utils = require('./utils/router')
+const BlogPost = require("../models/blogPost");
+const Comment = require("../models/comment");
+const Reaction = require("../models/reaction");
+
+
+router.use((req, res, next) => {
+    req.documents = {}
+    next()
+})
+
+// Users can only manipulate private blogs that they authored
+router.use(
+    '/:username/blog-posts/:blogPostId',
+    (req, res, next) => {
+        utils.setObjectIdDocument(
+            'params',
+            'blogPostId',
+            [BlogPost],
+            {
+                author: req.user._id,
+                $or: [
+                    { public_version: { $exists: true } },
+                    { publish_date: { $exists: false } }
+                ]
+            },
+            ['public_version']
+        )(req, res, next)
+    }
+)
+
+router.use(
+    '/:username/reactions',
+    utils.setObjectIdDocument(
+        'body',
+        'content-id',
+        [BlogPost, Comment]
+    )
+)
+
+router.use(
+    '/:username/reactions/:reactionId',
+    utils.setObjectIdDocument(
+        'params',
+        'reactionId',
+        Reaction
+    )
+)
 
 // view depends on if user is loginUser
 router.get(
@@ -54,21 +101,6 @@ router.delete(
     upload.none(),
     controller.deleteReaction
 )
-
-// All other routes specify a blog post, which must be validated
-// Users can only manipulate private blogs that they authored
-router.use((req, res, next) => {
-    utils.setParamBlogPost(
-        {
-            author: req.user._id,
-            $or: [
-                { public_version: { $exists: true } },
-                { publish_date: { $exists: false } }
-            ]
-        },
-        ['public_version']
-    )(req, res, next)
-})
 
 router.get(
     '/:username/blog-posts/:blogPostId', 

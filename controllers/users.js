@@ -3,11 +3,11 @@ const BlogPost = require("../models/blogPost");
 const Reaction = require('../models/reaction')
 const ReactionCounter = require('../models/reactionCounter')
 const asyncHandler = require("express-async-handler");
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const query = require('../utils/query')
 const createDOMPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
-const { Types } = require('mongoose')
+const validation = require('./utils/usersValidation')
 
 
 // Display user profile
@@ -32,7 +32,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
         return next(err);
     }
 
-    // find public blog posts only
+    // Find public blog posts only
     user.blog_posts_written = await BlogPost
         .find({
             author:  user._id,
@@ -63,54 +63,8 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateUser = [
-    // files processed after body middleware
-    body("username")
-        .isString()
-        .withMessage(
-            'Username must be a string.'
-        )
-        .trim()
-        .isLength({ min: 6, max: 30 })
-        .withMessage("Username must have 6 to 30 characters.")
-        .custom((value) => {
-            const usernameFormat = /^[-\dA-Za-z]*$/
-            return usernameFormat.test(value)
-        })
-        .withMessage("Username must only contain alphanumeric characters and '-'.")
-        .custom(asyncHandler(async (value, { req }) => {
-            const user = await User
-                .findOne({ username: value })
-                .lean()
-                .exec()
-
-            if (user && req.user.username !== value) {
-                return Promise.reject()
-            }
-        }))
-        .withMessage('Username already exists.'),
-    body("bio")
-        .isString()
-        .withMessage(
-            'Bio must be a string.'
-        )
-        .trim()
-        .isLength({ min: 0, max: 300 })
-        .withMessage("Bio cannot have more than 300 characters."),
-    body("keywords")
-        .isString()
-        .withMessage(
-            'Keywords must be a string.'
-        )
-        .trim()
-        .custom((value) => {
-            const wordCount = value
-                .split(' ')
-                .filter(x => x)
-                .length
-            
-            return wordCount <= 10
-        })
-        .withMessage('Cannot have more than 10 keywords.'),
+    // Files processed after validation middleware
+    ...validation.user,
     
     asyncHandler(async (req, res, next) => {
         const errors = []
@@ -181,217 +135,189 @@ exports.updateUser = [
     })
 ]
 
-exports.postReaction = asyncHandler(async (req, res, next) => {
-    const contentType = req.body['content-type']
-    const reactionType = req.body['reaction-type']
-    let contentId
+exports.postReaction = [
+    ...validation.reaction,
 
-    try {
-        contentId = new Types.ObjectId(req.body['content-id'])
-    }
-    catch (error) {
-        const err = new Error("Invalid ObjectId format");
-        err.status = 400;
+    asyncHandler(async (req, res, next) => {
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
 
-        return next(err)
-    }
+        const errors = validationResult(req).array()
 
-    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
-        const err = new Error(
-            "Content type must be in ['BlogPost', 'Comment']"
-        );
-        err.status = 400;
+        if (errors.length) {
+            const err = errors[0]
+            err.status = 400;
 
-        return next(err)
-    }
+            return next(err)
+        }
 
-    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
-        const err = new Error(
-            "Reaction type must be in ['Like', 'Dislike']"
-        );
-        err.status = 400;
+        const promises = []
 
-        return next(err)
-    }
+        const reaction = new Reaction({
+            user: req.user._id,
+            content: {
+                content_type: contentType,
+                content_id: contentId
+            },
+            reaction_type: reactionType
+        })
+        promises.push(reaction.save())
 
-    const promises = []
+        const countAttribute = `${reactionType.toLowerCase()}_count`
+        promises.push(
+            ReactionCounter.findOneAndUpdate(
+                { 
+                    content: {
+                        content_type: contentType,
+                        content_id: contentId
+                    }
+                },
+                { $inc: { [countAttribute]: 1 } }
+            )
+        )
 
-    const reaction = new Reaction({
-        user: req.user._id,
-        content: {
-            content_type: contentType,
-            content_id: contentId
-        },
-        reaction_type: reactionType
+        await Promise.all(promises)
+
+        res.json({ reactionId: reaction._id })
     })
-    promises.push(reaction.save())
+]
 
-    const countAttribute = `${reactionType.toLowerCase()}_count`
-    promises.push(
-        ReactionCounter.findOneAndUpdate(
-            { 
-                content: {
-                    content_type: contentType,
-                    content_id: contentId
-                }
-            },
-            { $inc: { [countAttribute]: 1 } }
-        )
-    )
+exports.updateReaction = [
+    ...validation.reaction,
 
-    await Promise.all(promises)
-
-    res.json({ reactionId: reaction._id })
-})
-
-exports.updateReaction = asyncHandler(async (req, res, next) => {
-    const contentType = req.body['content-type']
-    const reactionType = req.body['reaction-type']
-    let contentId, reactionId
-
-    try {
-        contentId = new Types.ObjectId(req.body['content-id'])
-        reactionId = new Types.ObjectId(req.params.reactionId)
-    }
-    catch (error) {
-        const err = new Error("Invalid ObjectId format");
-        err.status = 400;
-
-        return next(err)
-    }
-
-    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
-        const err = new Error(
-            "Content type must be in ['BlogPost', 'Comment']"
-        );
-        err.status = 400;
-
-        return next(err)
-    }
-
-    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
-        const err = new Error(
-            "Reaction type must be in ['Like', 'Dislike']"
-        );
-        err.status = 400;
-
-        return next(err)
-    }
-
-    const promises = [
-        Reaction
-            .findOneAndUpdate(
-                { 
-                    _id: reactionId
-                },
-                {
-                    reaction_type: reactionType
-                }
-            )
-            .exec()
-    ]
-
-    let primaryCountAttribute = null
-    let secondaryCountAttribute = null
-
-    if (reactionType === 'Like') {
-        primaryCountAttribute = 'like_count'
-        secondaryCountAttribute = 'dislike_count'
-    }
-    else if (reactionType === 'Dislike') {
-        primaryCountAttribute = 'dislike_count'
-        secondaryCountAttribute = 'like_count'
-    }
-
-    promises.push(
-        ReactionCounter.findOneAndUpdate(
-            { 
-                content: {
-                    content_type: contentType,
-                    content_id: contentId
-                }
-            },
-            { 
-                $inc: { 
-                    [primaryCountAttribute]: 1,
-                    [secondaryCountAttribute]: -1
-                },
-            }
-        )
-            .exec()
-    )
-
-    await Promise.all(promises)
-
-    res.json({ reactionId })
-})
-
-exports.deleteReaction = asyncHandler(async (req, res, next) => {
-    const contentType = req.body['content-type']
-    const reactionType = req.body['reaction-type']
-    let contentId, reactionId
-
-    try {
-        contentId = new Types.ObjectId(req.body['content-id'])
-        reactionId = new Types.ObjectId(req.params.reactionId)
-    }
-    catch (error) {
-        const err = new Error("Invalid ObjectId format");
-        err.status = 400;
-
-        return next(err)
-    }
-
-    if (contentType !== 'BlogPost' && contentType !== 'Comment') {
-        const err = new Error(
-            "Content type must be in ['BlogPost', 'Comment']"
-        );
-        err.status = 400;
-
-        return next(err)
-    }
-
-    if (reactionType !== 'Like' && reactionType !== 'Dislike') {
-        const err = new Error(
-            "Reaction type must be in ['Like', 'Dislike']"
-        );
-        err.status = 400;
-
-        return next(err)
-    }
+    asyncHandler(async (req, res, next) => {
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
+        const reactionId = req.documents['reactionId']._id
     
-    const promises = [
-        Reaction
-            .findOneAndDelete(
+        if (contentType !== 'BlogPost' && contentType !== 'Comment') {
+            const err = new Error(
+                "Content type must be in ['BlogPost', 'Comment']"
+            );
+            err.status = 400;
+    
+            return next(err)
+        }
+    
+        if (reactionType !== 'Like' && reactionType !== 'Dislike') {
+            const err = new Error(
+                "Reaction type must be in ['Like', 'Dislike']"
+            );
+            err.status = 400;
+    
+            return next(err)
+        }
+    
+        const promises = [
+            Reaction
+                .findOneAndUpdate(
+                    { 
+                        _id: reactionId
+                    },
+                    {
+                        reaction_type: reactionType
+                    }
+                )
+                .exec()
+        ]
+    
+        let primaryCountAttribute = null
+        let secondaryCountAttribute = null
+    
+        if (reactionType === 'Like') {
+            primaryCountAttribute = 'like_count'
+            secondaryCountAttribute = 'dislike_count'
+        }
+        else if (reactionType === 'Dislike') {
+            primaryCountAttribute = 'dislike_count'
+            secondaryCountAttribute = 'like_count'
+        }
+    
+        promises.push(
+            ReactionCounter.findOneAndUpdate(
                 { 
-                    _id: reactionId
+                    content: {
+                        content_type: contentType,
+                        content_id: contentId
+                    }
+                },
+                { 
+                    $inc: { 
+                        [primaryCountAttribute]: 1,
+                        [secondaryCountAttribute]: -1
+                    },
                 }
             )
-            .exec()
-    ]
-
-    const countAttribute = `${reactionType.toLowerCase()}_count`
-    promises.push(
-        ReactionCounter.findOneAndUpdate(
-            { 
-                content: {
-                    content_type: contentType,
-                    content_id: contentId
-                }
-            },
-            { $inc: { [countAttribute]: -1 } }
+                .exec()
         )
-    )
+    
+        await Promise.all(promises)
+    
+        res.json({ reactionId })
+    })
+]
 
-    await Promise.all(promises)
+exports.deleteReaction = [
+    ...validation.reaction,
 
-    res.json({ reactionId: null })
-})
+    asyncHandler(async (req, res, next) => {
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
+        const reactionId = req.documents['reactionId']._id
 
+        if (contentType !== 'BlogPost' && contentType !== 'Comment') {
+            const err = new Error(
+                "Content type must be in ['BlogPost', 'Comment']"
+            );
+            err.status = 400;
+
+            return next(err)
+        }
+
+        if (reactionType !== 'Like' && reactionType !== 'Dislike') {
+            const err = new Error(
+                "Reaction type must be in ['Like', 'Dislike']"
+            );
+            err.status = 400;
+
+            return next(err)
+        }
+        
+        const promises = [
+            Reaction
+                .findOneAndDelete(
+                    { 
+                        _id: reactionId
+                    }
+                )
+                .exec()
+        ]
+
+        const countAttribute = `${reactionType.toLowerCase()}_count`
+        promises.push(
+            ReactionCounter.findOneAndUpdate(
+                { 
+                    content: {
+                        content_type: contentType,
+                        content_id: contentId
+                    }
+                },
+                { $inc: { [countAttribute]: -1 } }
+            )
+        )
+
+        await Promise.all(promises)
+
+        res.json({ reactionId: null })
+    })
+]
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
-    // get all private blog posts 
-    // (private blog post can be unpublished or edit of published)
+    // Get all private blog posts 
+    // (Private blog post can be unpublished or edit of published)
     let privateBlogPosts = await BlogPost
         .find({ 
             author: req.user._id,
@@ -448,49 +374,8 @@ exports.getBlogPostCreateForm = [
     
 // On blog post create
 exports.postBlogPost = [
-    // Files validated after body middleware
-    body("title")
-        .isString()
-        .withMessage(
-            'Title must be a string.'
-        )
-        .trim()
-        .isLength({ min: 60, max: 100 })
-        .withMessage("Title must have 60 to 100 characters."),
-    body("keywords")
-        .isString()
-        .withMessage(
-            'Keywords must be a string.'
-        )
-        .trim()
-        .custom((value) => {
-            const wordCount = value
-                .split(' ')
-                .filter(x => x)
-                .length
-            
-            return !(wordCount < 1 || wordCount > 10)
-        })
-        .withMessage('Must have 1 to 10 keywords.'),
-    body("content")
-        .isString()
-        .withMessage(
-            'Content must be a string.'
-        )
-        .trim(),
-    body("word-count")
-        .custom((value) => {
-            return typeof value === 'string' && !isNaN(parseInt(value))
-        })
-        .withMessage(
-            'Word count must be a stringified number.'
-        )
-        .custom((value) => {
-            let wordCount = parseInt(value)
-            
-            return !(wordCount < 500 || wordCount > 3000)
-        })
-        .withMessage("Blog post must be 500 to 3000 words."),
+    // Files processed after validation middleware
+    ...validation.blogPost,
 
     asyncHandler(async (req, res, next) => {
         switch (req.body['pre-method']) {
@@ -554,7 +439,7 @@ exports.postBlogPost = [
             await privateBlogPost.save();
         }
     }) 
-];
+]
 
 // On blog post delete
 // Public blog posts do not depend on private counterparts existing
@@ -562,7 +447,7 @@ exports.postBlogPost = [
 exports.deletePrivateBlogPost = [
     asyncHandler(async (req, res, next) => {
         await BlogPost
-            .findOneAndDelete({ _id: req.paramBlogPost._id })
+            .findOneAndDelete({ _id: req.documents.blogPostId._id })
             .exec()
         res.end();
     })
@@ -573,7 +458,7 @@ exports.getBlogPostUpdateForm = [
     asyncHandler(async (req, res, next) => {
         const data = {
             title: 'Update Blog Post',
-            blogPost: req.paramBlogPost
+            blogPost: req.documents.blogPostId
         }
     
         res.render("pages/blogPostForm", { data });
@@ -582,49 +467,8 @@ exports.getBlogPostUpdateForm = [
     
 // On blog post update
 exports.updateBlogPost = [
-    // files processed after body middleware
-    body("title")
-        .isString()
-        .withMessage(
-            'Title must be a string.'
-        )
-        .trim()
-        .isLength({ min: 60, max: 100 })
-        .withMessage("Title must have 60 to 100 characters."),
-    body("keywords")
-        .isString()
-        .withMessage(
-            'Keywords must be a string.'
-        )
-        .trim()
-        .custom((value) => {
-            const wordCount = value
-                .split(' ')
-                .filter(x => x)
-                .length
-            
-            return !(wordCount < 1 || wordCount > 10)
-        })
-        .withMessage('Must have 1 to 10 keywords.'),
-    body("content")
-        .isString()
-        .withMessage(
-            'Content must be a string.'
-        )
-        .trim(),
-    body("word-count")
-        .custom((value) => {
-            return typeof value === 'string' && !isNaN(parseInt(value))
-        })
-        .withMessage(
-            'Word count must be a stringified number.'
-        )
-        .custom((value) => {
-            let wordCount = parseInt(value)
-            
-            return !(wordCount < 500 || wordCount > 3000)
-        })
-        .withMessage("Blog post must be 500 to 3000 words."),
+    // Files processed after body middleware
+    ...validation.blogPost,
         
     asyncHandler(async (req, res, next) => {
         switch (req.body['pre-method']) {
@@ -648,7 +492,7 @@ exports.updateBlogPost = [
         }
 
         async function backwardUpdate(req, res) {
-            const blogPost = req.paramBlogPost
+            const blogPost = req.documents.blogPostId
             const privateFilter = {
                 _id: blogPost._id
             }
@@ -683,7 +527,7 @@ exports.updateBlogPost = [
                 return
             }
 
-            const blogPost = req.paramBlogPost
+            const blogPost = req.documents.blogPostId
             const privateFilter = {
                 _id: blogPost._id
             }

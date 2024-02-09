@@ -1,7 +1,7 @@
 const request = require("supertest");
 const BlogPost = require("../../../models/blogPost");
 const Comment = require("../../../models/comment");
-const setupTeardown = require('../utils/setupTeardown')
+const setupTeardown = require('../../utils/setupTeardown')
 const blogPostsRouter = require("../../../routes/blogPosts")
 
 let server, app

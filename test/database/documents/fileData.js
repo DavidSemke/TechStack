@@ -65,7 +65,7 @@ async function getData(fileCount=filenames.length) {
     const contents = results
     
     const imageData = {
-        image,
+        data: image,
         contentType: 'image/webp'
     }
 
