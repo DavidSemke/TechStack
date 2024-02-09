@@ -1,52 +1,52 @@
 const request = require("supertest");
-const BlogPost = require("../../models/blogPost");
-const Comment = require("../../models/comment");
-const populate = require('../database/populateDb')
-const mongoose = require('mongoose')
-const mongoConfig = require('./utils/mongoConfigTest')
-const appTest = require('./utils/appTest')
-const blogPostsRouter = require("../../routes/blogPosts")
+const BlogPost = require("../../../models/blogPost");
+const Comment = require("../../../models/comment");
+const setupTeardown = require('../utils/setupTeardown')
+const blogPostsRouter = require("../../../routes/blogPosts")
 
-let server, app, publicBlogPost, comment
+let server, app
+let publicBlogPost, privateBlogPost, comment, reply
 
 // No updates/deletes target database, so no need for beforeEach
 beforeAll(async () => {
-  app = appTest.create(blogPostsRouter, '/blog-posts')
-  server = await mongoConfig.startServer()
-  await populate()
-  
-  publicBlogPost = await BlogPost
-    .findOne({
-      publish_date: { $exists: true },
-      public_version: { $exists: false}
-    })
-    .lean()
-    .exec()
-  privateBlogPost = await BlogPost
-    .findOne({
-      public_version: { $exists: true}
-    })
-    .lean()
-    .exec()
+  ({ server, app } = await setupTeardown.guestSetup(
+    blogPostsRouter, 
+    '/blog-posts'
+  ))
+
+  // There should be at least one comment and one reply
   comment = await Comment
     .findOne({
-      blog_post: publicBlogPost._id,
       reply_to: { $exists: false }
     })
     .lean()
     .exec()
   reply = await Comment
     .findOne({
-      blog_post: publicBlogPost._id,
       reply_to: { $exists: true }
+    })
+    .lean()
+    .exec()
+  publicBlogPost = await BlogPost
+    .findOne({
+      public_version: { $exists: false },
+      publish_date: { $exists: true}
+    })
+    .lean()
+    .exec()
+  privateBlogPost = await BlogPost
+    .findOne({
+      $or: [
+        { public_version: { $exists: true } },
+        { publish_date: { $exists: false} }
+      ]
     })
     .lean()
     .exec()
 })
 
 afterAll(async () => {
-  await mongoose.connection.close()
-  await mongoConfig.stopServer(server)
+  await setupTeardown.teardown(server)
 })
 
 describe("GET /blog-posts", () => {

@@ -1,203 +1,25 @@
 const request = require("supertest");
-const BlogPost = require("../../models/blogPost");
-const Comment = require("../../models/comment");
-const Reaction = require("../../models/reaction");
-const ReactionCounter = require("../../models/reactionCounter");
-const User = require("../../models/user");
-const populate = require('../database/populateDb')
-const mongoose = require('mongoose')
-const mongoConfig = require('./utils/mongoConfigTest')
-const appTest = require('./utils/appTest')
-const usersRouter = require("../../routes/users")
+const BlogPost = require("../../../models/blogPost");
+const Comment = require("../../../models/comment");
+const Reaction = require("../../../models/reaction");
+const ReactionCounter = require("../../../models/reactionCounter");
+const setupTeardown = require('../utils/setupTeardown')
+const usersRouter = require("../../../routes/users")
 
-let server, guestApp, autologinApp, loginUser
 
-beforeAll(async () => {
-    guestApp = appTest.create(usersRouter, '/users')
-    autologinApp = appTest.create(usersRouter, '/users', true)
-})
+let server, autologinApp, loginUser
 
 beforeEach(async () => {
-    server = await mongoConfig.startServer()
-    await populate()
-    loginUser = autologinApp.locals.loginUser
+    ({ server, autologinApp, loginUser } = await setupTeardown
+        .loginSetup(usersRouter, '/users')
+    )
 })
 
 afterEach(async () => {
-  await mongoose.connection.close()
-  await mongoConfig.stopServer(server)
+    await setupTeardown.teardown(server)
 })
 
-describe("GET /:username", () => {
-    let otherUser
-
-    beforeEach(async () => {
-        otherUser = await User
-            .findOne({username: { $ne: loginUser.username }})
-            .lean()
-            .exec()
-    })
-
-    // Requirement: username min length > 1
-    describe('Invalid username', () => {
-        test("Login user, privileged", async () => {
-            await request(autologinApp)
-                .get(`/users/x`)
-                .expect("Content-Type", /html/)
-                .expect(404);
-        });
-    })
-    
-    test("Login user, privileged", async () => {
-        await request(autologinApp)
-            .get(`/users/${loginUser.username}`)
-            .expect("Content-Type", /html/)
-            .expect(200);
-    });
-
-    test("Login user, not privileged", async () => {
-        await request(autologinApp)
-            .get(`/users/${otherUser.username}`)
-            .expect("Content-Type", /html/)
-            .expect(200);
-    });
-
-    test("Guest user", async () => {
-        await request(guestApp)
-            .get(`/users/${otherUser.username}`)
-            .expect("Content-Type", /html/)
-            .expect(200);
-    });
-    
-})
-
-describe("PUT /:username", () => {
-    let otherUser
-
-    beforeEach(async () => {
-        otherUser = await User
-            .findOne({username: { $ne: loginUser.username }})
-            .lean()
-            .exec()
-    })
-
-    // Requirement: username min length > 1
-    describe('Invalid username', () => {
-        test("Login user, privileged", async () => {
-            await request(autologinApp)
-                .put(`/users/x`)
-                .expect("Content-Type", /html/)
-                .expect(403);
-        });
-    })
-
-    describe('Lack of privilege', () => {
-        test("Login user, not privileged", async () => {
-            await request(autologinApp)
-                .put(`/users/${otherUser.username}`)
-                .expect("Content-Type", /html/)
-                .expect(403);
-        });
-        
-        test("Guest user", async () => {
-            await request(guestApp)
-                .put(`/users/${otherUser.username}`)
-                .expect("Content-Type", /html/)
-                .expect(403);
-        });
-    })
-
-    describe('Invalid inputs', () => {
-        // Requirement: username min length > 1
-        test("Username, char count", async () => {
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
-                .field("username", 'x')
-                .field("bio", '')
-                .field("keywords", '')
-                .expect("Content-Type", /json/)
-                .expect(400);
-
-            expect(res.body).toHaveProperty('errors')
-        });
-
-        test("Username, invalid chars", async () => {
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
-                .field("username", 'doofen?')
-                .field("bio", '')
-                .field("keywords", '')
-                .expect("Content-Type", /json/)
-                .expect(400);
-            
-            expect(res.body).toHaveProperty('errors')
-        });
-
-        test("Username, already exists", async () => {
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
-                .field("username", otherUser.username)
-                .field("bio", '')
-                .field("keywords", '')
-                .expect("Content-Type", /json/)
-                .expect(400);
-
-            expect(res.body).toHaveProperty('errors')
-        });
-
-        test("Profile pic", async () => {
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '../database/images/tree.abc')
-                .field("username", loginUser.username)
-                .field("bio", '')
-                .field("keywords", '')
-                .expect("Content-Type", /json/)
-                .expect(400);
-            
-            expect(res.body).toHaveProperty('errors')
-        });
-
-        // Requirement: bio max length < 1000
-        test("Bio", async () => {
-            const invalidBio = 'x'.repeat(1000)
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
-                .field("username", loginUser.username)
-                .field("bio", invalidBio)
-                .field("keywords", '')
-                .expect("Content-Type", /json/)
-                .expect(400);
-
-            expect(res.body).toHaveProperty('errors')
-        });
-        
-        // Requirement: max keywords < 100
-        test("Keywords", async () => {
-            const invalidKeywords = 'x '.repeat(100)
-            const res = await request(autologinApp)
-                .put(`/users/${loginUser.username}`)
-                .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
-                .field("username", loginUser.username)
-                .field("bio", '')
-                .field("keywords", invalidKeywords)
-                .expect("Content-Type", /json/)
-                .expect(400);
-
-            expect(res.body).toHaveProperty('errors')
-        });
-    })
- 
+describe('PUT /:username', () => {
     test("All fields except username", async () => {
         await request(autologinApp)
             .put(`/users/${loginUser.username}`)
@@ -209,28 +31,18 @@ describe("PUT /:username", () => {
             .expect("Content-Type", /html/)
             .expect(200)
     });
-
+    
+    // Requirement: no user has username 'Fre-ddy'
     test("Username", async () => {
+        const newUsername = 'Fre-ddy'
+    
         await request(autologinApp)
             .put(`/users/${loginUser.username}`)
             .set('Content-Type', "multipart/form-data")
             .field("profile-pic", "")
-            .field("username", 'Fre-ddy')
+            .field("username", newUsername)
             .field("bio", "")
             .field("keywords", "")
-            .expect("Content-Type", /html/)
-            .expect(200)
-    });
-})
-
-// No more valid username or privilege checks past here
-// As long as the previous invalid username and unprivileged checks 
-// work, authorization is in effect
-// Therefore, only autologinApp and loginUser will be used
-describe("GET /users/:username/blog-posts", () => {
-    test("Get", async () => {
-        await request(autologinApp)
-            .get(`/users/${loginUser.username}/blog-posts`)
             .expect("Content-Type", /html/)
             .expect(200)
     });
@@ -245,51 +57,19 @@ describe("POST /users/:username/blog-posts", () => {
 
         // This blog post is public, so its properties are validated
         const publicBlogPost = await BlogPost
-        .findOne({
-            publish_date: { $exists: true },
-            public_version: { $exists: false}
-        })
-        .lean()
-        .exec()
-        title = publicBlogPost.title
-        keywords = publicBlogPost.keywords
-        content = publicBlogPost.content
-    })
-    
-    describe('Discard', () => {
-        test("Redirect", async () => {
-            await request(autologinApp)
-                .post(url)
-                .set('Content-Type', "multipart/form-data")
-                .field("title", '')
-                .field("keywords", '')
-                .field("content", '')
-                .field("word-count", '')
-                .field('pre-method', 'discard')
-                .expect(303);
-        });
+            .findOne({
+                publish_date: { $exists: true },
+                public_version: { $exists: false}
+            })
+            .lean()
+            .exec()
+
+        ({ title, keywords, content } = publicBlogPost)
     })
 
-    // Requirements: Title is the only required field on save
+    // Requirement: Title is the only required field on save
+    // Requirement: publicBlogPost title must be unique (even to private version's)
     describe('Save', () => {
-        describe('Invalid inputs', () => {
-            test("Title", async () => {
-                const res = await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("title", '')
-                    .field("keywords", '')
-                    .field("content", '')
-                    .field("word-count", '')
-                    .field('pre-method', 'save')
-                    .expect("Content-Type", /json/)
-                    .expect(400);
-    
-                expect(res.body).toHaveProperty('errors')
-            });
-        })
-
-        // Requirement: publicBlogPost title must be unique (even to private version's)
         test("Title", async () => {
             await request(autologinApp)
                 .post(url)
@@ -301,7 +81,7 @@ describe("POST /users/:username/blog-posts", () => {
                 .field('pre-method', 'save')
                 .expect(200);
             
-            // title should now be shared by two blog posts
+            // Title should now be shared by two blog posts
             const blogPosts = await BlogPost
                 .find({ title })
                 .lean()
@@ -312,55 +92,8 @@ describe("POST /users/:username/blog-posts", () => {
     })
 
     // Field 'content' has no notable invalid inputs
+    // Requirement: publicBlogPost inputs must be collectively unique
     describe('Publish', () => {
-        describe('Invalid inputs', () => {
-            test("Title", async () => {
-                const res = await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("title", 'too short')
-                    .field("keywords", keywords.join(' '))
-                    .field("content", content)
-                    .field("word-count", '1000')
-                    .field('pre-method', 'publish')
-                    .expect("Content-Type", /json/)
-                    .expect(400);
-    
-                expect(res.body).toHaveProperty('errors')
-            })
-
-            test("Keywords", async () => {
-                const res = await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("title", title)
-                    .field("keywords", '')
-                    .field("content", content)
-                    .field("word-count", '1000')
-                    .field('pre-method', 'publish')
-                    .expect("Content-Type", /json/)
-                    .expect(400);
-    
-                expect(res.body).toHaveProperty('errors')
-            })
-
-            test("Word count", async () => {
-                const res = await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("title", title)
-                    .field("keywords", keywords.join(' '))
-                    .field("content", content)
-                    .field("word-count", '1')
-                    .field('pre-method', 'publish')
-                    .expect("Content-Type", /json/)
-                    .expect(400);
-    
-                expect(res.body).toHaveProperty('errors')
-            })
-        })
-
-        // Requirement: publicBlogPost inputs must be collectively unique
         test("All fields", async () => {
             await request(autologinApp)
                 .post(url)
@@ -386,94 +119,6 @@ describe("POST /users/:username/blog-posts", () => {
     })
 })
 
-describe("GET /users/:username/blog-posts/new-blog-post", () => {
-    test("Get", async () => {
-        await request(autologinApp)
-            .get(`/users/${loginUser.username}/blog-posts/new-blog-post`)
-            .expect("Content-Type", /html/)
-            .expect(200)
-    });
-})
-
-describe("GET /users/:username/blog-posts/:blogPostId", () => {
-    let urlTrunk
-    let privateLoginUserBlogPost
-    let privateNonLoginUserBlogPost
-    let publicLoginUserBlogPost
-
-    beforeEach(async () => {
-        urlTrunk = `/users/${loginUser.username}/blog-posts/`
-
-        publicLoginUserBlogPost = await BlogPost
-            .findOne({
-                author: loginUser._id,
-                public_version: { $exists: false },
-                publish_date: { $exists: true }
-            })
-            .lean()
-            .exec()
-        privateLoginUserBlogPost = await BlogPost
-            .findOne({
-                author: loginUser._id,
-                $or: [
-                    { public_version: { $exists: true } },
-                    { publish_date: { $exists: false} }
-                ]
-            })
-            .lean()
-            .exec()
-        privateNonLoginUserBlogPost = await BlogPost
-            .findOne({
-                author: { $ne: loginUser._id },
-                $or: [
-                    { public_version: { $exists: true } },
-                    { publish_date: { $exists: false} }
-                ]
-            })
-            .lean()
-            .exec()
-    })
-
-    describe('Invalid blogPostId', () => {
-        test("Non-existent blog post", async () => {
-            await request(autologinApp)
-              .get(urlTrunk + '000011112222333344445555')
-              .expect("Content-Type", /html/)
-              .expect(404);
-        });
-    
-        test("Public blog post", async () => {
-            await request(autologinApp)
-              .get(urlTrunk + publicLoginUserBlogPost._id)
-              .expect("Content-Type", /html/)
-              .expect(403);
-        });
-    
-        test("LoginUser not author of blog post", async () => {
-            await request(autologinApp)
-              .get(urlTrunk + privateNonLoginUserBlogPost._id)
-              .expect("Content-Type", /html/)
-              .expect(403);
-        });
-        
-        test("Invalid ObjectId", async () => {
-            await request(autologinApp)
-              .get(urlTrunk + 'test')
-              .expect("Content-Type", /html/)
-              .expect(400);
-        });
-    })
-
-    test("Get", async () => {
-        await request(autologinApp)
-          .get(urlTrunk + privateLoginUserBlogPost._id)
-          .expect("Content-Type", /html/)
-          .expect(200)
-    });
-})
-
-// If above tests pass, blogPostId checks no longer required
-// Validation checks no longer required (present in POST equivalent)
 // Requirements:
     // 1 - otherPublicBlogPost.title !== (publicVersion.title || privateVersion.title)
     // 2 - publicVersion and privateVersion differ on some input values
@@ -500,6 +145,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
 
         unpublishedBlogPost = await BlogPost
             .findOne({
+                author: loginUser._id,
                 publish_date: { $exists: false}
             })
             .lean()
@@ -513,9 +159,8 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
             })
             .lean()
             .exec()
-        title = otherPublicBlogPost.title
-        keywords = otherPublicBlogPost.keywords
-        content = otherPublicBlogPost.content
+
+        ({ title, keywords, content } = otherPublicBlogPost)
     })
 
     describe('Discard', () => {
@@ -524,6 +169,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", '')
+                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
@@ -531,21 +177,21 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .expect(303);
             
             // Check if private and public versions now match
-            privateVersion = await BlogPost
+            const newPrivateVersion = await BlogPost
                 .findById(privateVersion._id)
                 .lean()
                 .exec()
             
-            const primitivePaths = ['title', 'keywords', 'content']
+            const primitivePaths = ['title', 'content']
 
             for (const path of primitivePaths) {
-                expect(privateVersion[path]).toBe(publicVersion[path])
+                expect(newPrivateVersion[path]).toBe(publicVersion[path])
             }
 
-            const objectPaths = ['thumbnail']
+            const objectPaths = ['thumbnail', 'keywords']
 
             for (const path of objectPaths) {
-                expect(privateVersion[path]).toEqual(publicVersion[path])
+                expect(newPrivateVersion[path]).toEqual(publicVersion[path])
             }
         });
 
@@ -554,6 +200,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", '')
+                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
@@ -576,6 +223,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
+                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
@@ -595,6 +243,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
+                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
@@ -616,6 +265,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
+                .field("thumbnail", '../database/images/lightning.webp')
                 .field("keywords", keywords.join(' '))
                 .field("content", content)
                 .field("word-count", '1000')
@@ -641,6 +291,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
+                .field("thumbnail", '../database/images/lightning.webp')
                 .field("keywords", keywords.join(' '))
                 .field("content", content)
                 .field("word-count", '1000')
@@ -668,7 +319,7 @@ describe("DELETE /users/:username/blog-posts/:blogPostId", () => {
     let urlTrunk
     let privateLoginUserBlogPost
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         urlTrunk = `/users/${loginUser.username}/blog-posts/`
 
         privateLoginUserBlogPost = await BlogPost
@@ -697,13 +348,10 @@ describe("DELETE /users/:username/blog-posts/:blogPostId", () => {
     });
 })
 
-// Blog post and comment reaction CRUD logic is identical
-// Therefore, only blog post reaction validation is used for post
-// Content id, content type, and reaction type checks done here
 // Requirement: comment and blog post must not have reaction from loginUser
 describe("POST /users/:username/reactions", () => {
     let url
-    let privateBlogPost, publicBlogPost, comment
+    let publicBlogPost, comment
 
     beforeEach(async () => {
         url = `/users/${loginUser.username}/reactions`
@@ -715,15 +363,6 @@ describe("POST /users/:username/reactions", () => {
         const loginUserReactionIds = loginUserReactions
             .map(reaction => reaction.content.content_id)
         
-        privateBlogPost = await BlogPost
-            .findOne({
-                $or: [
-                    { public_version: { $exists: true } },
-                    { publish_date: { $exists: false} }
-                ]
-            })
-            .lean()
-            .exec()
         publicBlogPost = await BlogPost
             .findOne({
                 _id: { $nin: loginUserReactionIds },
@@ -738,74 +377,6 @@ describe("POST /users/:username/reactions", () => {
             })
             .lean()
             .exec()
-    })
-
-    describe('Invalid inputs', () => {
-        describe('Content id', () => {
-            test("Non-existent content", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", '000011112222333344445555')
-                    .field("content-type", 'BlogPost')
-                    .field("reaction-type", 'Like')
-                    .expect(404);
-            });
-        
-            test("Invalid content", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", privateBlogPost._id.toString())
-                    .field("content-type", 'BlogPost')
-                    .field("reaction-type", 'Like')
-                    .expect(403);
-            });
-
-            test("Content type mismatch", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
-                    .field("content-type", 'Comment')
-                    .field("reaction-type", 'Like')
-                    .expect(400);
-            });
-            
-            test("Invalid ObjectId", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", 'test')
-                    .field("content-type", 'BlogPost')
-                    .field("reaction-type", 'Like')
-                    .expect(400);
-            });
-        })
-
-        describe('Content type', () => {
-            test("Not in ['Comment', 'BlogPost']", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
-                    .field("content-type", 'test')
-                    .field("reaction-type", 'Like')
-                    .expect(400);
-            });
-        })
-
-        describe('Reaction type', () => {
-            test("Not in ['Like', 'Dislike']", async () => {
-                await request(autologinApp)
-                    .post(url)
-                    .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
-                    .field("content-type", 'BlogPost')
-                    .field("reaction-type", 'test')
-                    .expect(400);
-            });
-        })
     })
 
     test('All fields, liked blog post', async () => {
@@ -889,13 +460,11 @@ describe("POST /users/:username/reactions", () => {
     })
 })
 
-// Reaction id checks done here
-// Content id, reaction type, and content type checks done in above tests
 // Requirement: comment and blog post must have reaction from loginUser
 describe("PUT /users/:username/reactions/:reactionId", () => {
     let urlTrunk
     let publicBlogPost, comment
-    let blogPostReaction, commentReaction, nonLoginUserReaction
+    let blogPostReaction, commentReaction
 
     beforeEach(async () => {
         urlTrunk = `/users/${loginUser.username}/reactions/`
@@ -947,34 +516,6 @@ describe("PUT /users/:username/reactions/:reactionId", () => {
                 commentReaction = reaction
             }
         }
-
-        nonLoginUserReaction = await Reaction
-            .findOne({
-                user: { $ne: loginUser._id }
-            })
-    })
-
-    describe('Invalid reactionId', () => {
-        test("Non-existent reaction", async () => {
-            await request(autologinApp)
-              .put(urlTrunk + '000011112222333344445555')
-              .expect("Content-Type", /html/)
-              .expect(404);
-        });
-    
-        test("Reaction does not belong to loginUser", async () => {
-            await request(autologinApp)
-              .put(urlTrunk + nonLoginUserReaction._id)
-              .expect("Content-Type", /html/)
-              .expect(403);
-        });
-        
-        test("Invalid ObjectId", async () => {
-            await request(autologinApp)
-              .put(urlTrunk + 'test')
-              .expect("Content-Type", /html/)
-              .expect(400);
-        });
     })
 
     test("Update comment reaction", async () => {
@@ -1071,10 +612,9 @@ describe("PUT /users/:username/reactions/:reactionId", () => {
             expect(oldReactionCounter.like_count).toBe(newReactionCounter.like_count + 1)
             expect(oldReactionCounter.dislike_count).toBe(newReactionCounter.dislike_count - 1)
         }
-        });
+    })
 })
 
-// No validation checks here - done in previous tests
 // Requirement: comment and blog post must have reaction from loginUser
 describe("DELETE /users/:username/reactions/:reactionId", () => {
     let urlTrunk
@@ -1210,5 +750,5 @@ describe("DELETE /users/:username/reactions/:reactionId", () => {
         else if (blogPostReaction.reaction_type === 'Dislike') {
             expect(oldReactionCounter.dislike_count).toBe(newReactionCounter.dislike_count + 1)
         }
-        });
+    })
 })

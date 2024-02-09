@@ -5,10 +5,9 @@ const path = require("path")
 const session = require("express-session")
 const flash = require('connect-flash')
 const passport = require('../../../utils/auth')
-const User = require("../../../models/user")
 
 
-function create(router, routerPath, autologin=false) {
+function create(router, routerPath, autologUser=null) {
   const app = express()
 
   /* View Engine Setup */
@@ -37,22 +36,15 @@ function create(router, routerPath, autologin=false) {
   app.use(passport.session());
   app.use(flash());
 
-  if (autologin) {
-    app.use(async (req, res, next) => {
-      const autologUser = await User
-        .findOne()
-        .lean()
-        .exec();
-      
+  if (autologUser) {
+    app.use(async (req, res, next) => {   
       autologUser.blog_posts_recently_read = []
-
+  
       req.login(autologUser, (err) => {
         if (err) {
             return next(err)
         }
       })
-
-      app.locals.loginUser = autologUser
       
       next()
     })

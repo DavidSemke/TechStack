@@ -5,7 +5,7 @@ async function startServer() {
   const mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
 
-  mongoose.connect(mongoUri);
+  await mongoose.connect(mongoUri);
 
   mongoose.connection.on("error", e => {
     if (e.message.code === "ETIMEDOUT") {
