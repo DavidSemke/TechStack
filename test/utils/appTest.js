@@ -4,7 +4,7 @@ const createError = require("http-errors")
 const path = require("path")
 const session = require("express-session")
 const flash = require('connect-flash')
-const passport = require('../../../utils/auth')
+const passport = require('../../utils/auth')
 
 
 function create(router, routerPath, autologUser=null) {

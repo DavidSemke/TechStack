@@ -192,21 +192,12 @@ exports.updateReaction = [
         const contentId = req.documents['content-id']._id
         const reactionId = req.documents['reactionId']._id
     
-        if (contentType !== 'BlogPost' && contentType !== 'Comment') {
-            const err = new Error(
-                "Content type must be in ['BlogPost', 'Comment']"
-            );
+        const errors = validationResult(req).array()
+
+        if (errors.length) {
+            const err = errors[0]
             err.status = 400;
-    
-            return next(err)
-        }
-    
-        if (reactionType !== 'Like' && reactionType !== 'Dislike') {
-            const err = new Error(
-                "Reaction type must be in ['Like', 'Dislike']"
-            );
-            err.status = 400;
-    
+
             return next(err)
         }
     
@@ -268,19 +259,10 @@ exports.deleteReaction = [
         const contentId = req.documents['content-id']._id
         const reactionId = req.documents['reactionId']._id
 
-        if (contentType !== 'BlogPost' && contentType !== 'Comment') {
-            const err = new Error(
-                "Content type must be in ['BlogPost', 'Comment']"
-            );
-            err.status = 400;
+        const errors = validationResult(req).array()
 
-            return next(err)
-        }
-
-        if (reactionType !== 'Like' && reactionType !== 'Dislike') {
-            const err = new Error(
-                "Reaction type must be in ['Like', 'Dislike']"
-            );
+        if (errors.length) {
+            const err = errors[0]
             err.status = 400;
 
             return next(err)

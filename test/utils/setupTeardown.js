@@ -1,8 +1,8 @@
-const populateDb = require('../../database/populateDb')
+const populateDb = require('../database/populateDb')
 const mongoose = require('mongoose')
 const mongoConfig = require('./mongoConfigTest')
 const appTest = require('./appTest')
-const User = require("../../../models/user");
+const User = require("../../models/user");
 
 async function loginSetup(router, routerPath, alwaysLogin=true) {
     const server = await serverSetup()

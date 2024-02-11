@@ -26,22 +26,6 @@ router.use(
     )
 )
 
-router.use(
-    "/:blogPostId/comments",
-    (req, res, next) => {
-        if (req.body['reply-to'] === undefined) {
-            return next()
-        }
-
-        utils.setObjectIdDocument(
-            'body',
-            'reply-to',
-            [Comment]
-        )(req, res, next)
-    }
-    
-)
-
 // this route is used for querying blog posts from navbar searchbar
 router.get(
     "/", 
@@ -55,7 +39,18 @@ router.get(
 
 router.post(
     "/:blogPostId/comments",
-    upload.none(), 
+    upload.none(),
+    (req, res, next) => {
+        if (req.body['reply-to'] === undefined) {
+            return next()
+        }
+
+        utils.setObjectIdDocument(
+            'body',
+            'reply-to',
+            [Comment]
+        )(req, res, next)
+    },
     controller.postComment
 )
 

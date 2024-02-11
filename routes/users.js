@@ -34,31 +34,25 @@ router.use(
 )
 
 router.use(
-    '/:username/reactions',
-    utils.setObjectIdDocument(
-        'body',
-        'content-id',
-        [BlogPost, Comment]
-    )
-)
-
-router.use(
     '/:username/reactions/:reactionId',
     utils.setObjectIdDocument(
         'params',
         'reactionId',
-        Reaction
+        [Reaction]
     )
 )
 
-// view depends on if user is loginUser
+// View depends on if user is loginUser
 router.get(
     '/:username', 
     controller.getUser
 )
 
-// all other paths require auth
-router.use(utils.checkAuthorization)
+// All other paths require auth
+router.use(
+    '/:username',
+    utils.checkAuthorization
+)
 
 router.put(
     '/:username',
@@ -87,18 +81,33 @@ router.get(
 router.post(
     '/:username/reactions',
     upload.none(),
+    utils.setObjectIdDocument(
+        'body',
+        'content-id',
+        [BlogPost, Comment]
+    ),
     controller.postReaction
 )
 
 router.put(
     '/:username/reactions/:reactionId',
     upload.none(),
+    utils.setObjectIdDocument(
+        'body',
+        'content-id',
+        [BlogPost, Comment]
+    ),
     controller.updateReaction
 )
 
 router.delete(
     '/:username/reactions/:reactionId',
     upload.none(),
+    utils.setObjectIdDocument(
+        'body',
+        'content-id',
+        [BlogPost, Comment]
+    ),
     controller.deleteReaction
 )
 
