@@ -9,8 +9,10 @@ async function formFetch(
         }
     )
     
-    if (!res.ok) {
-        throw new Error(`HTTP error - Status: ${res.status}`)
+    // Input error statuses should be handled here
+    // Only input error status currently is 400
+    if (!res.ok && res.status !== 400) {
+        throw new Error(`HTTP error - Status 500`)
     }
 
     if (res.redirected) {

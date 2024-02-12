@@ -17,10 +17,12 @@ router.use(
     utils.setObjectIdDocument(
         'params',
         'blogPostId',
-        [BlogPost],
-        {
-            public_version: { $exists: false },
-            publish_date: { $exists: true }
+        BlogPost,
+        (blogPost) => {
+            return (
+                blogPost.public_version
+                || !blogPost.publish_date
+            )
         },
         ['author']
     )
@@ -48,7 +50,7 @@ router.post(
         utils.setObjectIdDocument(
             'body',
             'reply-to',
-            [Comment]
+            Comment
         )(req, res, next)
     },
     controller.postComment

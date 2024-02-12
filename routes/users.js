@@ -14,33 +14,65 @@ router.use((req, res, next) => {
 })
 
 // Users can only manipulate private blogs that they authored
-router.use(
-    '/:username/blog-posts/:blogPostId',
-    (req, res, next) => {
-        utils.setObjectIdDocument(
-            'params',
-            'blogPostId',
-            [BlogPost],
-            {
-                author: req.user._id,
-                $or: [
-                    { public_version: { $exists: true } },
-                    { publish_date: { $exists: false } }
-                ]
-            },
-            ['public_version']
-        )(req, res, next)
-    }
-)
+function setPrivateBlogPost(req, res, next) {
+    utils.setObjectIdDocument(
+        'params',
+        'blogPostId',
+        BlogPost,
+        (blogPost) => {
+            return (
+                blogPost.author.toString() !== req.user._id.toString()
+                || (!blogPost.public_version && blogPost.publish_date)
+            )
+        },
+        ['public_version']
+    )(req, res, next)
+}
 
-router.use(
-    '/:username/reactions/:reactionId',
+function setReaction(req, res, next) {
     utils.setObjectIdDocument(
         'params',
         'reactionId',
-        [Reaction]
-    )
-)
+        Reaction,
+        (reaction) => {
+            return (
+                req.user._id.toString() !== reaction.user.toString()
+            )
+        }
+    )(req, res, next)
+}
+
+async function setReactionContent(req, res, next) {
+    let contentModel
+    const isBlogPost = req.body['content-type'] === 'BlogPost'
+    const isComment = req.body['content-type'] === 'Comment'
+
+    if (isBlogPost) {
+        contentModel = BlogPost
+    }
+    else if (isComment) {
+        contentModel = Comment
+    }
+    else {
+        // 400 error will be thrown in next middleware
+        return next()
+    }
+
+    utils.setObjectIdDocument(
+        'body',
+        'content-id',
+        contentModel,
+        (content) => {
+            return (
+                isBlogPost 
+                && (
+                    content.public_version 
+                    || !content.publish_date
+                )
+            )
+        }
+    )(req, res, next)
+}
 
 // View depends on if user is loginUser
 router.get(
@@ -81,50 +113,43 @@ router.get(
 router.post(
     '/:username/reactions',
     upload.none(),
-    utils.setObjectIdDocument(
-        'body',
-        'content-id',
-        [BlogPost, Comment]
-    ),
+    setReactionContent,
     controller.postReaction
 )
 
 router.put(
     '/:username/reactions/:reactionId',
     upload.none(),
-    utils.setObjectIdDocument(
-        'body',
-        'content-id',
-        [BlogPost, Comment]
-    ),
+    setReaction,
+    setReactionContent,
     controller.updateReaction
 )
 
 router.delete(
     '/:username/reactions/:reactionId',
     upload.none(),
-    utils.setObjectIdDocument(
-        'body',
-        'content-id',
-        [BlogPost, Comment]
-    ),
+    setReaction,
+    setReactionContent,
     controller.deleteReaction
 )
 
 router.get(
-    '/:username/blog-posts/:blogPostId', 
+    '/:username/blog-posts/:blogPostId',
+    setPrivateBlogPost, 
     controller.getBlogPostUpdateForm
 )
 
 router.put(
     '/:username/blog-posts/:blogPostId',
     upload.single('thumbnail'),
-    utils.handleMulterError, 
+    utils.handleMulterError,
+    setPrivateBlogPost, 
     controller.updateBlogPost
 )
 
 router.delete(
-    '/:username/blog-posts/:blogPostId', 
+    '/:username/blog-posts/:blogPostId',
+    setPrivateBlogPost, 
     controller.deletePrivateBlogPost
 )
 

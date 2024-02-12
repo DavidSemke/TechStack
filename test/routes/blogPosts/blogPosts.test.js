@@ -9,10 +9,12 @@ let publicBlogPost, privateBlogPost, comment, reply
 
 // No updates/deletes target database, so no need for beforeEach
 beforeAll(async () => {
-  ({ server, app } = await setupTeardown.guestSetup(
+  const setup = await setupTeardown.guestSetup(
     blogPostsRouter, 
     '/blog-posts'
-  ))
+  )
+  server = setup.server
+  app = setup.guestApp
 
   // There should be at least one comment and one reply
   comment = await Comment

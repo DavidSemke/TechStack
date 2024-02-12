@@ -90,10 +90,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
                 .field("username", 'x')
                 .field("bio", '')
                 .field("keywords", '')
+                .attach("profile-pic", '')
                 .expect("Content-Type", /json/)
                 .expect(400);
 
@@ -104,10 +104,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
                 .field("username", 'doofen?')
                 .field("bio", '')
                 .field("keywords", '')
+                .attach("profile-pic", '')
                 .expect("Content-Type", /json/)
                 .expect(400);
             
@@ -118,10 +118,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
                 .field("username", nonLoginUser.username)
                 .field("bio", '')
                 .field("keywords", '')
+                .attach("profile-pic", '')
                 .expect("Content-Type", /json/)
                 .expect(400);
 
@@ -132,10 +132,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '../database/images/tree.abc')
                 .field("username", loginUser.username)
                 .field("bio", '')
                 .field("keywords", '')
+                .attach("profile-pic", `${process.cwd()}/test/database/images/tree.abc`)
                 .expect("Content-Type", /json/)
                 .expect(400);
             
@@ -148,10 +148,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
                 .field("username", loginUser.username)
                 .field("bio", invalidBio)
                 .field("keywords", '')
+                .attach("profile-pic", '')
                 .expect("Content-Type", /json/)
                 .expect(400);
 
@@ -164,10 +164,10 @@ describe("PUT /:username", () => {
             const res = await request(autologinApp)
                 .put(`/users/${loginUser.username}`)
                 .set('Content-Type', "multipart/form-data")
-                .field("profile-pic", '')
                 .field("username", loginUser.username)
                 .field("bio", '')
                 .field("keywords", invalidKeywords)
+                .attach("profile-pic", '')
                 .expect("Content-Type", /json/)
                 .expect(400);
 
@@ -197,14 +197,17 @@ describe("POST /users/:username/blog-posts", () => {
         url = `/users/${loginUser.username}/blog-posts`
 
         // This blog post is public, so its properties are validated
-        ({ title, keywords, content } = await BlogPost
+        const publicBlogPost = await BlogPost
             .findOne({
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
             .lean()
             .exec()
-        )
+        
+        title = publicBlogPost.title
+        keywords = publicBlogPost.keywords
+        content = publicBlogPost.content
     })
     
     describe('Discard', () => {
@@ -447,7 +450,7 @@ describe("POST /users/:username/reactions", () => {
                     .field("content-id", publicBlogPost._id.toString())
                     .field("content-type", 'Comment')
                     .field("reaction-type", 'Like')
-                    .expect(400);
+                    .expect(404);
             });
             
             test("Invalid ObjectId", async () => {

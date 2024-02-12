@@ -139,10 +139,6 @@ exports.postReaction = [
     ...validation.reaction,
 
     asyncHandler(async (req, res, next) => {
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
-
         const errors = validationResult(req).array()
 
         if (errors.length) {
@@ -151,6 +147,10 @@ exports.postReaction = [
 
             return next(err)
         }
+
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
 
         const promises = []
 
@@ -187,11 +187,6 @@ exports.updateReaction = [
     ...validation.reaction,
 
     asyncHandler(async (req, res, next) => {
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
-        const reactionId = req.documents['reactionId']._id
-    
         const errors = validationResult(req).array()
 
         if (errors.length) {
@@ -200,6 +195,11 @@ exports.updateReaction = [
 
             return next(err)
         }
+
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
+        const reactionId = req.documents['reactionId']._id
     
         const promises = [
             Reaction
@@ -254,11 +254,6 @@ exports.deleteReaction = [
     ...validation.reaction,
 
     asyncHandler(async (req, res, next) => {
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
-        const reactionId = req.documents['reactionId']._id
-
         const errors = validationResult(req).array()
 
         if (errors.length) {
@@ -267,6 +262,11 @@ exports.deleteReaction = [
 
             return next(err)
         }
+
+        const contentType = req.body['content-type']
+        const reactionType = req.body['reaction-type']
+        const contentId = req.documents['content-id']._id
+        const reactionId = req.documents['reactionId']._id
         
         const promises = [
             Reaction

@@ -33,13 +33,13 @@ async function populate() {
 }
 
 async function slimPopulate() {
-    const { contents, imageData } = await fileData.getData(4)
+    const { contents, imageData } = await fileData.getData(6)
     
     const userDocs = userData.getData(imageData, 2)
     await createUsers(userDocs)
     
     const blogPostDocs = blogPostData.getData(users, contents, imageData)
-    await createBlogPosts(blogPostDocs, 2, 2, 1, true)
+    await createBlogPosts(blogPostDocs, 2, 4, 2, true)
     
     const commentDocs = commentData.getData(users, 2)
     await createComments(commentDocs, 1, 1)
@@ -218,12 +218,13 @@ async function createReactionCounters() {
         }
     ]
 
-    // The [0, 0] and [1, 1] cases are more important for testing
+    // The order of combns is important for testing
     // This is because the tests have these requirements:
         // 1 - A blog post and comment must be reacted to by loginUser
         // 2 - A blog post and comment must be NOT reacted to by loginUser
-    // As long as only two users are needed for testing, putting these two
-    // combns first in order means these requirements will always be satisfied
+    // As long as only two users are needed for testing, this ordering
+    // guarantees requirement satisfaction (assuming users are assigned to
+    // reactions one after another in increments of 1)
     const combns = [[0, 0], [1, 1], [0, 1], [1, 0]]
     let combnIndex = 0
 
@@ -276,13 +277,13 @@ async function createReactions() {
         }
     ]
     let userIndex = 0
+    let reactionCounterIndex = 0
 
     for (const postGroup of postGroups) {
         const { type: postType, collection: posts } = postGroup
 
-        for (let i=0; i<posts.length; i++) {
-            const post = posts[i]
-            const reactionCounter = reactionCounters[i]
+        for (const post of posts) {
+            const reactionCounter = reactionCounters[reactionCounterIndex++]
             const likeCount = reactionCounter.like_count
             const dislikeCount = reactionCounter.dislike_count
             const reactionGroups = [

@@ -48,16 +48,18 @@ block page
             .blog-post__content!= blogPost.content
             .blog-post__post-blog-separator
                 include ../components/list/blogPostReactionList
-        .blog-post-page__more-blogs
-            h2.blog-post-page__post-heading More Blogs
-            +blogPostGrid(
-                suggestions.slice(1),
-                {
-                    'blogPostCard': {
-                        'class': '-small'
+        
+        if suggestions
+            .blog-post-page__more-blogs
+                h2.blog-post-page__post-heading More Blogs
+                +blogPostGrid(
+                    suggestions.slice(1),
+                    {
+                        'blogPostCard': {
+                            'class': '-small'
+                        }
                     }
-                }
-            )
+                )
         #comment-section.blog-post-page__comment-section
             h2.blog-post-page__post-heading Comments
             form(

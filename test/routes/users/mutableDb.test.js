@@ -10,9 +10,11 @@ const usersRouter = require("../../../routes/users")
 let server, autologinApp, loginUser
 
 beforeEach(async () => {
-    ({ server, autologinApp, loginUser } = await setupTeardown
+    const setup = await setupTeardown
         .loginSetup(usersRouter, '/users')
-    )
+    server = setup.server
+    autologinApp = setup.autologinApp
+    loginUser = setup.loginUser
 })
 
 afterEach(async () => {
@@ -28,8 +30,7 @@ describe('PUT /:username', () => {
             .field("username", loginUser.username)
             .field("bio", "test")
             .field("keywords", 'one two')
-            .expect("Content-Type", /html/)
-            .expect(200)
+            .expect(303)
     });
     
     // Requirement: no user has username 'Fre-ddy'
@@ -43,8 +44,7 @@ describe('PUT /:username', () => {
             .field("username", newUsername)
             .field("bio", "")
             .field("keywords", "")
-            .expect("Content-Type", /html/)
-            .expect(200)
+            .expect(303)
     });
 })
 
@@ -56,14 +56,17 @@ describe("POST /users/:username/blog-posts", () => {
         url = `/users/${loginUser.username}/blog-posts`
 
         // This blog post is public, so its properties are validated
-        ({ title, keywords, content } = await BlogPost
+        const publicBlogPost = await BlogPost
             .findOne({
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
             .lean()
             .exec()
-        )
+
+        title = publicBlogPost.title
+        keywords = publicBlogPost.keywords
+        content = publicBlogPost.content
     })
 
     // Requirement: Title is the only required field on save
@@ -113,7 +116,11 @@ describe("POST /users/:username/blog-posts", () => {
                 .lean()
                 .exec()
             
-            expect(blogPosts.length).toBe(2)
+            // There should be 3 blog posts:
+            // 1 - public version
+            // 2 - private version
+            // 3 - publicBlogPost (provided input values)
+            expect(blogPosts.length).toBe(3)
         })
     })
 })
@@ -123,10 +130,10 @@ describe("POST /users/:username/blog-posts", () => {
     // 2 - publicVersion and privateVersion differ on some input values
 describe("PUT /users/:username/blog-posts/:blogPostId", () => {
     let urlTrunk
-    // all except otherPublicBlogPost must be authored by loginUser
+    // all blog posts must be authored by loginUser (except publicBlogPost)
     let privateVersion, publicVersion
     let unpublishedBlogPost
-    let otherPublicBlogPost
+    let title, keywords, content
 
     beforeEach(async () => {
         urlTrunk = `/users/${loginUser.username}/blog-posts/`
@@ -150,7 +157,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
             .lean()
             .exec()
 
-        ({ title, keywords, content } = await BlogPost
+        const publicBlogPost = await BlogPost
             .findOne({
                 _id: { $ne: publicVersion._id },
                 publish_date: { $exists: true },
@@ -158,7 +165,10 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
             })
             .lean()
             .exec()
-        )
+
+        title = publicBlogPost.title
+        keywords = publicBlogPost.keywords
+        content = publicBlogPost.content
     })
 
     describe('Discard', () => {
@@ -167,11 +177,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", '')
-                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'discard')
+                .attach("thumbnail", '')
                 .expect(303);
             
             // Check if private and public versions now match
@@ -198,11 +208,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", '')
-                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'discard')
+                .attach("thumbnail", '')
                 .expect(303);
             
             // Confirm deletion
@@ -221,11 +231,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
-                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'save')
+                .attach("thumbnail", '')
                 .expect(200);
             
             const blogPost = await BlogPost
@@ -241,11 +251,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
-                .field("thumbnail", '')
                 .field("keywords", '')
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'save')
+                .attach("thumbnail", '')
                 .expect(200);
             
             const blogPost = await BlogPost
@@ -263,11 +273,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
-                .field("thumbnail", '../database/images/lightning.webp')
                 .field("keywords", keywords.join(' '))
                 .field("content", content)
                 .field("word-count", '1000')
                 .field('pre-method', 'publish')
+                .attach("thumbnail", `${process.cwd()}/test/database/images/lightning.webp`)
                 .expect(303);
             
             const updatedPrivate = await BlogPost
@@ -289,11 +299,11 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
                 .field("title", title)
-                .field("thumbnail", '../database/images/lightning.webp')
                 .field("keywords", keywords.join(' '))
                 .field("content", content)
                 .field("word-count", '1000')
                 .field('pre-method', 'publish')
+                .attach("thumbnail", `${process.cwd()}/test/database/images/lightning.webp`)
                 .expect(303);
             
             const updatedPrivate = await BlogPost
@@ -358,20 +368,21 @@ describe("POST /users/:username/reactions", () => {
             .find({ user: loginUser._id })
             .lean()
             .exec()
-        const loginUserReactionIds = loginUserReactions
+        const contentIds = loginUserReactions
             .map(reaction => reaction.content.content_id)
         
         publicBlogPost = await BlogPost
             .findOne({
-                _id: { $nin: loginUserReactionIds },
+                _id: { $nin: contentIds },
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
             .lean()
             .exec()
+
         comment = await Comment
             .findOne({
-                _id: { $nin: loginUserReactionIds }
+                _id: { $nin: contentIds }
             })
             .lean()
             .exec()
@@ -386,7 +397,7 @@ describe("POST /users/:username/reactions", () => {
             .field("reaction-type", 'Like')
             .expect(200);
 
-        // confirm creation of reaction (there can be 1 or 0, given requirements)
+        // confirm creation of reaction
         const allLikeReactions = await Reaction
             .find({
                 content: {
@@ -426,8 +437,8 @@ describe("POST /users/:username/reactions", () => {
             .field("reaction-type", 'Dislike')
             .expect(200);
         
-        // confirm creation of reaction (there can be 1 or 0, given requirements)
-        const allLikeReactions = await Reaction
+        // confirm creation of reaction
+        const allDislikeReactions = await Reaction
             .find({
                 content: {
                     content_type: 'Comment',
@@ -437,13 +448,14 @@ describe("POST /users/:username/reactions", () => {
             })
             .lean()
             .exec()
-        const likeReactionUserIds = allLikeReactions.map(
+
+        const dislikeReactionUserIds = allDislikeReactions.map(
             reaction => reaction.user
         )
 
-        expect(likeReactionUserIds).toContainEqual(loginUser._id)
+        expect(dislikeReactionUserIds).toContainEqual(loginUser._id)
         
-        // confirm correct reaction like count
+        // confirm correct reaction dislike count
         const reactionCounter = await ReactionCounter
             .findOne({
                 content: {
@@ -454,7 +466,7 @@ describe("POST /users/:username/reactions", () => {
             .lean()
             .exec()
         
-        expect(reactionCounter.like_count).toBe(allLikeReactions.length)
+        expect(reactionCounter.dislike_count).toBe(allDislikeReactions.length)
     })
 })
 
@@ -715,14 +727,14 @@ describe("DELETE /users/:username/reactions/:reactionId", () => {
             .exec()
 
         await request(autologinApp)
-            .put(urlTrunk + blogPostReaction._id)
+            .delete(urlTrunk + blogPostReaction._id)
             .set('Content-Type', "multipart/form-data")
             .field("content-id", publicBlogPost._id.toString())
             .field("content-type", 'BlogPost')
             .field("reaction-type", blogPostReaction.reaction_type)
             .expect(200)
 
-        // confirm reaction updated
+        // confirm reaction deleted
         const result = await Reaction
             .findById(blogPostReaction._id)
             .lean()

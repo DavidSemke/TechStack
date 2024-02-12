@@ -1,10 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const multer = require('multer')
-const { Types } = require('mongoose')
+const { Types } = require('mongoose');
 
 
+// forbidCheck is a function that takes a document found using the
+// objectId and returns true or false; resource forbidden on true
 function setObjectIdDocument(
-    reqObject, param, models, filter={}, populatePaths=[]
+    reqObject, param, model, forbidCheck=null, populatePaths=[]
 ) {
     return asyncHandler(async (req, res, next) => {
         let objectId
@@ -20,33 +22,10 @@ function setObjectIdDocument(
         }
 
         // first, check to see if resource exists
-        let validModel, document
+        let document
 
-        for (const model of models) {
-            document = await model
-                .findById(objectId)
-                .lean()
-                .exec()
-            
-            if (document !== null) {
-                validModel = model
-                break
-            }
-        }
-        
-        if (document === null) {
-            const err = new Error("Resource not found");
-            err.status = 404;
-            
-            return next(err);
-        }
-
-        // now check if resource is accessible
-        const query = validModel
-            .findOne({
-                _id: objectId,
-                ...filter
-            })
+        const query = model
+            .findById(objectId)
             .lean()
         
         for (const path of populatePaths) {
@@ -56,6 +35,13 @@ function setObjectIdDocument(
         document = await query.exec()
         
         if (document === null) {
+            const err = new Error("Resource not found");
+            err.status = 404;
+            
+            return next(err);
+        }
+        
+        if (forbidCheck && forbidCheck(document)) {
             const err = new Error("Access to resource forbidden");
             err.status = 403;
             
