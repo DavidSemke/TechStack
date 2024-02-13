@@ -587,6 +587,14 @@ async function processBlogPostData(
             }
         )
     }
+    else if (!req.file && validationPaths.includes('thumbnail')) {
+        errors.push(
+            {
+                'path': 'thumbnail',
+                'msg': 'Thumbnail required.'
+            }
+        )
+    }
 
     const window = new JSDOM('').window;
     const DOMPurify = createDOMPurify(window);

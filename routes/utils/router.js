@@ -41,7 +41,7 @@ function setObjectIdDocument(
             return next(err);
         }
         
-        if (forbidCheck && forbidCheck(document)) {
+        if (forbidCheck && await forbidCheck(document)) {
             const err = new Error("Access to resource forbidden");
             err.status = 403;
             

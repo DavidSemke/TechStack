@@ -62,14 +62,36 @@ async function setReactionContent(req, res, next) {
         'body',
         'content-id',
         contentModel,
-        (content) => {
-            return (
+        async (content) => {
+            const method = req.method.toLowerCase()
+            let preExistingReaction = false
+
+            if (method === 'post') {
+                const reaction = await Reaction
+                    .findOne({
+                        user: req.user._id,
+                        content: {
+                            content_type: req.body['content-type'],
+                            content_id: content._id
+                        }
+                    })
+                    .lean()
+                    .exec()
+                
+                if (reaction !== null) {
+                    preExistingReaction = true
+                }
+            }
+
+            const isNotPublicBlogPost = (
                 isBlogPost 
                 && (
                     content.public_version 
                     || !content.publish_date
                 )
             )
+
+            return preExistingReaction || isNotPublicBlogPost
         }
     )(req, res, next)
 }

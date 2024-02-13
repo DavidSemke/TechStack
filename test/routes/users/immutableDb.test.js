@@ -135,7 +135,10 @@ describe("PUT /:username", () => {
                 .field("username", loginUser.username)
                 .field("bio", '')
                 .field("keywords", '')
-                .attach("profile-pic", `${process.cwd()}/test/database/images/tree.abc`)
+                .attach(
+                    "profile-pic", 
+                    `${process.cwd()}/test/database/images/tree.abc`
+                )
                 .expect("Content-Type", /json/)
                 .expect(400);
             
@@ -220,6 +223,7 @@ describe("POST /users/:username/blog-posts", () => {
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'discard')
+                .attach("thumbnail", '')
                 .expect(303);
         });
     })
@@ -236,6 +240,7 @@ describe("POST /users/:username/blog-posts", () => {
                     .field("content", '')
                     .field("word-count", '')
                     .field('pre-method', 'save')
+                    .attach("thumbnail", '')
                     .expect("Content-Type", /json/)
                     .expect(400);
     
@@ -251,11 +256,15 @@ describe("POST /users/:username/blog-posts", () => {
                 const res = await request(autologinApp)
                     .post(url)
                     .set('Content-Type', "multipart/form-data")
-                    .field("title", 'too short')
+                    .field("title", '')
                     .field("keywords", keywords.join(' '))
                     .field("content", content)
                     .field("word-count", '1000')
                     .field('pre-method', 'publish')
+                    .attach(
+                        "thumbnail", 
+                        `${process.cwd()}/test/database/images/lightning.webp`
+                    )
                     .expect("Content-Type", /json/)
                     .expect(400);
     
@@ -271,6 +280,10 @@ describe("POST /users/:username/blog-posts", () => {
                     .field("content", content)
                     .field("word-count", '1000')
                     .field('pre-method', 'publish')
+                    .attach(
+                        "thumbnail", 
+                        `${process.cwd()}/test/database/images/lightning.webp`
+                    )
                     .expect("Content-Type", /json/)
                     .expect(400);
     
@@ -286,6 +299,29 @@ describe("POST /users/:username/blog-posts", () => {
                     .field("content", content)
                     .field("word-count", '1')
                     .field('pre-method', 'publish')
+                    .attach(
+                        "thumbnail", 
+                        `${process.cwd()}/test/database/images/lightning.webp`
+                    )
+                    .expect("Content-Type", /json/)
+                    .expect(400);
+    
+                expect(res.body).toHaveProperty('errors')
+            })
+
+            test("Thumbnail", async () => {
+                const res = await request(autologinApp)
+                    .post(url)
+                    .set('Content-Type', "multipart/form-data")
+                    .field("title", title)
+                    .field("keywords", keywords.join(' '))
+                    .field("content", content)
+                    .field("word-count", '1000')
+                    .field('pre-method', 'publish')
+                    .attach(
+                        "thumbnail", 
+                        `${process.cwd()}/test/database/images/tree.abc`
+                    )
                     .expect("Content-Type", /json/)
                     .expect(400);
     
@@ -384,13 +420,12 @@ describe("GET /users/:username/blog-posts/:blogPostId", () => {
 // If above tests pass, 
 // 1 - blogPostId checks no longer required
 // 2 - validation checks no longer required
-// Since blog post and comment reaction CRUD logic is identical, only blog 
-// post reaction validation is used here
+// Since blog post and comment reaction CRUD logic is identical,
+// only blog post reaction validation is used here
 // Content id, content type, and reaction type checks done here
 describe("POST /users/:username/reactions", () => {
     let url
-    // both blog posts must be authored by loginUser
-    let privateBlogPost, publicBlogPost
+    let privateBlogPost, reactionlessPublicBlogPost, reactionPublicBlogPost
 
     beforeAll(async () => {
         url = `/users/${loginUser.username}/reactions`
@@ -399,7 +434,7 @@ describe("POST /users/:username/reactions", () => {
             .find({ user: loginUser._id })
             .lean()
             .exec()
-        const loginUserReactionIds = loginUserReactions
+        const contentIds = loginUserReactions
             .map(reaction => reaction.content.content_id)
         
         privateBlogPost = await BlogPost
@@ -411,9 +446,18 @@ describe("POST /users/:username/reactions", () => {
             })
             .lean()
             .exec()
-        publicBlogPost = await BlogPost
+        reactionlessPublicBlogPost = await BlogPost
             .findOne({
-                _id: { $nin: loginUserReactionIds },
+                _id: { $nin: contentIds },
+                publish_date: { $exists: true },
+                public_version: { $exists: false}
+            })
+            .lean()
+            .exec()
+        
+        reactionPublicBlogPost = await BlogPost
+            .findOne({
+                _id: { $in: contentIds },
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
@@ -447,10 +491,20 @@ describe("POST /users/:username/reactions", () => {
                 await request(autologinApp)
                     .post(url)
                     .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
+                    .field("content-id", reactionlessPublicBlogPost._id.toString())
                     .field("content-type", 'Comment')
                     .field("reaction-type", 'Like')
                     .expect(404);
+            });
+
+            test("Pre-existing reaction", async () => {
+                await request(autologinApp)
+                    .post(url)
+                    .set('Content-Type', "multipart/form-data")
+                    .field("content-id", reactionPublicBlogPost._id.toString())
+                    .field("content-type", 'BlogPost')
+                    .field("reaction-type", 'Like')
+                    .expect(403);
             });
             
             test("Invalid ObjectId", async () => {
@@ -469,7 +523,7 @@ describe("POST /users/:username/reactions", () => {
                 await request(autologinApp)
                     .post(url)
                     .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
+                    .field("content-id", reactionlessPublicBlogPost._id.toString())
                     .field("content-type", 'test')
                     .field("reaction-type", 'Like')
                     .expect(400);
@@ -481,7 +535,7 @@ describe("POST /users/:username/reactions", () => {
                 await request(autologinApp)
                     .post(url)
                     .set('Content-Type', "multipart/form-data")
-                    .field("content-id", publicBlogPost._id.toString())
+                    .field("content-id", reactionlessPublicBlogPost._id.toString())
                     .field("content-type", 'BlogPost')
                     .field("reaction-type", 'test')
                     .expect(400);

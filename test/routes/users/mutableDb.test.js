@@ -26,24 +26,26 @@ describe('PUT /:username', () => {
         await request(autologinApp)
             .put(`/users/${loginUser.username}`)
             .set('Content-Type', "multipart/form-data")
-            .field("profile-pic", "database/images/lightning.webp")
             .field("username", loginUser.username)
             .field("bio", "test")
             .field("keywords", 'one two')
+            .attach(
+                "profile-pic", 
+                `${process.cwd()}/test/database/images/lightning.webp`
+            )
             .expect(303)
     });
     
     // Requirement: no user has username 'Fre-ddy'
     test("Username", async () => {
         const newUsername = 'Fre-ddy'
-    
         await request(autologinApp)
             .put(`/users/${loginUser.username}`)
             .set('Content-Type', "multipart/form-data")
-            .field("profile-pic", "")
             .field("username", newUsername)
             .field("bio", "")
             .field("keywords", "")
+            .attach("profile-pic", '')
             .expect(303)
     });
 })
@@ -69,7 +71,7 @@ describe("POST /users/:username/blog-posts", () => {
         content = publicBlogPost.content
     })
 
-    // Requirement: Title is the only required field on save
+    // Requirement: Title is the only required input on save
     // Requirement: publicBlogPost title must be unique (even to private version's)
     describe('Save', () => {
         test("Title", async () => {
@@ -81,6 +83,7 @@ describe("POST /users/:username/blog-posts", () => {
                 .field("content", '')
                 .field("word-count", '')
                 .field('pre-method', 'save')
+                .attach("thumbnail", '')
                 .expect(200);
             
             // Title should now be shared by two blog posts
@@ -105,6 +108,10 @@ describe("POST /users/:username/blog-posts", () => {
                 .field("content", content)
                 .field("word-count", '1000')
                 .field('pre-method', 'publish')
+                .attach(
+                    "thumbnail", 
+                    `${process.cwd()}/test/database/images/lightning.webp`
+                )
                 .expect(303);
             
             const blogPosts = await BlogPost
@@ -127,10 +134,10 @@ describe("POST /users/:username/blog-posts", () => {
 
 // Requirements:
     // 1 - otherPublicBlogPost.title !== (publicVersion.title || privateVersion.title)
-    // 2 - publicVersion and privateVersion differ on some input values
+    // 2 - publicVersion and privateVersion differ on all values, ignoring thumbnail
 describe("PUT /users/:username/blog-posts/:blogPostId", () => {
     let urlTrunk
-    // all blog posts must be authored by loginUser (except publicBlogPost)
+    // Requirement: all blog posts must be authored by loginUser (except publicBlogPost)
     let privateVersion, publicVersion
     let unpublishedBlogPost
     let title, keywords, content
@@ -173,6 +180,13 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
 
     describe('Discard', () => {
         test("Blog post published", async () => {
+            expect(privateVersion.title)
+                .not.toBe(publicVersion.title)
+            expect(privateVersion.content)
+                .not.toBe(publicVersion.content)
+            expect(privateVersion.keywords)
+                .not.toEqual(publicVersion.keywords)
+
             await request(autologinApp)
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
@@ -185,6 +199,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .expect(303);
             
             // Check if private and public versions now match
+            // Only primitives considered
             const newPrivateVersion = await BlogPost
                 .findById(privateVersion._id)
                 .lean()
@@ -196,9 +211,9 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 expect(newPrivateVersion[path]).toBe(publicVersion[path])
             }
 
-            const objectPaths = ['thumbnail', 'keywords']
+            const objPaths = ['keywords']
 
-            for (const path of objectPaths) {
+            for (const path of objPaths) {
                 expect(newPrivateVersion[path]).toEqual(publicVersion[path])
             }
         });
@@ -227,6 +242,8 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
 
     describe('Save', () => {
         test("Blog post published", async () => {
+            expect(privateVersion.title).not.toBe(title)
+
             await request(autologinApp)
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
@@ -247,6 +264,8 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
         });
 
         test("Blog post not published", async () => {
+            expect(unpublishedBlogPost.title).not.toBe(title)
+
             await request(autologinApp)
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
@@ -269,6 +288,13 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
 
     describe('Publish', () => {
         test("Blog post published", async () => {
+            expect(privateVersion.title)
+                .not.toBe(title)
+            expect(privateVersion.content)
+                .not.toBe(content)
+            expect(privateVersion.keywords)
+                .not.toEqual(keywords)
+
             await request(autologinApp)
                 .put(urlTrunk + privateVersion._id)
                 .set('Content-Type', "multipart/form-data")
@@ -277,7 +303,10 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .field("content", content)
                 .field("word-count", '1000')
                 .field('pre-method', 'publish')
-                .attach("thumbnail", `${process.cwd()}/test/database/images/lightning.webp`)
+                .attach(
+                    "thumbnail", 
+                    `${process.cwd()}/test/database/images/lightning.webp`
+                )
                 .expect(303);
             
             const updatedPrivate = await BlogPost
@@ -289,12 +318,19 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
 
             for (const blogPost of [updatedPrivate, updatedPublic]) {
                 expect(blogPost.title).toBe(title)
-                expect(blogPost.keywords).toEqual(keywords)
                 expect(blogPost.content).toBe(content)
+                expect(blogPost.keywords).toEqual(keywords)
             }
         });
 
         test("Blog post not published", async () => {
+            expect(unpublishedBlogPost.title)
+                .not.toBe(title)
+            expect(unpublishedBlogPost.content)
+                .not.toBe(content)
+            expect(unpublishedBlogPost.keywords)
+                .not.toEqual(keywords)
+
             await request(autologinApp)
                 .put(urlTrunk + unpublishedBlogPost._id)
                 .set('Content-Type', "multipart/form-data")
@@ -303,7 +339,10 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
                 .field("content", content)
                 .field("word-count", '1000')
                 .field('pre-method', 'publish')
-                .attach("thumbnail", `${process.cwd()}/test/database/images/lightning.webp`)
+                .attach(
+                    "thumbnail", 
+                    `${process.cwd()}/test/database/images/lightning.webp`
+                )
                 .expect(303);
             
             const updatedPrivate = await BlogPost
@@ -483,12 +522,12 @@ describe("PUT /users/:username/reactions/:reactionId", () => {
             .find({ user: loginUser._id })
             .lean()
             .exec()
-        const loginUserReactionIds = loginUserReactions
+        const contentIds = loginUserReactions
             .map(reaction => reaction.content.content_id)
         
         publicBlogPost = await BlogPost
             .findOne({
-                _id: { $in: loginUserReactionIds },
+                _id: { $in: contentIds },
                 publish_date: { $exists: true },
                 public_version: { $exists: false}
             })
@@ -496,7 +535,7 @@ describe("PUT /users/:username/reactions/:reactionId", () => {
             .exec()
         comment = await Comment
             .findOne({
-                _id: { $in: loginUserReactionIds }
+                _id: { $in: contentIds }
             })
             .lean()
             .exec()
