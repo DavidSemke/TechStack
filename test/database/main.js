@@ -8,7 +8,7 @@ async function main() {
     await mongoose.connect(connecter);
 
     console.log("Debug: Should be connected?");
-    await populateDb.slimPopulate()
+    await populateDb.populate()
     
     console.log("Debug: Closing mongoose");
     mongoose.connection.close();

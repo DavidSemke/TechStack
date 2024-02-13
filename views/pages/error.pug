@@ -1,5 +1,7 @@
 extends ../layouts/root
 
 block content
-  pre= message
-  pre= error.stack
+  - const { title, subtext } = data
+
+  h1= title
+  p= subtext

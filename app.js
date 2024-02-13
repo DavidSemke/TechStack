@@ -81,27 +81,27 @@ app.use(passport.session());
 app.use(flash());
 
 /* FOR TESTING - AUTOLOGIN */
-app.use(async (req, res, next) => {
-  const autologUser = await User
-    .findOne({ username: 'aaaaaa' })
-    .populate('blog_posts_recently_read')
-    .populate({
-        path: 'blog_posts_recently_read',
-        populate: {
-            path: 'author'
-        }
-    })
-    .lean()
-    .exec();
+// app.use(async (req, res, next) => {
+//   const autologUser = await User
+//     .findOne({ username: 'aaaaaa' })
+//     .populate('blog_posts_recently_read')
+//     .populate({
+//         path: 'blog_posts_recently_read',
+//         populate: {
+//             path: 'author'
+//         }
+//     })
+//     .lean()
+//     .exec();
 
-  req.login(autologUser, (err) => {
-    if (err) {
-        return next(err)
-    }
-  })
+//   req.login(autologUser, (err) => {
+//     if (err) {
+//         return next(err)
+//     }
+//   })
   
-  next()
-})
+//   next()
+// })
 
 // add user locals
 app.use(async (req, res, next) => {
@@ -179,13 +179,33 @@ app.use(function (req, res, next) {
 })
 
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get("env") === "development" ? err : {}
+  const status = err.status || 500
+  let statusText, subtext
 
-  // render the error page
-  res.status(err.status || 500)
-  res.render("pages/error")
+  switch(status) {
+    case 400:
+      statusText = 'Bad Request'
+      subtext = 'Your request was not understood.'
+      break
+    case 403:
+      statusText = 'Access Forbidden'
+      subtext = 'Have you tried logging in?'
+      break
+    case 404:
+      statusText = 'Not Found'
+      subtext = 'There is nothing here! Make sure to double-check the url.'
+      break
+    default:
+      statusText = 'Internal Server Error'
+      subtext = 'An unknown error occurred! Please refresh the page or return later.'
+  }
+
+  data = { 
+    title: `${status} Error - ${statusText}`, 
+    subtext 
+  }
+
+  res.status(status).render("pages/error", { data })
 })
 
 module.exports = app

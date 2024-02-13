@@ -1,19 +1,19 @@
 const inputs = [
     {
         username: 'aaaaaa', 
-        password: 'aaaaaa',
+        password: 'aaaaaa1!',
     },
     { 
         username: 'bbbbbb', 
-        password: 'bbbbbb', 
+        password: 'bbbbbb1!', 
     },
     { 
         username: 'cccccc', 
-        password: 'cccccc', 
+        password: 'cccccc1!', 
     },
     { 
         username: 'dddddd', 
-        password: 'dddddd', 
+        password: 'dddddd1!', 
     }
 ]
 
