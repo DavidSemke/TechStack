@@ -82,7 +82,7 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
 
             // enforce a maximum of 5 blog posts in recently read
             if (recentlyReadTotal > 5) {
-                recentlyRead.pop()
+                recentlyRead = recentlyRead.slice(0, 5)
             }
 
             await User.findOneAndUpdate(

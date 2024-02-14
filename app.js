@@ -81,27 +81,27 @@ app.use(passport.session());
 app.use(flash());
 
 /* FOR TESTING - AUTOLOGIN */
-// app.use(async (req, res, next) => {
-//   const autologUser = await User
-//     .findOne({ username: 'aaaaaa' })
-//     .populate('blog_posts_recently_read')
-//     .populate({
-//         path: 'blog_posts_recently_read',
-//         populate: {
-//             path: 'author'
-//         }
-//     })
-//     .lean()
-//     .exec();
+app.use(async (req, res, next) => {
+  const autologUser = await User
+    .findOne({ username: 'aaaaaa' })
+    .populate('blog_posts_recently_read')
+    .populate({
+        path: 'blog_posts_recently_read',
+        populate: {
+            path: 'author'
+        }
+    })
+    .lean()
+    .exec();
 
-//   req.login(autologUser, (err) => {
-//     if (err) {
-//         return next(err)
-//     }
-//   })
+  req.login(autologUser, (err) => {
+    if (err) {
+        return next(err)
+    }
+  })
   
-//   next()
-// })
+  next()
+})
 
 // add user locals
 app.use(async (req, res, next) => {

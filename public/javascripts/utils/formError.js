@@ -1,13 +1,10 @@
 function updateErrorContainer(formCompType, inputId, errors) {
     // remove previous errors if present
+    removeErrorContainer(formCompType, inputId)
+
     const errorContainerClassId = `${formCompType}__error-container`
     const inputField = document.getElementById(inputId)
-    const nextSibling = inputField.nextSibling
-
-    // if error container present, remove it
-    if (nextSibling && nextSibling.classList.contains(errorContainerClassId)) {
-        nextSibling.parentElement.removeChild(nextSibling)
-    }
+    const inputContainer = inputField.parentElement
 
     if (errors) {
         const errorContainer = document.createElement('div')
@@ -20,10 +17,25 @@ function updateErrorContainer(formCompType, inputId, errors) {
             errorContainer.append(errorDiv)
         }
 
-        inputField.parentElement.append(errorContainer)
+        inputContainer.append(errorContainer)
     }
 }
 
+function removeErrorContainer(formCompType, inputId) {
+    const errorContainerClassId = `${formCompType}__error-container`
+    const inputField = document.getElementById(inputId)
+    const inputContainer = inputField.parentElement
+    const errorContainer = inputContainer.querySelector(
+        '.' + errorContainerClassId
+    )
+
+    if (errorContainer) {
+        inputContainer.removeChild(errorContainer)
+    }
+}
+
+
 export {
-    updateErrorContainer
+    updateErrorContainer,
+    removeErrorContainer
 }

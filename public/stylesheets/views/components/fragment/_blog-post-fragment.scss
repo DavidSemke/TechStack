@@ -10,7 +10,7 @@
     &__title {
         font-size: fSizes.$larger;
         font-weight: bold;
-        
+        word-break: break-all;
     }
 
     &__thumbnail {

@@ -101,6 +101,8 @@ const blogPost = [
             'Keywords must be a string.'
         )
         .trim()
+        .isLength({ max: 100 })
+        .withMessage("Keywords cannot be more than 100 characters.")
         .custom((value) => {
             const wordCount = value
                 .split(' ')

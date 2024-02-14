@@ -7,7 +7,6 @@ const dateFormat = require('../utils/dateFormat')
 async function completeBlogPost(
     blogPost, loginUser, userReactions=true, binnedReplies=true
 ) {
-    blogPost = blogPost.public_version || blogPost
     blogPost.last_modified_date = dateFormat.formatDate(
         blogPost.last_modified_date
     )
@@ -34,11 +33,12 @@ async function completeBlogPost(
     blogPost.publish_date = dateFormat.formatDate(
         blogPost.publish_date
     )
-    
+
+    const publicVersion = blogPost.public_version || blogPost
     const [comments, reactionCounter] = await Promise.all([
         Comment
             .find({ 
-                blog_post: blogPost._id
+                blog_post: publicVersion._id
             })
             .populate('author')
             .lean()
@@ -46,13 +46,12 @@ async function completeBlogPost(
         ReactionCounter.findOne({
             content: {
                 content_type: 'BlogPost',
-                content_id: blogPost._id
+                content_id: publicVersion._id
             }
         })
             .lean()
             .exec()
     ])
-
     blogPost.likes = reactionCounter.like_count
     blogPost.dislikes = reactionCounter.dislike_count
     
@@ -62,7 +61,7 @@ async function completeBlogPost(
             user: loginUser._id,
             content: {
                 content_type: 'BlogPost',
-                content_id: blogPost._id
+                content_id: publicVersion._id
             }
         })
             .lean()

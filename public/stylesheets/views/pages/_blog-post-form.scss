@@ -1,5 +1,6 @@
 @use '../../globals/font-sizes' as fSizes;
 @use '../../globals/icon-sizes' as iSizes;
+@use '../../globals/colors';
 
 .blog-post-form-page {
     display: flex;
@@ -35,7 +36,7 @@
         height: 100%;
         width: 100%;
         padding: 1rem;
-        border: 2px solid white;
+        border: 2px solid colors.$bg2;
     }
 
     &__right > &__body {
@@ -47,7 +48,7 @@
 .blog-post-form {
     height: 100%;
     width: 100%;
-    border-top: 2px solid white;
+    border-top: 2px solid colors.$bg2;
     padding-top: 1rem;
 
     &__metadata {

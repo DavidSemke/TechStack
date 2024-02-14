@@ -33,6 +33,7 @@
 
         flex: 3;
         font-size: fSizes.$large;
+        word-break: break-all;
     }
 
     &__date-group {

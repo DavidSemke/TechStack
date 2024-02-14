@@ -53,7 +53,7 @@ block page
             .blog-post-page__more-blogs
                 h2.blog-post-page__post-heading More Blogs
                 +blogPostGrid(
-                    suggestions.slice(1),
+                    suggestions.slice(0, 2),
                     {
                         'blogPostCard': {
                             'class': '-small'

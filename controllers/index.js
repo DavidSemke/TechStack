@@ -10,6 +10,7 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
         })
         .sort({ likes: 'desc' })
         .populate('author')
+        .limit(6)
         .lean()
         .exec();
     

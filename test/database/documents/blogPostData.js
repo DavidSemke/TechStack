@@ -24,21 +24,21 @@ const inputs = [
         keywords: ['squidward', 'spongebob'],
     },
     {
-        title: 'Does Anyone Know Any Good Exterminators? I Think My House is Infested With Spiders',
-        keywords: ['arachnid', 'scary'],
-    },
-    {
-        title: 'Only You Can Prevent Forest Fires! My Name is Smokey Bear, and I Approve This Message',
-        keywords: ['burn', 'wood'],
-    },
-    {
         title: 'I Shipped My Pants! Does Anyone Know of a Better Way of Shipping Pants?',
         keywords: ['amazon', 'bezos'],
     },
     {
         title: 'Why Short is the New Tall - A Perspective from a Member of the 6ft Gang',
         keywords: ['tall', 'short'],
-    }
+    },
+    {
+        title: 'Only You Can Prevent Forest Fires! My Name is Smokey Bear, and I Approve This Message',
+        keywords: ['burn', 'wood'],
+    },
+    {
+        title: 'Does Anyone Know Any Good Exterminators? I Think My House is Infested With Spiders',
+        keywords: ['arachnid', 'scary'],
+    },
 ]
 
 // blogPostCount param not necessary; fileData's getData() implements this

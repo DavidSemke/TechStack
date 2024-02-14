@@ -78,7 +78,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                 '.blog-post-item__title'
             ).textContent
 
-            return titleA.localeCompare(titleB)
+            return titleB.localeCompare(titleA)
         })
     }
     else if (sortBy === 'last-mod-date') {
@@ -90,7 +90,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                 '.blog-post-item__last-modified'
             ).textContent
 
-            return compareDateStrings(dateA, dateB)
+            return compareDateStrings(dateB, dateA)
         })
     }
     else if (published) {
@@ -104,7 +104,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                         '.blog-post-item__published'
                     ).textContent
 
-                    return compareDateStrings(dateA, dateB)
+                    return compareDateStrings(dateB, dateA)
                 })
                 break 
             case 'likes':
@@ -116,7 +116,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                         '.blog-post-item__likes .icon-element__label'
                     ).textContent
 
-                    return parseInt(likesA) - parseInt(likesB)
+                    return parseInt(likesB) - parseInt(likesA)
                 })
                 break
             case 'dislikes':
@@ -128,7 +128,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                         '.blog-post-item__dislikes .icon-element__label'
                     ).textContent
 
-                    return parseInt(dislikesA) - parseInt(dislikesB)
+                    return parseInt(dislikesB) - parseInt(dislikesA)
                 })
                 break
             case 'total-comments':
@@ -140,7 +140,7 @@ function sortBlogPostList(sortBy, blogPostList, published=false) {
                         '.blog-post-item__total-comments .icon-element__label'
                     ).textContent
 
-                    return parseInt(commentsA) - parseInt(commentsB)
+                    return parseInt(commentsB) - parseInt(commentsA)
                 })
                 break
         }

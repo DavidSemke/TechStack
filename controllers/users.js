@@ -483,6 +483,8 @@ exports.updateBlogPost = [
                 const publicBlogPost = {...blogPost.public_version}
                 delete publicBlogPost._id
 
+                publicBlogPost.last_modified_date = Date.now()
+
                 await BlogPost.findOneAndUpdate(
                     privateFilter, 
                     publicBlogPost
@@ -547,6 +549,17 @@ exports.updateBlogPost = [
                     publicBlogPost = new BlogPost(publicBlogPostData)
                     await publicBlogPost.save();
 
+                    // create a reaction counter for public content
+                    const reactionCounter = new ReactionCounter({
+                        content: {
+                            content_type: 'BlogPost',
+                            content_id: publicBlogPost._id
+                        },
+                        like_count: 0,
+                        dislike_count: 0
+                    })
+                    await reactionCounter.save()
+
                     privateUpdate.public_version = publicBlogPost._id
                 }
 
@@ -565,7 +578,7 @@ exports.updateBlogPost = [
     }) 
 ];
 
-
+// If validationPaths = null, all paths are considered
 async function processBlogPostData(
     req, res, validationPaths
 ) {
@@ -587,7 +600,13 @@ async function processBlogPostData(
             }
         )
     }
-    else if (!req.file && validationPaths.includes('thumbnail')) {
+    else if (
+        !req.file 
+        && (
+            !validationPaths 
+            || validationPaths.includes('thumbnail')
+        )
+    ) {
         errors.push(
             {
                 'path': 'thumbnail',

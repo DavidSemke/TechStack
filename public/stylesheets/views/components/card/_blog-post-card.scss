@@ -17,6 +17,7 @@
 
     &__overview {
         width: 100%;
+        background-size: cover;
     }
 
     &__overlay {
@@ -47,7 +48,8 @@
         @include text-cutoff.cut(3);
         
         margin: 0;
-        font-size: fSizes.$larger
+        font-size: fSizes.$larger;
+        word-break: break-all;
     }
 
     &__preview {

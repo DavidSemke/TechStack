@@ -11,15 +11,10 @@ mixin blogPostList(blogPosts, attrs={})
                         .blog-post-item__published= `Published: ${blogPost.publish_date}`
                         .blog-post-item__last-modified= `Last modified: ${blogPost.last_modified_date}`
                 .blog-post-item__bottom
-                    - let likes = '-'
-                    - let dislikes = '-'
-                    - let totalComments = '-'
-                    
-                    if blogPost.publish_date 
-                        - likes = blogPost.likes
-                        - dislikes = blogPost.dislikes 
-                        - totalComments = blogPost.comments.length
-
+                    - const likes = blogPost.likes
+                    - const dislikes = blogPost.dislikes 
+                    - const totalComments = blogPost.comments.length
+                        
                     +iconElementList(
                         [{
                             'tag': 'div',

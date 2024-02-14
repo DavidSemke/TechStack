@@ -1,6 +1,6 @@
 import { formFetch } from '../utils/fetch.js'
 import { initializeTinyMCE } from '../utils/tinyMCEConfig.js'
-import { updateErrorContainer } from '../utils/formError.js'
+import { updateErrorContainer, removeErrorContainer } from '../utils/formError.js'
 
 function blogPostFormTabListeners() {
     const metadata = document.querySelector(
@@ -95,7 +95,7 @@ function blogPostFormSubmitListeners() {
         }
     })
     
-    blogPostForm.addEventListener('submit', (event) => {
+    blogPostForm.addEventListener('submit', async (event) => {
         event.preventDefault()
         
         let method = 'PUT'
@@ -109,33 +109,36 @@ function blogPostFormSubmitListeners() {
             href = hrefWords.join('/')
         }
 
-        formFetch(
+        let errorsOccurred = false
+        const inputData = {
+            'title': {
+                errors: [],
+                formCompType: 'form-input'
+            },
+            'thumbnail': {
+                errors: [],
+                formCompType: 'form-input'
+            },
+            'keywords': {
+                errors: [],
+                formCompType: 'form-textarea'
+            },
+            'content': {
+                errors: [],
+                formCompType: 'form-textarea'
+            },
+            'word-count': {
+                errors: [],
+                formCompType: null
+            }
+        }
+        
+        await formFetch(
             href, 
             method, 
             blogPostForm,
             (data) => {
-                const inputData = {
-                    'title': {
-                        errors: [],
-                        formCompType: 'form-input'
-                    },
-                    'thumbnail': {
-                        errors: [],
-                        formCompType: 'form-input'
-                    },
-                    'keywords': {
-                        errors: [],
-                        formCompType: 'form-textarea'
-                    },
-                    'content': {
-                        errors: [],
-                        formCompType: 'form-textarea'
-                    },
-                    'word-count': {
-                        errors: [],
-                        formCompType: null
-                    }
-                }
+                errorsOccurred = true
 
                 for (const error of data.errors) {
                     inputData[error.path].errors.push(error)
@@ -151,6 +154,12 @@ function blogPostFormSubmitListeners() {
                 }
             }
         )
+
+        if (!errorsOccurred) {
+            for (const [k, v] of Object.entries(inputData)) {
+                removeErrorContainer(v.formCompType, k)
+            }
+        }
     })
 }
 
@@ -176,11 +185,14 @@ function blogPostFormSetup() {
         return
     }
 
+    // TinyMCE init must occur before the form submit listener is set 
+    // This allows the editor's submit listener to trigger first
+    initializeTinyMCE('.tinymce-app')
     blogPostFormSizing()
     blogPostFormTabListeners()
     blogPostFormMetadataListeners()
     blogPostFormSubmitListeners()
-    initializeTinyMCE('.tinymce-app')
+    
 }
 
 export {
