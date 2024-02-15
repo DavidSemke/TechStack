@@ -2,3 +2,4 @@
 !/public/*.js
 /views
 **/*.json
+/test/routes

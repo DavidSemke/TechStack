@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
+const mongoose = require("mongoose")
+const { MongoMemoryServer } = require("mongodb-memory-server")
 
 async function startServer() {
-  const mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
+  const mongoServer = await MongoMemoryServer.create()
+  const mongoUri = mongoServer.getUri()
 
-  await mongoose.connect(mongoUri);
+  await mongoose.connect(mongoUri)
 
-  mongoose.connection.on("error", e => {
-    console.log(e);
-  });
+  mongoose.connection.on("error", (e) => {
+    console.log(e)
+  })
 
   return mongoServer
 }
@@ -20,5 +20,5 @@ async function stopServer(server) {
 
 module.exports = {
   startServer,
-  stopServer
-};
+  stopServer,
+}

@@ -1,55 +1,48 @@
-require('dotenv').config()
-const express = require("express");
+require("dotenv").config()
+const express = require("express")
 const createError = require("http-errors")
 const path = require("path")
 const session = require("express-session")
-const flash = require('connect-flash')
-const passport = require('../../utils/auth')
+const flash = require("connect-flash")
+const passport = require("../../utils/auth")
 
-
-function create(router, routerPath, autologUser=null) {
+function create(router, routerPath, autologUser = null) {
   const app = express()
 
   /* View Engine Setup */
-  app.set(
-    "views", 
-    path.join(
-      process.cwd(),
-      'views'
-    )
-  )
+  app.set("views", path.join(process.cwd(), "views"))
   app.set("view engine", "pug")
-  
+
   /* Authentication Setup */
-  app.use(session(
-    { 
-      secret: process.env.SESSION_SECRET, 
-      resave: false, 
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
       saveUninitialized: true,
       cookie: {
-        sameSite: 'lax'
-      }
-    }
-  ));
-  
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(flash());
+        sameSite: "lax",
+      },
+    }),
+  )
+
+  app.use(passport.initialize())
+  app.use(passport.session())
+  app.use(flash())
 
   if (autologUser) {
-    app.use(async (req, res, next) => {   
+    app.use(async (req, res, next) => {
       autologUser.blog_posts_recently_read = []
-  
+
       req.login(autologUser, (err) => {
         if (err) {
-            return next(err)
+          return next(err)
         }
       })
-      
+
       next()
     })
   }
-  
+
   // add user locals
   app.use((req, res, next) => {
     if (!req.user) {
@@ -61,27 +54,17 @@ function create(router, routerPath, autologUser=null) {
 
     next()
   })
-  
-  
-  app.use(express.urlencoded({ extended: false }))
-  
-  /* Static Setup */
-  app.use(
-    express.static(path.join(
-      __dirname, 
-      "public"
-    ))
-  )
-  app.use(
-    '/tinymce', 
-    express.static(path.join(
-      __dirname, 
-      'node_modules', 
-      'tinymce'
-    ))
-  );
 
-  app.use(routerPath, router);
+  app.use(express.urlencoded({ extended: false }))
+
+  /* Static Setup */
+  app.use(express.static(path.join(__dirname, "public")))
+  app.use(
+    "/tinymce",
+    express.static(path.join(__dirname, "node_modules", "tinymce")),
+  )
+
+  app.use(routerPath, router)
 
   /* Error Handling */
   app.use(function (req, res, next) {
@@ -102,5 +85,5 @@ function create(router, routerPath, autologUser=null) {
 }
 
 module.exports = {
-  create
+  create,
 }

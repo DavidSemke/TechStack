@@ -1,666 +1,614 @@
-const User = require("../models/user");
-const BlogPost = require("../models/blogPost");
-const Reaction = require('../models/reaction')
-const ReactionCounter = require('../models/reactionCounter')
-const asyncHandler = require("express-async-handler");
-const { validationResult } = require("express-validator");
-const query = require('../utils/query')
-const createDOMPurify = require('dompurify')
-const { JSDOM } = require('jsdom')
-const validation = require('./utils/usersValidation')
-
+const User = require("../models/user")
+const BlogPost = require("../models/blogPost")
+const Reaction = require("../models/reaction")
+const ReactionCounter = require("../models/reactionCounter")
+const asyncHandler = require("express-async-handler")
+const { validationResult } = require("express-validator")
+const query = require("../utils/query")
+const createDOMPurify = require("dompurify")
+const { JSDOM } = require("jsdom")
+const validation = require("./utils/usersValidation")
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
 exports.getUser = asyncHandler(async (req, res, next) => {
-    const user = await User
-        .findOne({ username: req.params.username })
-        .populate('blog_posts_recently_read')
-        .populate({
-            path: 'blog_posts_recently_read',
-            populate: {
-                path: 'author'
-            }
-        })
-        .lean()
-        .exec()
+  const user = await User.findOne({ username: req.params.username })
+    .populate("blog_posts_recently_read")
+    .populate({
+      path: "blog_posts_recently_read",
+      populate: {
+        path: "author",
+      },
+    })
+    .lean()
+    .exec()
 
-    if (user === null) {
-        const err = new Error("User not found");
-        err.status = 404;
-        
-        return next(err);
-    }
+  if (user === null) {
+    const err = new Error("User not found")
+    err.status = 404
 
-    // Find public blog posts only
-    user.blog_posts_written = await BlogPost
-        .find({
-            author:  user._id,
-            public_version: { $exists: false },
-            publish_date: { $exists: true } 
-        })
-        .lean()
-        .exec()
+    return next(err)
+  }
 
-    let title = `${user.username}'s Profile`
-    let isLoginUserProfile = false
+  // Find public blog posts only
+  user.blog_posts_written = await BlogPost.find({
+    author: user._id,
+    public_version: { $exists: false },
+    publish_date: { $exists: true },
+  })
+    .lean()
+    .exec()
 
-    if (
-        req.user 
-        && user._id.toString() === req.user._id.toString()
-    ) {
-        title = 'Your Profile'
-        isLoginUserProfile = true
-    }
-    
-    const data = {
-        title,
-        user,
-        isLoginUserProfile
-    }
+  let title = `${user.username}'s Profile`
+  let isLoginUserProfile = false
 
-    res.render("pages/userProfile", { data });
-});
+  if (req.user && user._id.toString() === req.user._id.toString()) {
+    title = "Your Profile"
+    isLoginUserProfile = true
+  }
+
+  const data = {
+    title,
+    user,
+    isLoginUserProfile,
+  }
+
+  res.render("pages/userProfile", { data })
+})
 
 exports.updateUser = [
-    // Files processed after validation middleware
-    ...validation.user,
-    
-    asyncHandler(async (req, res, next) => {
-        const errors = []
+  // Files processed after validation middleware
+  ...validation.user,
 
-        if (req.fileTypeError) {
-            errors.push( 
-                {
-                    'path': 'profile-pic',
-                    'msg': 'File must be jpeg, jpg, png, webp, or gif.'
-                }
-            )
-        }
-        else if (req.fileLimitError) {
-            errors.push(
-                {
-                    'path': 'profile-pic',
-                    'msg': req.fileLimitError.message + '.'
-                }
-            )
-        }
+  asyncHandler(async (req, res, next) => {
+    const errors = []
 
-        const window = new JSDOM('').window;
-        const DOMPurify = createDOMPurify(window);
+    if (req.fileTypeError) {
+      errors.push({
+        path: "profile-pic",
+        msg: "File must be jpeg, jpg, png, webp, or gif.",
+      })
+    } else if (req.fileLimitError) {
+      errors.push({
+        path: "profile-pic",
+        msg: req.fileLimitError.message + ".",
+      })
+    }
 
-        // Cannot repopulate profile-pic input with file, so it is
-        // omitted here 
-        const inputs = {
-            username: DOMPurify.sanitize(req.body.username),
-            bio: DOMPurify.sanitize(req.body.bio),
-            keywords: DOMPurify.sanitize(req.body.keywords),
-        }
+    const window = new JSDOM("").window
+    const DOMPurify = createDOMPurify(window)
 
-        const nonFileErrors = validationResult(req).array()
-        errors.push(...nonFileErrors)
+    // Cannot repopulate profile-pic input with file, so it is
+    // omitted here
+    const inputs = {
+      username: DOMPurify.sanitize(req.body.username),
+      bio: DOMPurify.sanitize(req.body.bio),
+      keywords: DOMPurify.sanitize(req.body.keywords),
+    }
 
-        if (errors.length) {
-            res.status(400).json({ errors })
-            return 
-        }
+    const nonFileErrors = validationResult(req).array()
+    errors.push(...nonFileErrors)
 
-        const filter = {
-            username: req.user.username
-        }
-        const update = {
-            username: inputs.username
-        }
+    if (errors.length) {
+      res.status(400).json({ errors })
+      return
+    }
 
-        const { bio, keywords } = inputs
-        update.bio = bio || undefined
-        update.keywords = keywords ? keywords.split(' ') : undefined
+    const filter = {
+      username: req.user.username,
+    }
+    const update = {
+      username: inputs.username,
+    }
 
-        // add new profile pic to update if uploaded
-        if (req.file) {
-            update.profile_pic = {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
-            }
-        }
+    const { bio, keywords } = inputs
+    update.bio = bio || undefined
+    update.keywords = keywords ? keywords.split(" ") : undefined
 
-        const updatedUser = await User
-            .findOneAndUpdate(
-                filter, update, { new: true }
-            )
-            .lean()
-            .exec()
+    // add new profile pic to update if uploaded
+    if (req.file) {
+      update.profile_pic = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      }
+    }
 
-        res.redirect(303, `/users/${updatedUser.username}`)
+    const updatedUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
     })
+      .lean()
+      .exec()
+
+    res.redirect(303, `/users/${updatedUser.username}`)
+  }),
 ]
 
 exports.postReaction = [
-    ...validation.reaction,
+  ...validation.reaction,
 
-    asyncHandler(async (req, res, next) => {
-        const errors = validationResult(req).array()
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array()
 
-        if (errors.length) {
-            const err = errors[0]
-            err.status = 400;
+    if (errors.length) {
+      const err = errors[0]
+      err.status = 400
 
-            return next(err)
-        }
+      return next(err)
+    }
 
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
+    const contentType = req.body["content-type"]
+    const reactionType = req.body["reaction-type"]
+    const contentId = req.documents["content-id"]._id
 
-        const promises = []
+    const promises = []
 
-        const reaction = new Reaction({
-            user: req.user._id,
-            content: {
-                content_type: contentType,
-                content_id: contentId
-            },
-            reaction_type: reactionType
-        })
-        promises.push(reaction.save())
-
-        const countAttribute = `${reactionType.toLowerCase()}_count`
-        promises.push(
-            ReactionCounter.findOneAndUpdate(
-                { 
-                    content: {
-                        content_type: contentType,
-                        content_id: contentId
-                    }
-                },
-                { $inc: { [countAttribute]: 1 } }
-            )
-        )
-
-        await Promise.all(promises)
-
-        res.json({ reactionId: reaction._id })
+    const reaction = new Reaction({
+      user: req.user._id,
+      content: {
+        content_type: contentType,
+        content_id: contentId,
+      },
+      reaction_type: reactionType,
     })
+    promises.push(reaction.save())
+
+    const countAttribute = `${reactionType.toLowerCase()}_count`
+    promises.push(
+      ReactionCounter.findOneAndUpdate(
+        {
+          content: {
+            content_type: contentType,
+            content_id: contentId,
+          },
+        },
+        { $inc: { [countAttribute]: 1 } },
+      ),
+    )
+
+    await Promise.all(promises)
+
+    res.json({ reactionId: reaction._id })
+  }),
 ]
 
 exports.updateReaction = [
-    ...validation.reaction,
+  ...validation.reaction,
 
-    asyncHandler(async (req, res, next) => {
-        const errors = validationResult(req).array()
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array()
 
-        if (errors.length) {
-            const err = errors[0]
-            err.status = 400;
+    if (errors.length) {
+      const err = errors[0]
+      err.status = 400
 
-            return next(err)
-        }
+      return next(err)
+    }
 
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
-        const reactionId = req.documents['reactionId']._id
-    
-        const promises = [
-            Reaction
-                .findOneAndUpdate(
-                    { 
-                        _id: reactionId
-                    },
-                    {
-                        reaction_type: reactionType
-                    }
-                )
-                .exec()
-        ]
-    
-        let primaryCountAttribute = null
-        let secondaryCountAttribute = null
-    
-        if (reactionType === 'Like') {
-            primaryCountAttribute = 'like_count'
-            secondaryCountAttribute = 'dislike_count'
-        }
-        else if (reactionType === 'Dislike') {
-            primaryCountAttribute = 'dislike_count'
-            secondaryCountAttribute = 'like_count'
-        }
-    
-        promises.push(
-            ReactionCounter.findOneAndUpdate(
-                { 
-                    content: {
-                        content_type: contentType,
-                        content_id: contentId
-                    }
-                },
-                { 
-                    $inc: { 
-                        [primaryCountAttribute]: 1,
-                        [secondaryCountAttribute]: -1
-                    },
-                }
-            )
-                .exec()
-        )
-    
-        await Promise.all(promises)
-    
-        res.json({ reactionId })
-    })
+    const contentType = req.body["content-type"]
+    const reactionType = req.body["reaction-type"]
+    const contentId = req.documents["content-id"]._id
+    const reactionId = req.documents.reactionId._id
+
+    const promises = [
+      Reaction.findOneAndUpdate(
+        {
+          _id: reactionId,
+        },
+        {
+          reaction_type: reactionType,
+        },
+      ).exec(),
+    ]
+
+    let primaryCountAttribute = null
+    let secondaryCountAttribute = null
+
+    if (reactionType === "Like") {
+      primaryCountAttribute = "like_count"
+      secondaryCountAttribute = "dislike_count"
+    } else if (reactionType === "Dislike") {
+      primaryCountAttribute = "dislike_count"
+      secondaryCountAttribute = "like_count"
+    }
+
+    promises.push(
+      ReactionCounter.findOneAndUpdate(
+        {
+          content: {
+            content_type: contentType,
+            content_id: contentId,
+          },
+        },
+        {
+          $inc: {
+            [primaryCountAttribute]: 1,
+            [secondaryCountAttribute]: -1,
+          },
+        },
+      ).exec(),
+    )
+
+    await Promise.all(promises)
+
+    res.json({ reactionId })
+  }),
 ]
 
 exports.deleteReaction = [
-    ...validation.reaction,
+  ...validation.reaction,
 
-    asyncHandler(async (req, res, next) => {
-        const errors = validationResult(req).array()
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array()
 
-        if (errors.length) {
-            const err = errors[0]
-            err.status = 400;
+    if (errors.length) {
+      const err = errors[0]
+      err.status = 400
 
-            return next(err)
-        }
+      return next(err)
+    }
 
-        const contentType = req.body['content-type']
-        const reactionType = req.body['reaction-type']
-        const contentId = req.documents['content-id']._id
-        const reactionId = req.documents['reactionId']._id
-        
-        const promises = [
-            Reaction
-                .findOneAndDelete(
-                    { 
-                        _id: reactionId
-                    }
-                )
-                .exec()
-        ]
+    const contentType = req.body["content-type"]
+    const reactionType = req.body["reaction-type"]
+    const contentId = req.documents["content-id"]._id
+    const reactionId = req.documents.reactionId._id
 
-        const countAttribute = `${reactionType.toLowerCase()}_count`
-        promises.push(
-            ReactionCounter.findOneAndUpdate(
-                { 
-                    content: {
-                        content_type: contentType,
-                        content_id: contentId
-                    }
-                },
-                { $inc: { [countAttribute]: -1 } }
-            )
-        )
+    const promises = [
+      Reaction.findOneAndDelete({
+        _id: reactionId,
+      }).exec(),
+    ]
 
-        await Promise.all(promises)
+    const countAttribute = `${reactionType.toLowerCase()}_count`
+    promises.push(
+      ReactionCounter.findOneAndUpdate(
+        {
+          content: {
+            content_type: contentType,
+            content_id: contentId,
+          },
+        },
+        { $inc: { [countAttribute]: -1 } },
+      ),
+    )
 
-        res.json({ reactionId: null })
-    })
+    await Promise.all(promises)
+
+    res.json({ reactionId: null })
+  }),
 ]
 
 exports.getBlogPosts = asyncHandler(async (req, res, next) => {
-    // Get all private blog posts 
-    // (Private blog post can be unpublished or edit of published)
-    let privateBlogPosts = await BlogPost
-        .find({ 
-            author: req.user._id,
-            $or: [
-                { public_version: { $exists: true } },
-                { publish_date: { $exists: false} }
-            ]
-        })
-        .populate('public_version')
-        .lean()
-        .exec()
+  // Get all private blog posts
+  // (Private blog post can be unpublished or edit of published)
+  const privateBlogPosts = await BlogPost.find({
+    author: req.user._id,
+    $or: [
+      { public_version: { $exists: true } },
+      { publish_date: { $exists: false } },
+    ],
+  })
+    .populate("public_version")
+    .lean()
+    .exec()
 
-    const publishedBlogPosts = []
-    const unpublishedBlogPosts = []
+  const publishedBlogPosts = []
+  const unpublishedBlogPosts = []
 
-    privateBlogPosts = await Promise.all(
-        privateBlogPosts.map(async (blogPost) => {
-            blogPost = await query.completeBlogPost(
-                blogPost, req.user, false, false
-            )
+  await Promise.all(
+    privateBlogPosts.map(async (blogPost) => {
+      blogPost = await query.completeBlogPost(blogPost, req.user, false, false)
 
-            if (blogPost.publish_date !== 'N/A') {
-                publishedBlogPosts.push(blogPost)
-            }
-            else {
-                unpublishedBlogPosts.push(blogPost)
-            }
+      if (blogPost.publish_date !== "N/A") {
+        publishedBlogPosts.push(blogPost)
+      } else {
+        unpublishedBlogPosts.push(blogPost)
+      }
 
-            return blogPost
-        })
-    )
-    
-    const data = {
-        title: 'Your Blog Posts',
-        publishedBlogPosts,
-        unpublishedBlogPosts
-    }
+      return blogPost
+    }),
+  )
 
-    res.render("pages/userBlogPosts", { data });
+  const data = {
+    title: "Your Blog Posts",
+    publishedBlogPosts,
+    unpublishedBlogPosts,
+  }
+
+  res.render("pages/userBlogPosts", { data })
 })
 
 // Display blog post create form
 exports.getBlogPostCreateForm = [
-    function (req, res, next) {
-
-        const data = {
-            title: "Create Blog Post",
-            blogPost: {}
-        }
-        
-        res.render("pages/blogPostForm",  { data })
+  function (req, res, next) {
+    const data = {
+      title: "Create Blog Post",
+      blogPost: {},
     }
+
+    res.render("pages/blogPostForm", { data })
+  },
 ]
-    
+
 // On blog post create
 exports.postBlogPost = [
-    // Files processed after validation middleware
-    ...validation.blogPost,
+  // Files processed after validation middleware
+  ...validation.blogPost,
 
-    asyncHandler(async (req, res, next) => {
-        switch (req.body['pre-method']) {
-            case 'discard':
-                res.redirect(303, `/users/${req.user.username}/blog-posts`)
-                break
-            case 'save':
-                await post(req, res, ['title'])
-                break
-            case 'publish':
-                await post(req, res, null, true)
-                break
-            default:
-                const err = new Error(
-                    'Request body key "pre-method" must have value '
-                        + '"discard", "save", or "publish".'
-                );
-                err.status = 400
-                
-                return next(err);
-        }
+  asyncHandler(async (req, res, next) => {
+    switch (req.body["pre-method"]) {
+      case "discard":
+        res.redirect(303, `/users/${req.user.username}/blog-posts`)
+        break
+      case "save":
+        await post(req, res, ["title"])
+        break
+      case "publish":
+        await post(req, res, null, true)
+        break
+      default: {
+        const err = new Error(
+          'Request body key "pre-method" must have value ' +
+            '"discard", "save", or "publish".',
+        )
+        err.status = 400
 
-        // if validationPaths = null, all paths are considered
-        async function post(req, res, validationPaths=null, publishing=false) {
-            const data = await processBlogPostData(
-                req, res, validationPaths
-            )
+        return next(err)
+      }
+    }
 
-            // data is undefined or an object
-            if (!data) {
-                return
-            }
+    // if validationPaths = null, all paths are considered
+    async function post(req, res, validationPaths = null, publishing = false) {
+      const data = await processBlogPostData(req, res, validationPaths)
 
-            // if pre-method = publish
-            if (publishing) {
-                data.publish_date = Date.now()
+      // data is undefined or an object
+      if (!data) {
+        return
+      }
 
-                const publicBlogPost = new BlogPost(data);
-                await publicBlogPost.save();
-        
-                data.public_version = publicBlogPost._id
+      // if pre-method = publish
+      if (publishing) {
+        data.publish_date = Date.now()
 
-                // public content should have a reaction counter
-                const reactionCounter = new ReactionCounter({
-                    content: {
-                        content_type: 'BlogPost',
-                        content_id: publicBlogPost._id
-                    },
-                    like_count: 0,
-                    dislike_count: 0
-                })
-                await reactionCounter.save()
+        const publicBlogPost = new BlogPost(data)
+        await publicBlogPost.save()
 
-                res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
-            }
-            else {
-                res.end()
-            }
+        data.public_version = publicBlogPost._id
 
-            const privateBlogPost = new BlogPost(data)
-            await privateBlogPost.save();
-        }
-    }) 
+        // public content should have a reaction counter
+        const reactionCounter = new ReactionCounter({
+          content: {
+            content_type: "BlogPost",
+            content_id: publicBlogPost._id,
+          },
+          like_count: 0,
+          dislike_count: 0,
+        })
+        await reactionCounter.save()
+
+        res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
+      } else {
+        res.end()
+      }
+
+      const privateBlogPost = new BlogPost(data)
+      await privateBlogPost.save()
+    }
+  }),
 ]
 
 // On blog post delete
 // Public blog posts do not depend on private counterparts existing
 // Comments should not be deleted - shared by public and private versions
 exports.deletePrivateBlogPost = [
-    asyncHandler(async (req, res, next) => {
-        await BlogPost
-            .findOneAndDelete({ _id: req.documents.blogPostId._id })
-            .exec()
-        res.end();
-    })
+  asyncHandler(async (req, res, next) => {
+    await BlogPost.findOneAndDelete({
+      _id: req.documents.blogPostId._id,
+    }).exec()
+    res.end()
+  }),
 ]
 
 // Display blog post update form
 exports.getBlogPostUpdateForm = [
-    asyncHandler(async (req, res, next) => {
-        const data = {
-            title: 'Update Blog Post',
-            blogPost: req.documents.blogPostId
-        }
-    
-        res.render("pages/blogPostForm", { data });
-    })
+  asyncHandler(async (req, res, next) => {
+    const data = {
+      title: "Update Blog Post",
+      blogPost: req.documents.blogPostId,
+    }
+
+    res.render("pages/blogPostForm", { data })
+  }),
 ]
-    
+
 // On blog post update
 exports.updateBlogPost = [
-    // Files processed after body middleware
-    ...validation.blogPost,
-        
-    asyncHandler(async (req, res, next) => {
-        switch (req.body['pre-method']) {
-            case 'discard':
-                await backwardUpdate(req, res)
-                break
-            case 'save':
-                await forwardUpdate(req, res, ['title'])
-                break
-            case 'publish':
-                await forwardUpdate(req, res, null, true)
-                break
-            default:
-                const err = new Error(
-                    'Request body key "pre-method" must have value '
-                        + '"discard", "save", or "publish".'
-                );
-                err.status = 400
-                
-                return next(err);
+  // Files processed after body middleware
+  ...validation.blogPost,
+
+  asyncHandler(async (req, res, next) => {
+    switch (req.body["pre-method"]) {
+      case "discard":
+        await backwardUpdate(req, res)
+        break
+      case "save":
+        await forwardUpdate(req, res, ["title"])
+        break
+      case "publish":
+        await forwardUpdate(req, res, null, true)
+        break
+      default: {
+        const err = new Error(
+          'Request body key "pre-method" must have value ' +
+            '"discard", "save", or "publish".',
+        )
+        err.status = 400
+
+        return next(err)
+      }
+    }
+
+    async function backwardUpdate(req, res) {
+      const blogPost = req.documents.blogPostId
+      const privateFilter = {
+        _id: blogPost._id,
+      }
+
+      if (blogPost.public_version) {
+        const publicBlogPost = { ...blogPost.public_version }
+        delete publicBlogPost._id
+
+        publicBlogPost.last_modified_date = Date.now()
+
+        await BlogPost.findOneAndUpdate(privateFilter, publicBlogPost)
+      } else {
+        await BlogPost.findOneAndDelete(privateFilter)
+      }
+
+      res.redirect(303, `/users/${req.user.username}/blog-posts`)
+    }
+
+    async function forwardUpdate(
+      req,
+      res,
+      validationPaths = null,
+      publishing = false,
+    ) {
+      const data = await processBlogPostData(req, res, validationPaths)
+
+      // data is undefined or an object
+      if (!data) {
+        return
+      }
+
+      const blogPost = req.documents.blogPostId
+      const privateFilter = {
+        _id: blogPost._id,
+      }
+      const privateUpdate = {
+        title: data.title,
+        thumbnail: data.thumbnail,
+        keywords: data.keywords,
+        content: data.content,
+      }
+
+      if (publishing) {
+        privateUpdate.publish_date = Date.now()
+        privateUpdate.last_modified_date = Date.now()
+        let publicBlogPost = null
+
+        if (blogPost.public_version) {
+          publicBlogPost = blogPost.public_version
+
+          const publicFilter = {
+            _id: blogPost.public_version._id,
+          }
+          const publicUpdate = privateUpdate
+
+          // update public version
+          await BlogPost.findOneAndUpdate(publicFilter, publicUpdate)
+        } else {
+          // create a public version
+          const publicBlogPostData = { ...blogPost, ...privateUpdate }
+          delete publicBlogPostData._id
+
+          publicBlogPost = new BlogPost(publicBlogPostData)
+          await publicBlogPost.save()
+
+          // create a reaction counter for public content
+          const reactionCounter = new ReactionCounter({
+            content: {
+              content_type: "BlogPost",
+              content_id: publicBlogPost._id,
+            },
+            like_count: 0,
+            dislike_count: 0,
+          })
+          await reactionCounter.save()
+
+          privateUpdate.public_version = publicBlogPost._id
         }
 
-        async function backwardUpdate(req, res) {
-            const blogPost = req.documents.blogPostId
-            const privateFilter = {
-                _id: blogPost._id
-            }
+        res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
+      } else {
+        res.end()
+      }
 
-            if (blogPost.public_version) {
-                const publicBlogPost = {...blogPost.public_version}
-                delete publicBlogPost._id
-
-                publicBlogPost.last_modified_date = Date.now()
-
-                await BlogPost.findOneAndUpdate(
-                    privateFilter, 
-                    publicBlogPost
-                )
-            }
-            else {
-                await BlogPost.findOneAndDelete(
-                    privateFilter
-                )
-            }
-
-            res.redirect(303, `/users/${req.user.username}/blog-posts`)
-        }
-
-        async function forwardUpdate(
-            req, res, validationPaths=null, publishing=false
-        ) {
-            const data = await processBlogPostData(
-                req, res, validationPaths
-            )
-
-            // data is undefined or an object
-            if (!data) {
-                return
-            }
-
-            const blogPost = req.documents.blogPostId
-            const privateFilter = {
-                _id: blogPost._id
-            }
-            const privateUpdate = {
-                title: data.title,
-                thumbnail: data.thumbnail,
-                keywords: data.keywords,
-                content: data.content,
-            }
-
-            if (publishing) {
-                privateUpdate.publish_date = Date.now()
-                privateUpdate.last_modified_date = Date.now()
-                let publicBlogPost = null
-
-                if (blogPost.public_version) {
-                    publicBlogPost = blogPost.public_version
-
-                    const publicFilter = {
-                        _id: blogPost.public_version._id
-                    }
-                    const publicUpdate = privateUpdate
-    
-                    // update public version
-                    await BlogPost.findOneAndUpdate(
-                        publicFilter, 
-                        publicUpdate
-                    )
-                }
-                else {
-                    // create a public version
-                    const publicBlogPostData = {...blogPost, ...privateUpdate}
-                    delete publicBlogPostData._id
-
-                    publicBlogPost = new BlogPost(publicBlogPostData)
-                    await publicBlogPost.save();
-
-                    // create a reaction counter for public content
-                    const reactionCounter = new ReactionCounter({
-                        content: {
-                            content_type: 'BlogPost',
-                            content_id: publicBlogPost._id
-                        },
-                        like_count: 0,
-                        dislike_count: 0
-                    })
-                    await reactionCounter.save()
-
-                    privateUpdate.public_version = publicBlogPost._id
-                }
-
-                res.redirect(303, `/blog-posts/${publicBlogPost._id}`)
-            }
-            else {
-                res.end()
-            }
-    
-            // update private version
-            await BlogPost.findOneAndUpdate(
-                privateFilter, 
-                privateUpdate
-            )
-        }
-    }) 
-];
+      // update private version
+      await BlogPost.findOneAndUpdate(privateFilter, privateUpdate)
+    }
+  }),
+]
 
 // If validationPaths = null, all paths are considered
-async function processBlogPostData(
-    req, res, validationPaths
-) {
-    const errors = []
+async function processBlogPostData(req, res, validationPaths) {
+  const errors = []
 
-    if (req.fileTypeError) {
-        errors.push( 
-            {
-                'path': 'thumbnail',
-                'msg': 'File must be jpeg, jpg, png, webp, or gif.'
-            }
-        )
+  if (req.fileTypeError) {
+    errors.push({
+      path: "thumbnail",
+      msg: "File must be jpeg, jpg, png, webp, or gif.",
+    })
+  } else if (req.fileLimitError) {
+    errors.push({
+      path: "thumbnail",
+      msg: req.fileLimitError.message,
+    })
+  } else if (
+    !req.file &&
+    (!validationPaths || validationPaths.includes("thumbnail"))
+  ) {
+    errors.push({
+      path: "thumbnail",
+      msg: "Thumbnail required.",
+    })
+  }
+
+  const window = new JSDOM("").window
+  const DOMPurify = createDOMPurify(window)
+
+  const inputs = {
+    title: DOMPurify.sanitize(req.body.title),
+    keywords: DOMPurify.sanitize(req.body.keywords),
+    content: DOMPurify.sanitize(req.body.content),
+  }
+
+  // remove weird tinymce phenomenon
+  if (inputs.content === '<p><br data-mce-bogus="1"></p>') {
+    inputs.content = ""
+  }
+
+  let nonFileErrors = validationResult(req).array()
+
+  if (validationPaths) {
+    nonFileErrors = nonFileErrors.filter((error) =>
+      validationPaths.includes(error.path),
+    )
+  }
+
+  errors.push(...nonFileErrors)
+
+  if (errors.length) {
+    res.status(400).json({ errors })
+    return
+  }
+
+  const blogPostData = {
+    title: inputs.title,
+    author: req.user._id,
+    content: inputs.content,
+    last_modified_date: Date.now(),
+  }
+
+  if (inputs.keywords) {
+    blogPostData.keywords = inputs.keywords.split(" ")
+  }
+
+  if (req.file) {
+    blogPostData.thumbnail = {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
     }
-    else if (req.fileLimitError) {
-        errors.push(
-            {
-                'path': 'thumbnail',
-                'msg': req.fileLimitError.message
-            }
-        )
-    }
-    else if (
-        !req.file 
-        && (
-            !validationPaths 
-            || validationPaths.includes('thumbnail')
-        )
-    ) {
-        errors.push(
-            {
-                'path': 'thumbnail',
-                'msg': 'Thumbnail required.'
-            }
-        )
-    }
+  }
 
-    const window = new JSDOM('').window;
-    const DOMPurify = createDOMPurify(window);
-
-    const inputs = {
-        title: DOMPurify.sanitize(req.body.title),
-        keywords: DOMPurify.sanitize(req.body.keywords),
-        content: DOMPurify.sanitize(req.body.content)
-    }
-
-    // remove weird tinymce phenomenon
-    if (inputs.content === '<p><br data-mce-bogus="1"></p>') {
-        inputs.content = ''
-    }
-
-    let nonFileErrors = validationResult(req).array()
-
-    if (validationPaths) {
-        nonFileErrors = nonFileErrors.filter(
-            error => validationPaths.includes(error.path)
-        )
-    }
-
-    errors.push(...nonFileErrors)
-
-    if (errors.length) {
-        res.status(400).json({ errors })
-        return
-    }
-
-    const blogPostData = {
-        title: inputs.title,
-        author: req.user._id,
-        content: inputs.content, 
-        last_modified_date: Date.now()
-    }
-
-    if (inputs.keywords) {
-        blogPostData.keywords = inputs.keywords.split(' ')
-    }
-
-    if (req.file) {
-        blogPostData.thumbnail = {
-            data: req.file.buffer,
-            contentType: req.file.mimetype
-        }
-    }
-
-    return blogPostData
+  return blogPostData
 }
