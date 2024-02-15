@@ -1,6 +1,6 @@
 require('dotenv').config()
-const helmet = require('helmet')
-const crypto = require('crypto')
+const liveReload = require("livereload")
+const connectLiveReload = require("connect-livereload")
 const createError = require("http-errors")
 const express = require("express")
 const path = require("path")
@@ -12,33 +12,26 @@ const flash = require('connect-flash')
 const mongoSanitize = require('express-mongo-sanitize')
 const query = require('./utils/query')
 const BlogPost = require("./models/blogPost");
-const compression = require('compression')
+const User = require("./models/user");
 require('./mongoConfig')
 
 
 const app = express()
 
-/* Security Setup */
-app.use((req, res, next) => {
-  const nonce = crypto.randomBytes(16).toString('base64')
-  res.locals.nonce = nonce
-
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'", 
-          `'nonce-${nonce}'`
-        ]
-      }
-    }
-  })(req, res, next)
-})
-
 /* View Engine Setup */
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
+
+/* Live Reload Setup */
+const liveReloadServer = liveReload.createServer()
+liveReloadServer.watch(path.join(__dirname, 'public'))
+liveReloadServer.server.once('connection', () => {
+  setTimeout(() => {
+    liveReloadServer.refresh('/')
+  }, 100)
+})
+
+app.use(connectLiveReload())
 
 /* Authentication Setup */
 app.use(session(
@@ -55,6 +48,29 @@ app.use(session(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+/* FOR TESTING - AUTOLOGIN */
+app.use(async (req, res, next) => {
+  const autologUser = await User
+    .findOne({ username: 'aaaaaa' })
+    .populate('blog_posts_recently_read')
+    .populate({
+        path: 'blog_posts_recently_read',
+        populate: {
+            path: 'author'
+        }
+    })
+    .lean()
+    .exec();
+
+  req.login(autologUser, (err) => {
+    if (err) {
+        return next(err)
+    }
+  })
+  
+  next()
+})
 
 // add user locals
 app.use(async (req, res, next) => {
@@ -94,9 +110,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(mongoSanitize());
-
-/* Response compression */
-app.use(compression())
 
 /* Static Setup */
 app.use(

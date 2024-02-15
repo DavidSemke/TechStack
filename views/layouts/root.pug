@@ -10,7 +10,7 @@ html(lang="en")
     )
     link(rel='icon' type='image/x-icon' href='/images/favicon.png')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script. 
+    script(nonce=nonce). 
       const backendData = !{JSON.stringify(data)};
     script(defer type='module' src='/tinymce/tinymce.min.js')
     script(defer type='module' src='/javascripts/root.js')
