@@ -51,6 +51,8 @@
     "livereload": "^0.9.3",
     "prettier": "3.0.3",
     "sass": "^1.69.5",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
   }
 }

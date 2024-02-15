@@ -13,7 +13,7 @@ html(lang="en")
     script(nonce=nonce). 
       const backendData = !{JSON.stringify(data)};
     script(defer type='module' src='/tinymce/tinymce.min.js')
-    script(defer type='module' src='/javascripts/root.js')
+    script(defer type='module' src='/javascripts/bundle.js')
 
   body
     block content
