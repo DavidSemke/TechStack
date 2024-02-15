@@ -1,4 +1,6 @@
 require('dotenv').config()
+const RateLimit = require('express-rate-limit')
+const compression = require('compression')
 const helmet = require('helmet')
 const crypto = require('crypto')
 const createError = require("http-errors")
@@ -12,11 +14,19 @@ const flash = require('connect-flash')
 const mongoSanitize = require('express-mongo-sanitize')
 const query = require('./utils/query')
 const BlogPost = require("./models/blogPost");
-const compression = require('compression')
 require('./mongoConfig')
 
 
 const app = express()
+
+/* Rate limiting */
+// app.use(
+//   // 20 requests per minute
+//   RateLimit({
+//     windowMs: 1*60*1000,
+//     max: 1000
+//   })
+// )
 
 /* Security Setup */
 app.use((req, res, next) => {
