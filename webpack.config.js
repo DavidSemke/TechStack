@@ -10,21 +10,6 @@ module.exports = {
         "javascripts"
     ),
   },
-//   module: {
-//     rules: [
-//       {
-//         test: /\.css$/i,
-//         use: ["style-loader", "css-loader"],
-//       },
-//       {
-//         test: /\.(png|jpg|jpeg|gif|webp)$/i,
-//         type: "asset/resource",
-//         generator: {
-//           filename: 'images/[hash][ext][query]'
-//         }
-//       },
-//     ],
-//   },
-    devtool: "source-map",
-    mode: "development",
+  devtool: "source-map",
+  mode: "development",
 };
