@@ -21,10 +21,10 @@ const app = express()
 
 /* Rate limiting */
 app.use(
-  // 200 requests per minute
+  // 100 requests per minute
   RateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 200,
+    max: 100,
   }),
 )
 
