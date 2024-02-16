@@ -9,6 +9,7 @@ const path = require("path")
 const cookieParser = require("cookie-parser")
 const logger = require("morgan")
 const session = require("express-session")
+const MemoryStore = require('memorystore')(session)
 const passport = require("./utils/auth")
 const flash = require("connect-flash")
 const mongoSanitize = require("express-mongo-sanitize")
@@ -55,6 +56,9 @@ app.use(
     cookie: {
       sameSite: "lax",
     },
+    store: new MemoryStore({
+      checkPeriod: 24*60*60*1000 // 24 hours in ms
+    })
   }),
 )
 
