@@ -7,5 +7,5 @@ module.exports = {
     path: path.join(__dirname, "public", "javascripts"),
   },
   devtool: "source-map",
-  mode: "development",
+  mode: "production",
 }
