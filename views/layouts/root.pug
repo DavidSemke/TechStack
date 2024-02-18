@@ -9,10 +9,11 @@ html(lang="en")
       content='A place for reading blog posts by coders and tech enthusiasts.'
     )
     link(rel='icon' type='image/x-icon' href=icons.favicon)
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
     script(nonce=nonce). 
       const backendData = !{JSON.stringify(data)};
-    script(defer type='module' src='/tinymce/tinymce.min.js')
+    if (usingTinyMCE)
+      script(defer type='module' src='/tinymce/tinymce.min.js')
     script(defer type='module' src='/javascripts/bundle.js')
 
   body

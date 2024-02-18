@@ -12,6 +12,11 @@ router.use((req, res, next) => {
   next()
 })
 
+function setUsingTinyMCE(req, res, next) {
+  res.locals.usingTinyMCE = true
+  next()
+}
+
 // Users can only manipulate private blogs that they authored
 function setPrivateBlogPost(req, res, next) {
   utils.setObjectIdDocument(
@@ -104,6 +109,7 @@ router.post(
 
 router.get(
   "/:username/blog-posts/new-blog-post",
+  setUsingTinyMCE,
   controller.getBlogPostCreateForm,
 )
 
@@ -133,6 +139,7 @@ router.delete(
 router.get(
   "/:username/blog-posts/:blogPostId",
   setPrivateBlogPost,
+  setUsingTinyMCE,
   controller.getBlogPostUpdateForm,
 )
 

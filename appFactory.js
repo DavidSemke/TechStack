@@ -45,10 +45,10 @@ function App() {
 
         /* Rate limiting */
         app.use(
-            // 100 requests per minute
+            // 50 requests per minute
             RateLimit({
                 windowMs: 1 * 60 * 1000,
-                max: 100,
+                max: 50,
             }),
         )
 
