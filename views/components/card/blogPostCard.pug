@@ -13,7 +13,7 @@ mixin blogPostCard(blogPost, attrs={})
       +iconElementList(
         [{
           'tag': 'div',
-          'icon': '/images/likeIcon.png',
+          'icon': icons.likeIcon,
           'label': blogPost.likes,
           'attrs': {
             'class': 'blog-post-card__likes',
@@ -21,7 +21,7 @@ mixin blogPostCard(blogPost, attrs={})
         },
         {
           'tag': 'div',
-          'icon': '/images/dislikeIcon.png',
+          'icon': icons.dislikeIcon,
           'label': blogPost.dislikes,
           'attrs': {
             'class': 'blog-post-card__dislikes',
@@ -29,7 +29,7 @@ mixin blogPostCard(blogPost, attrs={})
         },
         {
           'tag': 'div',
-          'icon': '/images/commentIcon.png',
+          'icon': icons.commentIcon,
           'label': blogPost.comments.length,
           'attrs': {
             'class': 'blog-post-card__total-comments',
@@ -56,7 +56,7 @@ mixin blogPostCard(blogPost, attrs={})
     )
       .blog-post-card__overlay
         .blog-post-card__author-date
-          - let icon = '/images/profileIcon.png'
+          - let icon = icons.profileIcon
           - const { profile_pic: pic , username } = blogPost.author
             
             if pic

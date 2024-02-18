@@ -18,7 +18,7 @@ mixin blogPostList(blogPosts, attrs={})
                     +iconElementList(
                         [{
                             'tag': 'div',
-                            'icon': '/images/likeIcon.png',
+                            'icon': icons.likeIcon,
                             'label': likes,
                             'attrs': {
                                 'class': 'blog-post-item__likes'
@@ -26,7 +26,7 @@ mixin blogPostList(blogPosts, attrs={})
                         },
                         {
                             'tag': 'div',
-                            'icon': '/images/dislikeIcon.png',
+                            'icon': icons.dislikeIcon,
                             'label': dislikes,
                             'attrs': {
                                 'class': 'blog-post-item__dislikes'
@@ -34,7 +34,7 @@ mixin blogPostList(blogPosts, attrs={})
                         },
                         {
                             'tag': 'div',
-                            'icon': '/images/commentIcon.png',
+                            'icon': icons.commentIcon,
                             'label': totalComments,
                             'attrs': {
                                 'class': 'blog-post-item__total-comments'
@@ -58,7 +58,7 @@ mixin blogPostList(blogPosts, attrs={})
                     .blog-post-item__actions
                         +iconElement(
                             'a',
-                            '/images/editIcon.png',
+                            icons.editIcon,
                             null,
                             {
                                 'href': `/users/${loginUser.username}/blog-posts/${blogPost._id}`,
@@ -72,7 +72,7 @@ mixin blogPostList(blogPosts, attrs={})
                         )
                         +iconElement(
                             'button',
-                            '/images/deleteIcon.png',
+                            icons.deleteIcon,
                             null,
                             {
                                 'class': [

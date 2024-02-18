@@ -6,7 +6,7 @@ mixin commentCard(comment, isReply=false, attrs={})
         .comment-card__author-date 
             .comment-card__author-details
                 - let author = comment.author
-                - let profileIcon = '/images/profileIcon.png'
+                - let profileIcon = icons.profileIcon
 
                 if author
                     if author.profile_pic
@@ -47,7 +47,7 @@ mixin commentCard(comment, isReply=false, attrs={})
             ).comment-card__like-reaction-form
                 +iconElement(
                     'button',
-                    '/images/likeIcon.png',
+                    icons.likeIcon,
                     comment.likes,
                     {
                         'type': 'submit',
@@ -80,7 +80,7 @@ mixin commentCard(comment, isReply=false, attrs={})
             ).comment-card__dislike-reaction-form
                 +iconElement(
                     'button',
-                    '/images/dislikeIcon.png',
+                    icons.dislikeIcon,
                     comment.dislikes,
                     {
                         'type': 'submit',
@@ -111,7 +111,7 @@ mixin commentCard(comment, isReply=false, attrs={})
             if !isReply
                 +iconElement(
                     'button',
-                    '/images/commentIcon.png',
+                    icons.commentIcon,
                     comment.replies.length,
                     {
                         'class': [

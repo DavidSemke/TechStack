@@ -4,9 +4,12 @@
  * Module dependencies.
  */
 
-const app = require('../app')
+const App = require('../appFactory')
 const debug = require('debug')
 const http = require('http')
+
+
+const app = App()
 
 /**
  * Get port from environment and store in Express.

@@ -4,7 +4,7 @@ include ../icon/iconElement
 .account-sidebar.sidebar.-closed
     .sidebar__title Account
     if loginUser
-        - let icon = '/images/profileIcon.png'
+        - let icon = icons.profileIcon
         
         if loginUser.profile_pic
             - const pic = loginUser.profile_pic
@@ -27,7 +27,7 @@ include ../icon/iconElement
         +iconElementList(
             [{
                 'tag': 'a',
-                'icon': '/images/profileIcon.png',
+                'icon': icons.profileIcon,
                 'label': 'Your Profile',
                 'attrs': {
                     'href': `/users/${loginUser.username}`,
@@ -35,7 +35,7 @@ include ../icon/iconElement
             },
             {
                 'tag': 'a',
-                'icon': '/images/blogPostIcon.png',
+                'icon': icons.blogPostIcon,
                 'label': 'Your Blog Posts',
                 'attrs': {
                     'href': `/users/${loginUser.username}/blog-posts`,

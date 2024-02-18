@@ -15,7 +15,7 @@ include ../list/iconElementList
                 - const recentReadsIconElements = []
 
                 each blogPost in recentReads
-                    - let icon = '/images/profileIcon.png'
+                    - let icon = icons.profileIcon
                     - const pic = blogPost.author.profile_pic
 
                     if pic
@@ -57,7 +57,7 @@ include ../list/iconElementList
             - const suggestionsIconElements = []
 
             each blogPost in suggestions
-                - let icon = '/images/profileIcon.png'
+                - let icon = icons.profileIcon
                 - const pic = blogPost.author.profile_pic
 
                 if pic

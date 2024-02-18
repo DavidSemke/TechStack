@@ -8,7 +8,7 @@ ul.blog-post__reaction-list
         ).blog-post__like-reaction-form
             +iconElement(
                 'button',
-                '/images/likeIcon.png',
+                icons.likeIcon,
                 blogPost.likes,
                 { 
                     'type': 'submit',
@@ -42,7 +42,7 @@ ul.blog-post__reaction-list
         ).blog-post__dislike-reaction-form
             +iconElement(
                 'button',
-                '/images/dislikeIcon.png',
+                icons.dislikeIcon,
                 blogPost.dislikes,
                 { 
                     'type': 'submit',
@@ -71,7 +71,7 @@ ul.blog-post__reaction-list
     li.blog-post__reaction-item
         +iconElement(
             'a',
-            '/images/commentIcon.png',
+            icons.commentIcon,
             blogPost.comments.length,
             { 
                 'href': '#comment-section',
