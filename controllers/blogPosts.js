@@ -51,8 +51,8 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
   )
   const template = pug.compileFile(pugPath)
   const renderedHTML = template({
-    blogPosts, 
-    icons: res.locals.icons
+    blogPosts,
+    icons: res.locals.icons,
   })
 
   res.json({ renderedHTML })
@@ -166,15 +166,12 @@ exports.postComment = [
       "commentCard.pug",
     )
     const pugString = `include ${mixinPath}\n+commentCard(comment, isReply)`
-    const template = pug.compile(
-      pugString, 
-      { filename: "commentCardTemplate" }
-    )
+    const template = pug.compile(pugString, { filename: "commentCardTemplate" })
     const isReply = Boolean(replyTo)
     const renderedHTML = template({
       comment,
       isReply,
-      icons: res.locals.icons
+      icons: res.locals.icons,
     })
 
     res.json({ renderedHTML, commentData: comment })
