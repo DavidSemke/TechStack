@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "connect-livereload": "^0.6.1",
-    "css-loader": "^6.10.0",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
@@ -53,7 +52,6 @@
     "livereload": "^0.9.3",
     "prettier": "3.0.3",
     "sass": "^1.69.5",
-    "style-loader": "^3.3.4",
     "supertest": "^6.3.4",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"

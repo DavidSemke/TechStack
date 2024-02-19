@@ -6,13 +6,5 @@ module.exports = {
     filename: "bundle.js",
     path: path.join(__dirname, "public", "javascripts"),
   },
-  module: {
-    rules: [
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-    ],
-  },
   mode: "production",
 }
