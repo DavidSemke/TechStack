@@ -806,6 +806,14 @@ button.-tab, a.-button.-tab {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
 }
+button.-error, a.-button.-error {
+  color: red;
+  border: 2px solid red;
+}
+button.-error:hover, a.-button.-error:hover {
+  color: white;
+  background-color: red;
+}
 
 h1, h2 {
   text-transform: capitalize;

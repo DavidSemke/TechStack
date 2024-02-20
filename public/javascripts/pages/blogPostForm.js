@@ -93,7 +93,7 @@ function blogPostFormSubmitListeners() {
         blogPostForm.append(input)
     }
 
-    // in this case, enter key submission is harmful - prevent it
+    // In this case, enter key submission is harmful - prevent it
     blogPostForm.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault()
@@ -144,9 +144,47 @@ function blogPostFormSubmitListeners() {
             blogPostForm,
             (data) => {
                 errorsOccurred = true
+                let metadataErrors = false
+                let contentErrors = false
+                const metadataPaths = ['title', 'thumbnail', 'keywords']
+                const contentPaths = ['content', 'word-count']
 
                 for (const error of data.errors) {
                     inputData[error.path].errors.push(error)
+
+                    if (
+                        !metadataErrors 
+                        && metadataPaths.includes(error.path)
+                    ) {
+                        metadataErrors = true
+                    }
+                    else if (
+                        !contentErrors 
+                        && contentPaths.includes(error.path)
+                    ) {
+                        contentErrors = true
+                    }
+                }
+
+                const metadataTab = document.querySelector(
+                    '.blog-post-form-page__metadata-tab'
+                )
+                const contentTab = document.querySelector(
+                    '.blog-post-form-page__content-tab'
+                )
+
+                if (metadataErrors) {
+                    metadataTab.classList.add('-error')
+                }
+                else {
+                    metadataTab.classList.remove('-error')
+                }
+
+                if (contentErrors) {
+                    contentTab.classList.add('-error')
+                }
+                else {
+                    contentTab.classList.add('-error')
                 }
 
                 inputData.content.errors.push(

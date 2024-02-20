@@ -85,6 +85,16 @@ button, a.-button {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
   }
+
+  &.-error {
+    color: red;
+    border: 2px solid red;
+
+    &:hover {
+      color: colors.$textLight;
+      background-color: red;
+    }
+  }
 }
 
 h1, h2 {
