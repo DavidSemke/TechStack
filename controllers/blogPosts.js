@@ -8,7 +8,7 @@ const dateFormat = require("../utils/dateFormat")
 const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const validation = require("./utils/blogPostsValidation")
+const commentVal = require("./validation/comment")
 const path = require("path")
 const pug = require("pug")
 
@@ -100,7 +100,7 @@ exports.getBlogPost = asyncHandler(async (req, res, next) => {
 
 // On comment create
 exports.postComment = [
-  ...validation.comment,
+  ...commentVal.comment,
 
   asyncHandler(async (req, res, next) => {
     const blogPost = req.documents.blogPostId

@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler")
 const { validationResult } = require("express-validator")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const validation = require("./utils/signupValidation")
+const userVal = require("./validation/user")
 
 exports.getSignup = asyncHandler(async (req, res, next) => {
   const data = {
@@ -17,7 +17,7 @@ exports.getSignup = asyncHandler(async (req, res, next) => {
 })
 
 exports.postSignup = [
-  ...validation.user,
+  ...userVal.userSignup,
 
   asyncHandler(async (req, res, next) => {
     const window = new JSDOM("").window

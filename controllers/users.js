@@ -7,7 +7,9 @@ const { validationResult } = require("express-validator")
 const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const validation = require("./utils/usersValidation")
+const userVal = require("./validation/user")
+const blogPostVal = require('./validation/blogPost')
+const reactionVal = require('./validation/reaction')
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -58,7 +60,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = [
   // Files processed after validation middleware
-  ...validation.user,
+  ...userVal.userUpdate,
 
   asyncHandler(async (req, res, next) => {
     const errors = []
@@ -124,7 +126,7 @@ exports.updateUser = [
 ]
 
 exports.postReaction = [
-  ...validation.reaction,
+  ...reactionVal.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -172,7 +174,7 @@ exports.postReaction = [
 ]
 
 exports.updateReaction = [
-  ...validation.reaction,
+  ...reactionVal.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -235,7 +237,7 @@ exports.updateReaction = [
 ]
 
 exports.deleteReaction = [
-  ...validation.reaction,
+  ...reactionVal.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -332,7 +334,7 @@ exports.getBlogPostCreateForm = [
 // On blog post create
 exports.postBlogPost = [
   // Files processed after validation middleware
-  ...validation.blogPost,
+  ...blogPostVal.blogPost,
 
   asyncHandler(async (req, res, next) => {
     switch (req.body["pre-method"]) {
@@ -423,7 +425,7 @@ exports.getBlogPostUpdateForm = [
 // On blog post update
 exports.updateBlogPost = [
   // Files processed after body middleware
-  ...validation.blogPost,
+  ...blogPostVal.blogPost,
 
   asyncHandler(async (req, res, next) => {
     switch (req.body["pre-method"]) {
