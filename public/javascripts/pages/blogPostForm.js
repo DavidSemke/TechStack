@@ -13,23 +13,28 @@ function blogPostFormTabListeners() {
     const metadataTab = document.querySelector(
         '.blog-post-form-page__metadata-tab'
     )
-
-    metadataTab.addEventListener('click', () => {
-        if (metadata.classList.contains('-gone')) {
-            content.classList.add('-gone')
-            metadata.classList.remove('-gone')
-        }
-    })
+    metadataTab.classList.add('-bold')
 
     const contentTab = document.querySelector(
         '.blog-post-form-page__content-tab'
     )
 
+    metadataTab.addEventListener('click', () => {
+        metadataTab.classList.add('-bold')
+        contentTab.classList.remove('-bold')
+
+        content.classList.add('-gone')
+        metadata.classList.remove('-gone')
+        
+    })
+
     contentTab.addEventListener('click', () => {
-        if (content.classList.contains('-gone')) {
-            metadata.classList.add('-gone')
-            content.classList.remove('-gone')
-        }
+        contentTab.classList.add('-bold')
+        metadataTab.classList.remove('-bold')
+        
+        metadata.classList.add('-gone')
+        content.classList.remove('-gone')
+        
     })
 }
 

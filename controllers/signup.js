@@ -53,7 +53,27 @@ exports.postSignup = [
         const user = new User(userData)
         await user.save()
 
+        // login user
+        const loginUser = await User
+          .findById(user._id)
+          .populate("blog_posts_recently_read")
+          .populate({
+            path: "blog_posts_recently_read",
+            populate: {
+              path: "author",
+            },
+          })
+          .lean()
+          .exec()
+
+        req.login(loginUser, (err) => {
+          if (err) {
+            return next(err)
+          }
+        })
+
         res.redirect("/")
+        
       } catch (err) {
         return next(err)
       }
