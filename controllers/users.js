@@ -8,8 +8,8 @@ const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
 const userVal = require("./validation/user")
-const blogPostVal = require('./validation/blogPost')
-const reactionVal = require('./validation/reaction')
+const blogPostVal = require("./validation/blogPost")
+const reactionVal = require("./validation/reaction")
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -470,7 +470,10 @@ exports.updateBlogPost = [
     }
 
     async function forwardUpdate(
-      req, res, validationPaths = null, publishing = false,
+      req,
+      res,
+      validationPaths = null,
+      publishing = false,
     ) {
       const blogPost = req.documents.blogPostId
 
@@ -478,14 +481,9 @@ exports.updateBlogPost = [
       // already exists
       // Set all paths except for thumbnail
       if (!validationPaths && blogPost.thumbnail) {
-        validationPaths = [
-          'title',
-          'keywords',
-          'content',
-          'word-count'
-        ]
+        validationPaths = ["title", "keywords", "content", "word-count"]
       }
-      
+
       const data = await processBlogPostData(req, res, validationPaths)
 
       // data is undefined or an object
@@ -493,7 +491,6 @@ exports.updateBlogPost = [
         return
       }
 
-      
       const privateFilter = {
         _id: blogPost._id,
       }

@@ -54,8 +54,7 @@ exports.postSignup = [
         await user.save()
 
         // login user
-        const loginUser = await User
-          .findById(user._id)
+        const loginUser = await User.findById(user._id)
           .populate("blog_posts_recently_read")
           .populate({
             path: "blog_posts_recently_read",
@@ -73,7 +72,6 @@ exports.postSignup = [
         })
 
         res.redirect("/")
-        
       } catch (err) {
         return next(err)
       }

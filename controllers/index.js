@@ -15,9 +15,7 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
 
   blogPosts = await Promise.all(
     blogPosts.map((blogPost) => {
-      return query.completeBlogPost(
-        blogPost, req.user, false, false
-      )
+      return query.completeBlogPost(blogPost, req.user, false, false)
     }),
   )
 

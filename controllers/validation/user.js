@@ -1,12 +1,11 @@
 const { body } = require("express-validator")
 const User = require("../../models/user")
 const asyncHandler = require("express-async-handler")
-const message = require('./errorMessage')
-
+const message = require("./errorMessage")
 
 const usernameLength = { min: 6, max: 30 }
 const passwordLength = { min: 8 }
-const passwordSpecialChars = '!@#$%^&*'
+const passwordSpecialChars = "!@#$%^&*"
 const bioLength = { max: 300 }
 const keywordsLength = { max: 100 }
 const maxKeywords = 10
@@ -19,9 +18,7 @@ const userSignup = [
     .trim()
     .isLength(passwordLength)
     .withMessage((value) => {
-      return message.invalidLength(
-        'password', value, passwordLength
-      )
+      return message.invalidLength("password", value, passwordLength)
     })
     .custom((value) => {
       const containsNum = /\d/
@@ -29,7 +26,7 @@ const userSignup = [
       return containsNum.test(value) && containsSpecialChar.test(value)
     })
     .withMessage(
-      `Password must contain one of ${passwordSpecialChars} and a digit.`
+      `Password must contain one of ${passwordSpecialChars} and a digit.`,
     ),
 ]
 
@@ -41,9 +38,7 @@ const userUpdate = [
     .trim()
     .isLength(bioLength)
     .withMessage((value) => {
-      return message.invalidLength(
-        'bio', value, bioLength
-      )
+      return message.invalidLength("bio", value, bioLength)
     }),
   body("keywords")
     .isString()
@@ -51,17 +46,13 @@ const userUpdate = [
     .trim()
     .isLength(keywordsLength)
     .withMessage((value) => {
-      return message.invalidLength(
-        'keywords', value, keywordsLength
-      )
+      return message.invalidLength("keywords", value, keywordsLength)
     })
     .custom((value) => {
       const wordCount = value.split(" ").filter((x) => x).length
       return wordCount <= maxKeywords
     })
-    .withMessage(
-      `Cannot have more than ${maxKeywords} keywords.`
-    ),
+    .withMessage(`Cannot have more than ${maxKeywords} keywords.`),
 ]
 
 function validateUsername() {
@@ -71,17 +62,13 @@ function validateUsername() {
     .trim()
     .isLength(usernameLength)
     .withMessage((value) => {
-      return message.invalidLength(
-        'username', value, usernameLength
-      )
+      return message.invalidLength("username", value, usernameLength)
     })
     .custom((value) => {
       const usernameFormat = /^[-\dA-Za-z]*$/
       return usernameFormat.test(value)
     })
-    .withMessage(
-      "Username must only contain alphanumeric characters and '-'."
-    )
+    .withMessage("Username must only contain alphanumeric characters and '-'.")
     .custom(
       asyncHandler(async (value, { req }) => {
         const userExists = await User.findOne({ username: value }).lean().exec()
@@ -95,9 +82,7 @@ function validateUsername() {
     .withMessage("Username already exists.")
 }
 
-
-
 module.exports = {
   userSignup,
-  userUpdate
+  userUpdate,
 }

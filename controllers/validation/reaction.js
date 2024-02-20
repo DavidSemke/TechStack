@@ -1,6 +1,5 @@
 const { body } = require("express-validator")
 
-
 const contentTypes = ["BlogPost", "Comment"]
 const reactionTypes = ["Like", "Dislike"]
 
@@ -9,9 +8,7 @@ const reaction = [
     .custom((value) => {
       return contentTypes.includes(value)
     })
-    .withMessage(
-        `Content type must be in [${contentTypes}]`
-    )
+    .withMessage(`Content type must be in [${contentTypes}]`)
     .custom((value, { req }) => {
       const content = req.documents["content-id"]
 
@@ -33,7 +30,6 @@ const reaction = [
     .withMessage(`Reaction type must be in [${reactionTypes}]`),
 ]
 
-
 module.exports = {
-  reaction
+  reaction,
 }
