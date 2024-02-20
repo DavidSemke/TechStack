@@ -10,7 +10,8 @@
     "set_debug": "set DEBUG=$npm_package_name:*",
     "watch_node": "nodemon --ext js,pug",
     "watch_scss": "sass --no-source-map --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
-    "devstart": "npm run set_debug & concurrently \"npm run watch_node\" \"npm run watch_scss\"",
+    "watch_webpack": "webpack --watch",
+    "devstart": "npm run set_debug & concurrently \"npm run watch_node\" \"npm run watch_scss\" \"npm run watch_webpack\"",
     "test": "jest"
   },
   "dependencies": {

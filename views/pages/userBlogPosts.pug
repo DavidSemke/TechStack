@@ -45,20 +45,25 @@ block page
                             'label': 'Unpublished'
                         }],
                         {
-                            'button': {'class': '-tab'}
+                            'button': {'class': ['-tab']}
                         }
                     )
                 .user-blog-posts__tab-container
-                    +blogPostList(
-                        publishedBlogPosts,
-                        {'class': 'user-blog-posts__published'}
-                    )
-                    +blogPostList(
-                        unpublishedBlogPosts,
-                        {'class': [
-                            'user-blog-posts__unpublished', 
-                            '-gone'
-                        ]}
-                    )
+                    .user-blog-posts__published-container
+                        if !publishedBlogPosts.length
+                            p You have no blog posts here.
+                        else
+                            +blogPostList(
+                                publishedBlogPosts,
+                                {'class': 'user-blog-posts__published'}
+                            )
+                    .user-blog-posts__unpublished-container.-gone
+                        if !unpublishedBlogPosts.length
+                            p You have no blog posts here.
+                        else
+                            +blogPostList(
+                                unpublishedBlogPosts,
+                                {'class': ['user-blog-posts__unpublished']}
+                            )
             .user-blog-posts__right.-hidden
                 +blogPostFragment()

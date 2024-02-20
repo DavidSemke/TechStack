@@ -176,32 +176,36 @@ function compareDateStrings(a, b) {
 
 function userBlogPostsTabListeners() {
     const published = document.querySelector(
-        '.user-blog-posts__published'
+        '.user-blog-posts__published-container'
     )
     const unpublished = document.querySelector(
-        '.user-blog-posts__unpublished'
+        '.user-blog-posts__unpublished-container'
     )
     
     const publishedTab = document.querySelector(
         '.user-blog-posts__published-tab'
     )
-
-    publishedTab.addEventListener('click', () => {
-        if (published.classList.contains('-gone')) {
-            unpublished.classList.add('-gone')
-            published.classList.remove('-gone')
-        }
-    })
+    publishedTab.classList.add('-bold')
 
     const unpublishedTab = document.querySelector(
         '.user-blog-posts__unpublished-tab'
     )
 
+    publishedTab.addEventListener('click', () => {
+        publishedTab.classList.add('-bold')
+        unpublishedTab.classList.remove('-bold')
+
+        unpublished.classList.add('-gone')
+        published.classList.remove('-gone')
+        
+    })
+
     unpublishedTab.addEventListener('click', () => {
-        if (unpublished.classList.contains('-gone')) {
-            published.classList.add('-gone')
-            unpublished.classList.remove('-gone')
-        }
+        unpublishedTab.classList.add('-bold')
+        publishedTab.classList.remove('-bold')
+
+        published.classList.add('-gone')
+        unpublished.classList.remove('-gone') 
     }) 
 }
 
@@ -280,7 +284,16 @@ function onDeleteButtonClick(item, blogPostList) {
             
             // remove deleted blog post from view
             blogPostList.removeChild(item)
-            
+
+            // add 'no blog posts' note
+            if (blogPostList.childElementCount === 0) {
+                const parent = blogPostList.parentElement
+                parent.removeChild(blogPostList)
+
+                const p = document.createElement('p')
+                p.textContent = 'You have no blog posts here.'
+                parent.append(p)
+            }
         })
         .catch(error => {
             throw error

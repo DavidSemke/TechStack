@@ -675,6 +675,9 @@
   overflow: auto;
   border: 2px solid rgb(36, 36, 36);
 }
+.user-blog-posts__published-container p, .user-blog-posts__unpublished-container p {
+  margin-left: 1rem;
+}
 
 .profile-page {
   width: 100%;
@@ -847,4 +850,8 @@ ul, ol {
 
 .-gone {
   display: none;
+}
+
+.-bold {
+  font-weight: bold;
 }
