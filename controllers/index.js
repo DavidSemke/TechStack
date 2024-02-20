@@ -7,7 +7,7 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
     public_version: { $exists: false },
     publish_date: { $exists: true },
   })
-    .sort({ likes: "desc" })
+    .sort({ publish_date: "desc" })
     .populate("author")
     .limit(6)
     .lean()
@@ -15,7 +15,9 @@ exports.getIndex = asyncHandler(async (req, res, next) => {
 
   blogPosts = await Promise.all(
     blogPosts.map((blogPost) => {
-      return query.completeBlogPost(blogPost, req.user, false, false)
+      return query.completeBlogPost(
+        blogPost, req.user, false, false
+      )
     }),
   )
 
