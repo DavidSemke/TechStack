@@ -470,11 +470,22 @@ exports.updateBlogPost = [
     }
 
     async function forwardUpdate(
-      req,
-      res,
-      validationPaths = null,
-      publishing = false,
+      req, res, validationPaths = null, publishing = false,
     ) {
+      const blogPost = req.documents.blogPostId
+
+      // Ensure user does not have to re-input image if one
+      // already exists
+      // Set all paths except for thumbnail
+      if (!validationPaths && blogPost.thumbnail) {
+        validationPaths = [
+          'title',
+          'keywords',
+          'content',
+          'word-count'
+        ]
+      }
+      
       const data = await processBlogPostData(req, res, validationPaths)
 
       // data is undefined or an object
@@ -482,7 +493,7 @@ exports.updateBlogPost = [
         return
       }
 
-      const blogPost = req.documents.blogPostId
+      
       const privateFilter = {
         _id: blogPost._id,
       }
