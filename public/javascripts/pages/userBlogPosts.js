@@ -210,6 +210,10 @@ function userBlogPostsTabListeners() {
 }
 
 function userBlogPostsListListeners(blogPostList) {
+    if (blogPostList === null) {
+        return
+    }
+
     const items = blogPostList.querySelectorAll(
         '.blog-post-item'
     )
