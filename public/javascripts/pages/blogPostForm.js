@@ -206,19 +206,6 @@ function blogPostFormSubmitListeners() {
     })
 }
 
-function blogPostFormSizing() {
-    const leftBody = document.querySelector(
-        '.blog-post-form-page__left .blog-post-form-page__body'
-    )
-    const rightBody = document.querySelector(
-        '.blog-post-form-page__right .blog-post-form-page__body'
-    )
-    rightBody.style.maxHeight = leftBody.offsetHeight + 'px'
-    rightBody.style.maxWidth = leftBody.offsetWidth + 'px'
-}
-
-// Function blogPostFormSizing must be called before function 
-// blogPostFormMetadataEventListeners
 function blogPostFormSetup() {
     const blogPostFormPage = document.querySelector(
         '.blog-post-form-page'
@@ -231,7 +218,6 @@ function blogPostFormSetup() {
     // TinyMCE init must occur before the form submit listener is set 
     // This allows the editor's submit listener to trigger first
     initializeTinyMCE('.tinymce-app')
-    blogPostFormSizing()
     blogPostFormTabListeners()
     blogPostFormMetadataListeners()
     blogPostFormSubmitListeners()
