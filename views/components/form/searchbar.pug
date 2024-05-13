@@ -3,5 +3,7 @@ mixin searchbar(placeholder, attrs={})
         .searchbar__icon
             img(src=icons.searchIcon)
         input.searchbar__input(
-            type='text', placeholder=placeholder
+            name='content', 
+            type='text', 
+            placeholder=placeholder
         )
