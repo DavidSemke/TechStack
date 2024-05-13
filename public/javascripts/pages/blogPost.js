@@ -6,6 +6,7 @@ import { PromiseQueue } from '../utils/queue.js'
 const reactionQueue = PromiseQueue()
 
 function blogPostReactionFormListeners() {
+    const user = backendData.loginUser
     const reaction = backendData.blogPost.reaction
     let reactionId = reaction ? reaction._id : null
     const reactionType = reaction ? reaction.reaction_type : null
@@ -55,12 +56,19 @@ function blogPostReactionFormListeners() {
             responsiveDislike = false
             responsiveLike = !responsiveLike
 
+            if (user === undefined) {
+                // No need to update variables disliked and liked
+                // They only matter if the user is logged in
+                return
+            }
+
             reactionQueue.enqueue(async () => {
                 await fetchReaction(
                     form, 
                     disliked, 
                     liked, 
                     reactionId,
+                    user,
                     (data) => {
                         reactionId = data.reactionId
                     }
@@ -68,9 +76,6 @@ function blogPostReactionFormListeners() {
                 disliked = false
                 liked = !liked
             })
-            
-
-            
         })
     }
     const dislikeReactionForms = document.querySelectorAll(
@@ -90,12 +95,19 @@ function blogPostReactionFormListeners() {
             responsiveLike = false
             responsiveDislike = !responsiveDislike
 
+            if (user === undefined) {
+                // No need to update variables disliked and liked
+                // They only matter if the user is logged in
+                return
+            }
+
             reactionQueue.enqueue(async () => {
                 await fetchReaction(
                     form, 
                     liked, 
                     disliked, 
                     reactionId,
+                    user,
                     (data) => {
                         reactionId = data.reactionId
                     }
@@ -197,6 +209,7 @@ function commentReactionFormListeners(commentCard, commentData) {
         '.comment-card__dislike-button'
     )
 
+    const user = backendData.loginUser
     const reaction = commentData.reaction
     let reactionId = reaction ? reaction._id : null
     const reactionType = reaction ? reaction.reaction_type : null
@@ -228,6 +241,12 @@ function commentReactionFormListeners(commentCard, commentData) {
         )
         responsiveDislike = false
         responsiveLike = !responsiveLike
+
+        if (user === undefined) {
+            // No need to update variables disliked and liked
+            // They only matter if the user is logged in
+            return
+        }
         
         reactionQueue.enqueue(async () => {
             await fetchReaction(
@@ -235,15 +254,14 @@ function commentReactionFormListeners(commentCard, commentData) {
                 disliked, 
                 liked, 
                 reactionId,
+                user,
                 (data) => {
                     reactionId = data.reactionId
                 }
             )
             disliked = false
             liked = !liked
-        })
-
-            
+        })  
     })
 
     const dislikeReactionForm = commentCard.querySelector(
@@ -261,12 +279,19 @@ function commentReactionFormListeners(commentCard, commentData) {
         responsiveLike = false
         responsiveDislike = !responsiveDislike
 
+        if (user === undefined) {
+            // No need to update variables disliked and liked
+            // They only matter if the user is logged in
+            return
+        }
+
         reactionQueue.enqueue(async () => {
             await fetchReaction(
                 dislikeReactionForm, 
                 liked, 
                 disliked, 
                 reactionId,
+                user,
                 (data) => {
                     reactionId = data.reactionId
                 }
@@ -313,11 +338,11 @@ function updateReactionButtons(
     }
 }
 
-// Whenever (toggleReaction && removeReaction) = false, reactionId = null
+// If (toggleReaction && removeReaction) === false, then reactionId === null
 async function fetchReaction(
-    form, toggleReaction, removeReaction, reactionId, onResponseJson
+    form, toggleReaction, removeReaction, reactionId, user, onResponseJson
 ) {
-    const reactionsPath = `/users/${backendData.loginUser.username}/reactions`
+    const reactionsPath = `/users/${user.username}/reactions`
 
     if (removeReaction) {
         await formFetch(
@@ -444,7 +469,6 @@ function commentCreateFormListeners(commentCreateForm) {
                         commentString, commentCreateForm.nextSibling
                     )
                 }
-                
             }
         )
     })
