@@ -13,6 +13,11 @@ function profileFormSetup() {
     const profileEditButton = document.querySelector(
         '.profile__edit-button'
     )
+
+    if (!profileEditButton) {
+        return
+    }
+    
     const secondary = document.querySelector(
         '.profile__secondary'
     )
