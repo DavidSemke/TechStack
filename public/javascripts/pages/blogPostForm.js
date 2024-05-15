@@ -137,6 +137,12 @@ function blogPostFormSubmitListeners() {
                 formCompType: null
             }
         }
+        const metadataTab = document.querySelector(
+            '.blog-post-form-page__metadata-tab'
+        )
+        const contentTab = document.querySelector(
+            '.blog-post-form-page__content-tab'
+        )
         
         await formFetch(
             href, 
@@ -166,13 +172,6 @@ function blogPostFormSubmitListeners() {
                     }
                 }
 
-                const metadataTab = document.querySelector(
-                    '.blog-post-form-page__metadata-tab'
-                )
-                const contentTab = document.querySelector(
-                    '.blog-post-form-page__content-tab'
-                )
-
                 if (metadataErrors) {
                     metadataTab.classList.add('-error')
                 }
@@ -184,7 +183,7 @@ function blogPostFormSubmitListeners() {
                     contentTab.classList.add('-error')
                 }
                 else {
-                    contentTab.classList.add('-error')
+                    contentTab.classList.remove('-error')
                 }
 
                 inputData.content.errors.push(
@@ -202,6 +201,9 @@ function blogPostFormSubmitListeners() {
             for (const [k, v] of Object.entries(inputData)) {
                 removeErrorContainer(v.formCompType, k)
             }
+
+            metadataTab.classList.remove('-error')
+            contentTab.classList.remove('-error')
         }
     })
 }
