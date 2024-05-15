@@ -60,11 +60,14 @@ function userBlogPostsSortSelectorListeners() {
             sortValue, 
             unpublishedList
         )
-        
     })
 }
 
 function sortBlogPostList(sortBy, blogPostList, published=false) {
+    if (blogPostList === null) {
+        return
+    }
+
     const blogPostItems = Array.from(
         blogPostList.querySelectorAll('.blog-post-item')
     )
