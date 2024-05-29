@@ -7,10 +7,10 @@ include ../components/list/buttonList
 block page
     - const {title, user, isLoginUserProfile} = data
     
-    .profile-page
+    main.profile-page
         h1.profile-page__heading= title
         .profile
-            .profile__primary
+            section.profile__primary
                 .profile__avatar
                     
                     if user.profile_pic
@@ -22,68 +22,69 @@ block page
                         img(src=icons.profileIcon)
 
                 .profile__username= user.username
-            .profile__secondary
-                .profile__bio
-                    .profile__heading Bio 
-                    p.profile__body= user.bio || 'None'
-                .profile__keywords
-                    .profile__heading Favorite Keywords
+            section.profile__secondary
+                .profile__secondary-content
+                    section.profile__bio
+                        h2.profile__heading Bio 
+                        p.profile__body= user.bio || 'None'
+                    section.profile__keywords
+                        h2.profile__heading Favorite Keywords
+                        
+                        - let keywords = 'None'
+                        if user.keywords && user.keywords.length
+                            - keywords = user.keywords.join(' | ')
+                        
+                        p.profile__body= keywords
                     
-                    - let keywords = 'None'
-                    if user.keywords && user.keywords.length
-                        - keywords = user.keywords.join(' | ')
-                    
-                    p.profile__body= keywords
-                
-                if isLoginUserProfile
-                    .profile__edit
-                        button.profile__edit-button Edit Profile
+                    if isLoginUserProfile
+                        section.profile__edit
+                            button.profile__edit-button Edit Profile
             
-            if isLoginUserProfile
-                form.profile-form.-gone(
-                    method='post' 
-                    enctype='multipart/form-data'
-                )
-                    +formInput(
-                        'profile-pic',
-                        'file',
-                        ''
+                if isLoginUserProfile
+                    form.profile-form.-gone(
+                        method='post' 
+                        enctype='multipart/form-data'
                     )
-                    +formInput(
-                        'username',
-                        'text',
-                        loginUser.username
-                    )
-                    +formTextarea(
-                        'bio',
-                        loginUser.bio,
-                        {
-                            'textarea': {
-                                'rows': '5'
+                        +formInput(
+                            'profile-pic',
+                            'file',
+                            ''
+                        )
+                        +formInput(
+                            'username',
+                            'text',
+                            loginUser.username
+                        )
+                        +formTextarea(
+                            'bio',
+                            loginUser.bio,
+                            {
+                                'textarea': {
+                                    'rows': '5'
+                                }
                             }
-                        }
-                    )
-                    +formTextarea(
-                        'keywords',
-                        loginUser.keywords.join(' '),
-                        {
-                            'textarea': {
-                                'rows': '2'
+                        )
+                        +formTextarea(
+                            'keywords',
+                            loginUser.keywords.join(' '),
+                            {
+                                'textarea': {
+                                    'rows': '2'
+                                }
                             }
-                        }
-                    )
-                    p * Keywords should be separated by spaces.
-                    .profile-form__buttons
-                        button.profile-form__submit(
-                            type='submit'
-                        ) Submit
-                        button.profile-form__cancel(
-                            type='button'
-                        ) Cancel
+                        )
+                        p * Keywords should be separated by spaces.
+                        .profile-form__buttons
+                            button.profile-form__submit(
+                                type='submit'
+                            ) Submit
+                            button.profile-form__cancel(
+                                type='button'
+                            ) Cancel
 
-            .profile__tertiary
-                .profile__browser-details
-                    .profile__heading Recent Reads
+            section.profile__tertiary
+                section.profile__browser-details
+                    h2.profile__heading Recent Reads
                     .profile__body
                         - const recentReads = user.blog_posts_recently_read
                         - const recentReadsIconElements = []
@@ -127,13 +128,13 @@ block page
                         )
                 
                 if user.blog_posts_written.length
-                    .profile__author-details
+                    section.profile__author-details
                         - let heading = `Blog Posts Written by ${user.username}`
                         
                         if isLoginUserProfile
                             - heading = 'Blog Posts Written by You'
                         
-                        .profile__heading= heading
+                        h2.profile__heading= heading
                         .profile__body
                             - const blogPostsWrittenIconElements = []
 

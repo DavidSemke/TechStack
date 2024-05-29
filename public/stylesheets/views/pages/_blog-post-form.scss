@@ -30,6 +30,7 @@
     &__heading {
         font-size: fSizes.$xlarge;
         font-weight: bold;
+        margin: 0;
     }
 
     &__body {
@@ -56,14 +57,10 @@
         flex-direction: column;
         gap: 1rem;
         width: 100%;
-
-        
     }
 
     &__content {
         height: 100%;
-
-        
     }
 }
 

@@ -19,7 +19,7 @@ function profileFormSetup() {
     }
     
     const secondary = document.querySelector(
-        '.profile__secondary'
+        '.profile__secondary-content'
     )
     const profileForm = document.querySelector(
         '.profile-form'

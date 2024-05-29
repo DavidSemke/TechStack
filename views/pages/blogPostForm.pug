@@ -7,67 +7,69 @@ include ../components/fragment/blogPostFragment
 block page
     - const {blogPost} = data
 
-    .blog-post-form-page
-        .blog-post-form-page__left
-            .blog-post-form-page__heading Draft
+    main.blog-post-form-page
+        section.blog-post-form-page__left
+            h2.blog-post-form-page__heading Draft
             .blog-post-form-page__body
-                +buttonList(
-                    [{
-                        'classId': 'blog-post-form-page__metadata-tab',
-                        'label': 'Metadata'
-                    },
-                    {
-                        'classId': 'blog-post-form-page__content-tab',
-                        'label': 'Content'
-                    }],
-                    {
-                        'button': { 'class': '-tab' }
-                    }
-                )
-                form#blog-post-form.blog-post-form(
-                    method='post' 
-                    enctype='multipart/form-data'
-                )
-                    .blog-post-form__metadata
-                        +formInput(
-                            'title',
-                            'text',
-                            blogPost.title || ''
-                        )
-                        +formInput(
-                            'thumbnail',
-                            'file',
-                            ''
-                        )
-                        
-                        - const keywords = blogPost.keywords
-                        +formTextarea(
-                            'keywords',
-                            keywords ? keywords.join(' ') : '',
-                            {
-                                'textarea': {
-                                    'rows': '2'
+                section.blog-post-form-page__tabs
+                    +buttonList(
+                        [{
+                            'classId': 'blog-post-form-page__metadata-tab',
+                            'label': 'Metadata'
+                        },
+                        {
+                            'classId': 'blog-post-form-page__content-tab',
+                            'label': 'Content'
+                        }],
+                        {
+                            'button': { 'class': '-tab' }
+                        }
+                    )
+                section.blog-post-form-page__tab-container
+                    form#blog-post-form.blog-post-form(
+                        method='post' 
+                        enctype='multipart/form-data'
+                    )
+                        .blog-post-form__metadata
+                            +formInput(
+                                'title',
+                                'text',
+                                blogPost.title || ''
+                            )
+                            +formInput(
+                                'thumbnail',
+                                'file',
+                                ''
+                            )
+                            
+                            - const keywords = blogPost.keywords
+                            +formTextarea(
+                                'keywords',
+                                keywords ? keywords.join(' ') : '',
+                                {
+                                    'textarea': {
+                                        'rows': '2'
+                                    }
                                 }
-                            }
-                        )
-                        p * Keywords should be separated by spaces.
+                            )
+                            p * Keywords should be separated by spaces.
 
-                    .blog-post-form__content.-gone
-                        +formTextarea(
-                            'content',
-                            blogPost.content || '',
-                            {
-                                'textarea': {
-                                    'class': 'tinymce-app'
+                        .blog-post-form__content.-gone
+                            +formTextarea(
+                                'content',
+                                blogPost.content || '',
+                                {
+                                    'textarea': {
+                                        'class': 'tinymce-app'
+                                    }
                                 }
-                            }
-                        )
-                        input#word-count.blog-post-form__hidden(
-                            name='word-count'
-                            type='hidden'
-                        )
+                            )
+                            input#word-count.blog-post-form__hidden(
+                                name='word-count'
+                                type='hidden'
+                            )
 
-        .blog-post-form-page__right
-            .blog-post-form-page__heading Preview
+        section.blog-post-form-page__right
+            h2.blog-post-form-page__heading Preview
             .blog-post-form-page__body
                 +blogPostFragment(blogPost)

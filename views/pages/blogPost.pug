@@ -9,48 +9,53 @@ block page
     - const {title, blogPost} = data
 
     .blog-post-page
-        .blog-post
-            h1.blog-post__title= title
-            .blog-post__metadata
-                .blog-post__author-details
-                    - const author = blogPost.author
-                    - let profileIcon = icons.profileIcon
+        main.blog-post
+            article.blog-post__article
+                header.blog-post__header
+                    h1.blog-post__title= title
+                    .blog-post__metadata
+                        .blog-post__author-details
+                            - const author = blogPost.author
+                            - let profileIcon = icons.profileIcon
 
-                    if author.profile_pic
-                        - const profilePic = author.profile_pic
-                        - const profilePicBase64 = profilePic.data.toString('base64')
-                        - profileIcon = `data:${profilePic.contentType};base64,${profilePicBase64}`
+                            if author.profile_pic
+                                - const profilePic = author.profile_pic
+                                - const profilePicBase64 = profilePic.data.toString('base64')
+                                - profileIcon = `data:${profilePic.contentType};base64,${profilePicBase64}`
 
-                    +iconElement(
-                        'a',
-                        profileIcon,
-                        author.username,
-                        {
-                            'href': `/users/${author.username}`,
-                            'class': [
-                                '-avatar', 
-                                '-larger',
-                                '-gap-medium'
-                            ]
-                        }
-                    )
+                            +iconElement(
+                                'a',
+                                profileIcon,
+                                author.username,
+                                {
+                                    'href': `/users/${author.username}`,
+                                    'class': [
+                                        '-avatar', 
+                                        '-larger',
+                                        '-gap-medium'
+                                    ]
+                                }
+                            )
 
-                include ../components/list/blogPostReactionList
+                        include ../components/list/blogPostReactionList
+                        .blog-post__date
+                            | Published on 
+                            time(
+                                datetime=blogPost.publish_date
+                            )= blogPost.publish_date
 
-                .blog-post__date= `Published on ${blogPost.publish_date}`
-            
-            - const thumbnail = blogPost.thumbnail
-            - const thumbnailBase64 = thumbnail.data.toString('base64')
-            - thumbnailImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
-            
-            .blog-post__thumbnail
-                img(src=thumbnailImg)
-            .blog-post__content!= blogPost.content
-            .blog-post__post-blog-separator
-                include ../components/list/blogPostReactionList
+                - const thumbnail = blogPost.thumbnail
+                - const thumbnailBase64 = thumbnail.data.toString('base64')
+                - thumbnailImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
+                
+                .blog-post__thumbnail
+                    img(src=thumbnailImg)
+                .blog-post__content!= blogPost.content
+                .blog-post__post-blog-separator
+                    include ../components/list/blogPostReactionList
         
         if suggestions
-            .blog-post-page__more-blogs
+            section.blog-post-page__more-blogs
                 h2.blog-post-page__post-heading More Blogs
                 +blogPostGrid(
                     suggestions.slice(0, 2),
@@ -60,7 +65,7 @@ block page
                         }
                     }
                 )
-        #comment-section.blog-post-page__comment-section
+        section#comment-section.blog-post-page__comment-section
             h2.blog-post-page__post-heading Comments
             form(
                 method='post'
@@ -80,7 +85,7 @@ block page
                 button(type='submit') Submit
 
             each comment in blogPost.comments
-                .blog-post-page__comment-string
+                section.blog-post-page__comment-string
                     +commentCard(comment)
                 
                     if comment.replies.length

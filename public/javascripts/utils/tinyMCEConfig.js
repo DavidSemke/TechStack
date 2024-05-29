@@ -11,6 +11,7 @@ function initializeTinyMCE(selector) {
     
     tinymce.init({
         selector: selector,
+        license_key: 'gpl',
         plugins: 'lists link image table code help wordcount',
         menubar: 'file edit view insert table tools help',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | numlist bullist',

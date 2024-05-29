@@ -8,9 +8,9 @@ include ../components/list/buttonList
 block page
     - const {title, publishedBlogPosts, unpublishedBlogPosts} = data
 
-    .user-blog-posts-page
+    main.user-blog-posts-page
         h1.user-blog-posts-page__heading= title
-        .user-blog-posts-page__toolbar
+        section.user-blog-posts-page__toolbar
             +searchbar(
                 'Search Blog Posts',
                 {'class': 'user-blog-posts-page__searchbar'}
@@ -33,8 +33,8 @@ block page
                 }
             )
         .user-blog-posts
-            .user-blog-posts__left 
-                .user-blog-posts__tabs
+            section.user-blog-posts__left 
+                section.user-blog-posts__tabs
                     +buttonList(
                         [{
                             'classId': 'user-blog-posts__published-tab',
@@ -48,7 +48,7 @@ block page
                             'button': {'class': ['-tab']}
                         }
                     )
-                .user-blog-posts__tab-container
+                section.user-blog-posts__tab-container
                     .user-blog-posts__published-container
                         if !publishedBlogPosts.length
                             p You have no blog posts here.
@@ -65,5 +65,5 @@ block page
                                 unpublishedBlogPosts,
                                 {'class': ['user-blog-posts__unpublished']}
                             )
-            .user-blog-posts__right.-hidden
+            section.user-blog-posts__right.-hidden
                 +blogPostFragment()

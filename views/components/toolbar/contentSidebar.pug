@@ -1,20 +1,65 @@
 include ../list/iconElementList
 
-.content-sidebar.sidebar.-closed
-    .sidebar__title Content
+nav.content-sidebar.sidebar.-closed
+    h2.sidebar__title Content
 
     if !loginUser
-        .content-sidebar__heading Not Logged In
-        .content-sidebar__section Log in for content history and suggestions. 
+        section.content-sidebar__section
+            h3.content-sidebar__heading Not Logged In
+            .content-sidebar__content Log in for content history and suggestions. 
     else
-        .content-sidebar__heading Recent
-        .content-sidebar__section
-            - const recentReads = loginUser.blog_posts_recently_read
+        section.content-sidebar__section
+            h3.content-sidebar__heading Recent
+            .content-sidebar__content
+                - const recentReads = loginUser.blog_posts_recently_read
 
-            if recentReads.length
-                - const recentReadsIconElements = []
+                if recentReads.length
+                    - const recentReadsIconElements = []
 
-                each blogPost in recentReads
+                    each blogPost in recentReads
+                        - let icon = icons.profileIcon
+                        - const pic = blogPost.author.profile_pic
+
+                        if pic
+                            - const base64 = pic.data.toString('base64')
+                            - icon = `data:${pic.contentType};base64,${base64}`
+                        - 
+                            recentReadsIconElements.push(
+                                {
+                                    'tag': 'a',
+                                    'icon': icon,
+                                    'label': blogPost.title,
+                                    'attrs': {
+                                        'href': `/blog-posts/${blogPost._id}`,
+                                    }
+                                }
+                            )
+                    +iconElementList(
+                        recentReadsIconElements,
+                        {
+                            'iconElementList': {
+                                'class': [
+                                    '-column',
+                                    '-gap-small',
+                                    '-align-start'
+                                ]
+                            },
+                            'iconElement': {
+                                'class': [
+                                    '-gap-small',
+                                    '-avatar'
+                                ]
+                            }
+                        }
+                    )
+                else 
+                    | No recent reads available.
+        section.content-sidebar__section
+            h3.content-sidebar__heading Suggested
+            .content-sidebar__section
+                - const suggestionsIconElements = []
+
+                each blogPost in suggestions
                     - let icon = icons.profileIcon
                     - const pic = blogPost.author.profile_pic
 
@@ -22,7 +67,7 @@ include ../list/iconElementList
                         - const base64 = pic.data.toString('base64')
                         - icon = `data:${pic.contentType};base64,${base64}`
                     - 
-                        recentReadsIconElements.push(
+                        suggestionsIconElements.push(
                             {
                                 'tag': 'a',
                                 'icon': icon,
@@ -33,7 +78,7 @@ include ../list/iconElementList
                             }
                         )
                 +iconElementList(
-                    recentReadsIconElements,
+                    suggestionsIconElements,
                     {
                         'iconElementList': {
                             'class': [
@@ -50,45 +95,3 @@ include ../list/iconElementList
                         }
                     }
                 )
-            else 
-                | No recent reads available.
-        .content-sidebar__heading Suggested
-        .content-sidebar__section
-            - const suggestionsIconElements = []
-
-            each blogPost in suggestions
-                - let icon = icons.profileIcon
-                - const pic = blogPost.author.profile_pic
-
-                if pic
-                    - const base64 = pic.data.toString('base64')
-                    - icon = `data:${pic.contentType};base64,${base64}`
-                - 
-                    suggestionsIconElements.push(
-                        {
-                            'tag': 'a',
-                            'icon': icon,
-                            'label': blogPost.title,
-                            'attrs': {
-                                'href': `/blog-posts/${blogPost._id}`,
-                            }
-                        }
-                    )
-            +iconElementList(
-                suggestionsIconElements,
-                {
-                    'iconElementList': {
-                        'class': [
-                            '-column',
-                            '-gap-small',
-                            '-align-start'
-                        ]
-                    },
-                    'iconElement': {
-                        'class': [
-                            '-gap-small',
-                            '-avatar'
-                        ]
-                    }
-                }
-            )

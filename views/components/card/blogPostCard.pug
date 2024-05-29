@@ -9,75 +9,79 @@ mixin blogPostCard(blogPost, attrs={})
   a.blog-post-card(
     href=`/blog-posts/${blogPost._id}`
   )&attributes(attrs)
-    .blog-post-card__stat-list
-      +iconElementList(
-        [{
-          'tag': 'div',
-          'icon': icons.likeIcon,
-          'label': blogPost.likes,
-          'attrs': {
-            'class': 'blog-post-card__likes',
-          }
-        },
-        {
-          'tag': 'div',
-          'icon': icons.dislikeIcon,
-          'label': blogPost.dislikes,
-          'attrs': {
-            'class': 'blog-post-card__dislikes',
-          }
-        },
-        {
-          'tag': 'div',
-          'icon': icons.commentIcon,
-          'label': blogPost.comments.length,
-          'attrs': {
-            'class': 'blog-post-card__total-comments',
-          }
-        }],
-        {
-          'iconElementList': {
-            'class': [
-              '-center',
-              '-column',
-              '-gap-medium'
-            ]
+    article.blog-post-card__article
+      .blog-post-card__stat-list
+        +iconElementList(
+          [{
+            'tag': 'div',
+            'icon': icons.likeIcon,
+            'label': blogPost.likes,
+            'attrs': {
+              'class': 'blog-post-card__likes',
+            }
           },
-          'iconElement': {
-            'class': [
-              '-small',
-              '-gap-small'
-            ]
+          {
+            'tag': 'div',
+            'icon': icons.dislikeIcon,
+            'label': blogPost.dislikes,
+            'attrs': {
+              'class': 'blog-post-card__dislikes',
+            }
+          },
+          {
+            'tag': 'div',
+            'icon': icons.commentIcon,
+            'label': blogPost.comments.length,
+            'attrs': {
+              'class': 'blog-post-card__total-comments',
+            }
+          }],
+          {
+            'iconElementList': {
+              'class': [
+                '-center',
+                '-column',
+                '-gap-medium'
+              ]
+            },
+            'iconElement': {
+              'class': [
+                '-small',
+                '-gap-small'
+              ]
+            }
           }
-        }
+        )
+      .blog-post-card__overview(
+        style=`background-image: url('${backgroundImg}');`
       )
-    .blog-post-card__overview(
-      style=`background-image: url('${backgroundImg}');`
-    )
-      .blog-post-card__overlay
-        .blog-post-card__author-date
-          - let icon = icons.profileIcon
-          - const { profile_pic: pic , username } = blogPost.author
-            
-            if pic
-                - const profilePicBase64 = pic.data.toString('base64')
-                - icon = `data:${pic.contentType};base64,${profilePicBase64}`
+        .blog-post-card__overlay
+          header.blog-post-card__header
+            .blog-post-card__author-date
+              - let icon = icons.profileIcon
+              - const { profile_pic: pic , username } = blogPost.author
                 
-            +iconElement(
-                'div',
-                icon,
-                username,
-                {
-                    'class': [
-                        '-avatar',
-                        '-medium',
-                        '-gap-small'
-                    ]
-                }
-            )
-          .blog-post-card__date= blogPost.publish_date
-        .blog-post-card__content-overview
-          h1.blog-post-card__title= blogPost.title
+                if pic
+                    - const profilePicBase64 = pic.data.toString('base64')
+                    - icon = `data:${pic.contentType};base64,${profilePicBase64}`
+                    
+                +iconElement(
+                    'div',
+                    icon,
+                    username,
+                    {
+                        'class': [
+                            '-avatar',
+                            '-medium',
+                            '-gap-small'
+                        ]
+                    }
+                )
+              time(
+                datetime=blogPost.publish_date
+              ).blog-post-card__date= blogPost.publish_date
+            h1.blog-post-card__title= blogPost.title
+          
           p.blog-post-card__preview= blogPost.preview
           .blog-post-card__keywords-container
             .blog-post-card__keywords-heading Keywords:

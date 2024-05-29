@@ -2,7 +2,7 @@ include ../list/iconElementList
 include ../icon/iconElement
 
 mixin commentCard(comment, isReply=false, attrs={})
-    .comment-card&attributes(attrs)
+    article.comment-card&attributes(attrs)
         .comment-card__author-date 
             .comment-card__author-details
                 - let author = comment.author
@@ -38,7 +38,9 @@ mixin commentCard(comment, isReply=false, attrs={})
                             ]
                         }
                     )
-            .comment-card__date= comment.publish_date
+            time(
+                datetime=comment.publish_date
+            ).comment-card__date= comment.publish_date
         p.comment-card__content= comment.content
         .comment-card__toolbar
             form(

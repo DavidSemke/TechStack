@@ -3,5 +3,6 @@ extends ../layouts/root
 block content
   - const { title, subtext } = data
 
-  h1= title
-  p= subtext
+  main.error-page
+    h1= title
+    p= subtext
