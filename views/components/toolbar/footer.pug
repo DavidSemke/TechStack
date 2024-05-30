@@ -1,0 +1,55 @@
+include ../list/iconElementList
+include ../icon/iconElement
+
+footer.footer
+    .footer__logo-title
+        +iconElement(
+            'a',
+            images.favicon,  
+            'Tech Stack',
+            {
+                'href': '/',
+                'class': [
+                    '-gap-small'
+                ]
+            }
+        )
+    p.footer__site-description
+        | A place for reading blog posts by coders and tech enthusiasts.
+    .footer__associated-media
+        +iconElementList(
+            [{
+                'tag': 'div',
+                'icon': images.githubLogo,
+                'label': null,
+                'attrs': {}
+            },
+            {
+                'tag': 'div',
+                'icon': images.discordLogo,
+                'label': null,
+                'attrs': {}
+            },
+            {
+                'tag': 'div',
+                'icon': images.facebookLogo,
+                'label': null,
+                'attrs': {}
+            },
+            {
+                'tag': 'div',
+                'icon': images.twitterLogo,
+                'label': null,
+                'attrs': {}
+            }],
+            {
+                'iconElementList': {
+                    'class': '-gap-small'
+                },
+                'iconElement': {
+                    'class': '-small'
+                }
+            }
+        )
+    p.footer__copyright
+        | © 2024 Tech Stack. All rights reserved.

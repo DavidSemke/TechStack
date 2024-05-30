@@ -52,7 +52,7 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
   const template = pug.compileFile(pugPath)
   const renderedHTML = template({
     blogPosts,
-    icons: res.locals.icons,
+    images: res.locals.images,
   })
 
   res.json({ renderedHTML })
@@ -171,7 +171,7 @@ exports.postComment = [
     const renderedHTML = template({
       comment,
       isReply,
-      icons: res.locals.icons,
+      images: res.locals.images,
     })
 
     res.json({ renderedHTML, commentData: comment })

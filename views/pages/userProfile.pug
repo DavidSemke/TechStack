@@ -19,7 +19,7 @@ block page
                         - const dataUri = `data:${pic.contentType};base64,${base64}`
                         img(src=dataUri)
                     else
-                        img(src=icons.profileIcon)
+                        img(src=images.profileIcon)
 
                 .profile__username= user.username
             section.profile__secondary
@@ -90,7 +90,7 @@ block page
                         - const recentReadsIconElements = []
 
                         each blogPost in recentReads
-                            - let icon = icons.profileIcon
+                            - let icon = images.profileIcon
                             - const pic = blogPost.author.profile_pic
         
                             if pic
@@ -139,7 +139,7 @@ block page
                             - const blogPostsWrittenIconElements = []
 
                             each blogPost in user.blog_posts_written
-                                - let icon = icons.profileIcon
+                                - let icon = images.profileIcon
                                 - const pic = user.profile_pic
             
                                 if pic

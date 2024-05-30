@@ -17,7 +17,7 @@ nav.content-sidebar.sidebar.-closed
                     - const recentReadsIconElements = []
 
                     each blogPost in recentReads
-                        - let icon = icons.profileIcon
+                        - let icon = images.profileIcon
                         - const pic = blogPost.author.profile_pic
 
                         if pic
@@ -60,7 +60,7 @@ nav.content-sidebar.sidebar.-closed
                 - const suggestionsIconElements = []
 
                 each blogPost in suggestions
-                    - let icon = icons.profileIcon
+                    - let icon = images.profileIcon
                     - const pic = blogPost.author.profile_pic
 
                     if pic

@@ -27,7 +27,7 @@ mixin blogPostList(blogPosts, attrs={})
                         +iconElementList(
                             [{
                                 'tag': 'div',
-                                'icon': icons.likeIcon,
+                                'icon': images.likeIcon,
                                 'label': likes,
                                 'attrs': {
                                     'class': 'blog-post-item__likes'
@@ -35,7 +35,7 @@ mixin blogPostList(blogPosts, attrs={})
                             },
                             {
                                 'tag': 'div',
-                                'icon': icons.dislikeIcon,
+                                'icon': images.dislikeIcon,
                                 'label': dislikes,
                                 'attrs': {
                                     'class': 'blog-post-item__dislikes'
@@ -43,7 +43,7 @@ mixin blogPostList(blogPosts, attrs={})
                             },
                             {
                                 'tag': 'div',
-                                'icon': icons.commentIcon,
+                                'icon': images.commentIcon,
                                 'label': totalComments,
                                 'attrs': {
                                     'class': 'blog-post-item__total-comments'
@@ -67,7 +67,7 @@ mixin blogPostList(blogPosts, attrs={})
                         .blog-post-item__actions
                             +iconElement(
                                 'a',
-                                icons.editIcon,
+                                images.editIcon,
                                 null,
                                 {
                                     'href': `/users/${loginUser.username}/blog-posts/${blogPost._id}`,
@@ -81,7 +81,7 @@ mixin blogPostList(blogPosts, attrs={})
                             )
                             +iconElement(
                                 'button',
-                                icons.deleteIcon,
+                                images.deleteIcon,
                                 null,
                                 {
                                     'class': [

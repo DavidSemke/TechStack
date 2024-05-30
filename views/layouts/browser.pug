@@ -6,7 +6,7 @@ block navbar
     .navbar__left
         +iconElement(
             'button',
-            icons.burgerIcon,
+            images.burgerIcon,
             null,
             {
                 'class': [
@@ -17,7 +17,7 @@ block navbar
         )
         +iconElement(
             'a',
-            icons.favicon,  
+            images.favicon,  
             'Tech Stack',
             {
                 'href': '/',
@@ -37,7 +37,7 @@ block navbar
         if loginUser
             +iconElement(
                 'a',
-                icons.writeIcon, 
+                images.writeIcon, 
                 'Write',
                 {
                     'href': `/users/${loginUser.username}/blog-posts/new-blog-post`,
@@ -53,7 +53,7 @@ block navbar
         
         +iconElement(
             'button',
-            icons.profileIcon,
+            images.profileIcon,
             null,
             {
                 'class': [

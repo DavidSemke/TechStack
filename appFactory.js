@@ -144,8 +144,8 @@ function App() {
 
   // add image locals
   app.use(async (req, res, next) => {
-    const iconsPath = path.join(process.cwd(), "icons")
-    res.locals.icons = await base64.imagesToBase64(iconsPath)
+    const imagesPath = path.join(process.cwd(), "images")
+    res.locals.images = await base64.imagesToBase64(imagesPath)
     next()
   })
 

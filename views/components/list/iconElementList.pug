@@ -18,7 +18,7 @@ mixin iconElementList(elementItems, attrs={})
                     - indepClasses = indepClasses.split(' ')
 
                 if sharedClasses && indepClasses
-                     - item.attrs.class = [...sharedClasses, ...indepClasses]
+                    - item.attrs.class = [...sharedClasses, ...indepClasses]
                 
                 - item.label = item.label ?? null
 
