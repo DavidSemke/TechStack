@@ -1,6 +1,6 @@
-@use '../../globals/colors';
-@use '../../globals/icon-sizes' as iSizes;
-@use '../../globals/font-sizes' as fSizes;
+@use '../../globalVars/colors';
+@use '../../globalVars/icon-sizes' as iSizes;
+@use '../../globalVars/font-sizes' as fSizes;
 
 .blog-post-page {
     width: 100%;

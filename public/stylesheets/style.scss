@@ -1,7 +1,7 @@
-@use 'globals/colors';
-@use 'globals/font-sizes' as fSizes;
-@use 'globals/icon-sizes' as iSizes;
-@use 'views/components/card/blog-post-card';
+@use 'globalVars/colors';
+@use 'globalVars/font-sizes' as fSizes;
+@use 'globalVars/icon-sizes' as iSizes;
+@use 'views/components/card/blogPostCard/blog-post-card';
 @use 'views/components/card/comment-card';
 @use 'views/components/form/form-input';
 @use 'views/components/form/form-select';

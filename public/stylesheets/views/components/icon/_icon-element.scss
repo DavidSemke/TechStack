@@ -1,6 +1,6 @@
-@use '../../../globals/font-sizes' as fSizes;
-@use '../../../globals/icon-sizes' as iSizes;
-@use '../../../mixins/text-cutoff';
+@use '../../../globalVars/font-sizes' as fSizes;
+@use '../../../globalVars/icon-sizes' as iSizes;
+@use '../../../globalMixins/text-cutoff';
 
 .icon-element {
     display: flex;

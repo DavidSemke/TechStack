@@ -1,7 +1,9 @@
-@use '../../../globals/colors';
-@use '../../../globals/font-sizes' as fSizes;
-@use '../../../globals/icon-sizes' as iSizes;
-@use '../../../mixins/text-cutoff';
+@use '../../../../globalVars/colors';
+@use '../../../../globalVars/break-points' as bp;
+@use '../../../../globalVars/font-sizes' as fSizes;
+@use '../../../../globalVars/icon-sizes' as iSizes;
+@use '../../../../globalMixins/text-cutoff';
+@use 'modifiers';
 
 .blog-post-card {
     &__article {
@@ -37,12 +39,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 0.5rem;
         margin-bottom: 1rem;
     }
 
     &__title {
         @include text-cutoff.cut(3);
-        
         margin: 0;
         font-size: fSizes.$larger;
         word-break: break-word;
@@ -50,7 +52,7 @@
 
     &__preview {
         @include text-cutoff.cut(3);
-
+        word-break: break-word;
         margin: 0;
     }
 
@@ -65,31 +67,23 @@
 
     &__keywords {
         @include text-cutoff.cut(1);
+        word-break: break-word;
         padding-right: 1rem;
     }
 
     &.-small {
-        .blog-post-card__article {
-            height: 16rem;
-            width: 24rem;
-        }
-        
-        .blog-post-card__stat-list {
-            padding: 0.5rem;
-        }
+        @include modifiers.small();
+    }
+}
 
-        .blog-post-card__title {
-            @include text-cutoff.cut(2);
+@media (max-width: bp.$bp0) {
+    .blog-post-card {
+        @include modifiers.smaller();
+    }
+}
 
-            font-size: fSizes.$large;
-        }
-
-        .blog-post-card__preview {
-            @include text-cutoff.cut(2);
-        }
-
-        .blog-post-card__keywords {
-            @include text-cutoff.cut(1)
-        }
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+    .blog-post-card {
+        @include modifiers.small();
     }
 }

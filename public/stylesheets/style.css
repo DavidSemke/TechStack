@@ -27,6 +27,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 .blog-post-card__title {
@@ -43,6 +44,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  word-break: break-word;
   margin: 0;
 }
 .blog-post-card__keywords-container {
@@ -57,6 +59,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
+  word-break: break-word;
   padding-right: 1rem;
 }
 .blog-post-card.-small .blog-post-card__article {
@@ -86,6 +89,68 @@
   overflow: hidden;
 }
 
+@media (max-width: 480px) {
+  .blog-post-card .blog-post-card__article {
+    height: 12rem;
+    width: 18rem;
+  }
+  .blog-post-card .blog-post-card__stat-list {
+    padding: 0.2rem;
+  }
+  .blog-post-card .blog-post-card__stat-list .icon-element-list {
+    gap: 1rem;
+  }
+  .blog-post-card .blog-post-card__stat-list .icon-element {
+    flex-direction: column;
+  }
+  .blog-post-card .blog-post-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 1.2rem;
+  }
+  .blog-post-card .blog-post-card__preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .blog-post-card .blog-post-card__keywords {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .blog-post-card .blog-post-card__article {
+    height: 16rem;
+    width: 24rem;
+  }
+  .blog-post-card .blog-post-card__stat-list {
+    padding: 0.5rem;
+  }
+  .blog-post-card .blog-post-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 1.2rem;
+  }
+  .blog-post-card .blog-post-card__preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .blog-post-card .blog-post-card__keywords {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+}
 .comment-card {
   display: flex;
   flex-direction: column;
@@ -533,6 +598,11 @@
   overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+  .page-container {
+    width: 100%;
+  }
+}
 .blog-post-form-page {
   display: flex;
   align-items: flex-start;
