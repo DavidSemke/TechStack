@@ -46,7 +46,7 @@
     &__username {
         font-size: fSizes.$larger;
         font-weight: bold;
-        word-break: break-all;
+        word-break: break-word;
     }
 
     &__heading {
@@ -54,6 +54,7 @@
         font-size: fSizes.$large;
         font-weight: bold;
         border-bottom: 2px solid colors.$bg2;
+        word-break: break-word;
     }
 
     &__body {

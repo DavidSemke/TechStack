@@ -14,6 +14,7 @@
 
     &__label {
         @include text-cutoff.cut(2);
+        word-break: break-word;
     }
 
     &.-avatar {
@@ -62,7 +63,6 @@
         }
         .icon-element__label {
             @include text-cutoff.cut(2);
-
             font-size: fSizes.$small;
         }
     }
@@ -75,7 +75,6 @@
 
         .icon-element__label {
             @include text-cutoff.cut(2);
-
             font-size: fSizes.$large;
         }
     }
@@ -89,7 +88,6 @@
 
         .icon-element__label {
             @include text-cutoff.cut(2);
-
             font-size: fSizes.$larger;
         }
     }
