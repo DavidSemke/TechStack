@@ -1,8 +1,12 @@
-extends ../layouts/author
+extends ../layouts/toolbars
 include ../components/list/buttonList
 include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/fragment/blogPostFragment
+include ../components/toolbar/navbar
+
+block navbar 
+  +navbar(false)
 
 block page
     - const {blogPost} = data

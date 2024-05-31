@@ -1,98 +1,10 @@
-@use '../../globalVars/colors';
 @use '../../globalVars/break-points' as bp;
-@use '../../globalVars/font-sizes' as fSizes;
-@use '../../globalVars/icon-sizes' as iSizes;
-
-$navbar-height: 8vh;
-$navbar-min-height: 4rem;
-
-.navbar {
-    display: flex;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    padding: 1rem;
-    height: $navbar-height;
-    min-height: $navbar-min-height;
-    width: 100%;
-    z-index: 10;
-    border-bottom: 2px solid colors.$bg2;
-    background-color: colors.$bg0;
-
-    &__left {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    &__center {
-        flex: 2;
-        margin-left: 2rem;
-        margin-right: 2rem;
-    }
-
-    &__right {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 2rem;
-    }
-}
 
 .page-container {
     display: flex;
     justify-content: center;
     min-height: 100vh;
     width: 80%;
-}
-
-.sidebar {
-    position: fixed;
-    height: 100%;
-    width: 25%;
-    padding: 1rem;
-    z-index: 10;
-    background-color: colors.$bg0;
-    border-bottom: 2px solid colors.$bg2;
-
-    &__title {
-        font-size: fSizes.$larger;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        border-bottom: 4px solid colors.$bg2;
-    }
-}
-
-.signup-prompt {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    font-size: fSizes.$large;
-}
-
-.navbar-dropdown-container {
-    display: flex;
-    position: fixed;
-    z-index: 1;
-    height: 20rem;
-    width: 50%;
-    min-width: 40rem;
-    padding-top: calc(max($navbar-height, $navbar-min-height) + 1rem);
-    padding-bottom: 1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border: 2px solid colors.$bg2;
-    background-color: colors.$bg0;
-    overflow: hidden;
-}
-
-.navbar-dropdown {
-    width: 100%;
-    overflow-y: auto;
 }
 
 @media (max-width: bp.$bp1) {

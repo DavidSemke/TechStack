@@ -1,0 +1,21 @@
+@use '../../../globalVars/colors';
+@use '../../../globalVars/layout';
+
+.navbar-dropdown {
+    width: 100%;
+    overflow-y: auto;
+}
+
+.navbar-dropdown-container {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    height: 20rem;
+    width: 50%;
+    min-width: 40rem;
+    padding: 1rem;
+    padding-top: calc(max(layout.$navbar-height, layout.$navbar-min-height) + 1rem);
+    border: 2px solid colors.$bg2;
+    background-color: colors.$bg0;
+    overflow: hidden;
+}

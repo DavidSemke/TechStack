@@ -7,14 +7,7 @@ import { userBlogPostsSetup } from './pages/userBlogPosts.js'
 
 // layout setup
 navbarListeners()
-sidebarListeners(
-    '.account-sidebar', 
-    '.navbar__account-button'
-)
-sidebarListeners(
-    '.content-sidebar', 
-    '.navbar__content-button'
-)
+sidebarListeners()
 
 // page setup
 loggingFormSetup()

@@ -14,9 +14,10 @@
 @use 'views/components/list/blog-post-list';
 @use 'views/components/list/button-list';
 @use 'views/components/list/icon-element-list';
-@use 'views/components/toolbar/account-sidebar';
-@use 'views/components/toolbar/content-sidebar';
 @use 'views/components/toolbar/footer';
+@use 'views/components/toolbar/navbar-dropdown';
+@use 'views/components/toolbar/navbar';
+@use 'views/components/toolbar/sidebar';
 @use 'views/layouts/logging';
 @use 'views/layouts/toolbars';
 @use 'views/pages/blog-post-form';

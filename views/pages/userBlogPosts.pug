@@ -1,9 +1,13 @@
-extends ../layouts/browser
+extends ../layouts/toolbars
 include ../components/form/searchbar
 include ../components/form/formSelect
 include ../components/fragment/blogPostFragment
 include ../components/list/blogPostList
 include ../components/list/buttonList
+include ../components/toolbar/navbar
+
+block navbar 
+  +navbar(false)
 
 block page
     - const {title, publishedBlogPosts, unpublishedBlogPosts} = data

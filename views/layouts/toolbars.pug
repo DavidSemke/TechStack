@@ -1,9 +1,12 @@
 extends root
 
 block content
-    nav.navbar
-        block navbar
+    block navbar
+
     .navbar-dropdown-container.-gone
     .page-container
-        block sidebars
+        .sidebar-container.-gone
+            include ../components/toolbar/sidebar
+        block page
+    
     include ../components/toolbar/footer

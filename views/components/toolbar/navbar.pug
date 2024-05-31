@@ -1,0 +1,82 @@
+include ../icon/iconElement
+include ../list/buttonList
+include ../form/searchbar
+
+mixin navbar(isAuthorMode)
+    nav.navbar
+        .navbar__left
+            +iconElement(
+                'button',
+                images.burgerIcon,
+                null,
+                {
+                    'class': [
+                        'navbar__sidebar-button',
+                        '-padding-burger-small'
+                    ]
+                }
+            )
+            +iconElement(
+                'a',
+                images.favicon, 
+                'Tech Stack',
+                {
+                    'href': '/',
+                    'class': [
+                        '-gap-small'
+                    ]
+                }
+            )
+        
+        if !isAuthorMode
+            .navbar__center 
+                +searchbar(
+                    'Search Tech Stack',
+                    {
+                        'class': 'navbar__searchbar', 
+                    }
+                )
+        
+        .navbar__right
+            if !isAuthorMode && loginUser
+                +iconElement(
+                    'a',
+                    images.writeIcon, 
+                    'Write',
+                    {
+                        'href': `/users/${loginUser.username}/blog-posts/new-blog-post`,
+                        'class': [
+                            '-button',
+                            '-colorful',
+                            '-gap-small'
+                        ]
+                    }
+                )
+            else 
+                a(href='/login' class='-button -colorful') Log in
+            
+            if isAuthorMode
+                +buttonList(
+                    [{
+                        'classId': 'navbar__discard-button',
+                        'label': 'Discard'
+                    },
+                    {
+                        'classId': 'navbar__save-button',
+                        'label': 'Save'
+                    },
+                    {
+                        'classId': 'navbar__publish-button',
+                        'label': 'Publish'
+                    }],
+                    {
+                        'button': { 
+                            'form': 'blog-post-form',
+                            'type': 'submit',
+                            'class': '-colorful',
+                        },
+                        'buttonList': {
+                            'class': '-gap-small'
+                        }
+                    }
+                )

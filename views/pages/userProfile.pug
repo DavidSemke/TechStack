@@ -1,8 +1,12 @@
-extends ../layouts/browser
+extends ../layouts/toolbars
 include ../components/list/iconElementList
 include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/list/buttonList
+include ../components/toolbar/navbar
+
+block navbar 
+  +navbar(false)
 
 block page
     - const {title, user, isLoginUserProfile} = data

@@ -1,5 +1,9 @@
-extends ../layouts/browser
+extends ../layouts/toolbars
 include ../components/grid/blogPostGrid
+include ../components/toolbar/navbar
+
+block navbar 
+  +navbar(false)
 
 block page
   - const { blogPosts } = data

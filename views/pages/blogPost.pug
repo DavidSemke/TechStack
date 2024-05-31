@@ -1,9 +1,12 @@
-extends ../layouts/browser 
+extends ../layouts/toolbars 
 include ../components/icon/iconElement
 include ../components/grid/blogPostGrid
 include ../components/card/commentCard
 include ../components/form/formTextarea
+include ../components/toolbar/navbar
 
+block navbar 
+  +navbar(false)
 
 block page
     - const {title, blogPost} = data
