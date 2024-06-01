@@ -1,6 +1,7 @@
-@use '../../../globalVars/colors';
-@use '../../../globalVars/font-sizes' as fSizes;
-@use '../../../globalVars/layout';
+@use '../../../globalSassVars/colors';
+@use '../../../globalSassVars/break-points' as bp;
+@use '../../../globalSassVars/font-sizes' as fSizes;
+@use '../../../globalSassVars/layout';
 
 .sidebar {
     width: 100%;
@@ -94,5 +95,25 @@
 
     &__text {
         text-align: center;
+    }
+}
+
+@media (max-width: bp.$bp0) {
+    .sidebar-container {
+        width: 100%;
+    }
+}
+
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+    .sidebar-container {
+        width: 50%;
+    }
+}
+
+@media (min-width: calc(bp.$bp1 + 1px)) {
+    .sidebar {
+        &__index-link {
+            display: none;
+        }
     }
 }

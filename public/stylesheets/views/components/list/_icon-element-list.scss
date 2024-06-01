@@ -1,6 +1,7 @@
 .icon-element-list {
     display: flex;
     align-items: center;
+    gap: 2rem;
 
     &.-column {
         flex-direction: column;
@@ -16,9 +17,5 @@
 
     &.-gap-small {
         gap: 1rem;
-    }
-    
-    &.-gap-medium {
-        gap: 2rem;
     }
 }

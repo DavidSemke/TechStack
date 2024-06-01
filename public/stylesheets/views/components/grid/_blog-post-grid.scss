@@ -1,7 +1,14 @@
+@use '../card/blogPostCard/vars' as bpc-vars;
+@use '../../../globalSassVars/break-points' as bp;
+
 .blog-post-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(20rem, 1fr));
+    grid-template-columns: repeat(
+        auto-fit, minmax(bpc-vars.$width-medium, 1fr)
+    );
+    grid-template-rows: repeat(
+        auto-fit, minmax(bpc-vars.$height-medium, 1fr)
+    );
     gap: 4rem;
 
     &__cell {
@@ -11,3 +18,24 @@
     }
 }
 
+@media (max-width: bp.$bp0) {
+    .blog-post-grid {
+        grid-template-columns: repeat(
+            auto-fit, minmax(bpc-vars.$width-smaller, 1fr)
+        );
+        grid-template-rows: repeat(
+            auto-fit, minmax(bpc-vars.$height-smaller, 1fr)
+        );
+    }
+}
+
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+    .blog-post-grid {
+        grid-template-columns: repeat(
+            auto-fit, minmax(bpc-vars.$width-small, 1fr)
+        );
+        grid-template-rows: repeat(
+            auto-fit, minmax(bpc-vars.$height-small, 1fr)
+        );
+    }
+}

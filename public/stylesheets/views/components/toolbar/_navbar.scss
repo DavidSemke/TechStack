@@ -1,6 +1,6 @@
-@use '../../../globalVars/colors';
-@use '../../../globalVars/break-points' as bp;
-@use '../../../globalVars/layout';
+@use '../../../globalSassVars/colors';
+@use '../../../globalSassVars/break-points' as bp;
+@use '../../../globalSassVars/layout';
 
 
 .navbar {
@@ -35,5 +35,19 @@
         align-items: center;
         justify-content: flex-end;
         gap: 2rem;
+    }
+}
+
+// @media (max-width: bp.$bp0) {
+//     .blog-post-card {
+//         @include modifiers.smaller();
+//     }
+// }
+
+@media (max-width: bp.$bp1) {
+    .navbar {
+        &__index-link {
+            display: none;
+        }
     }
 }

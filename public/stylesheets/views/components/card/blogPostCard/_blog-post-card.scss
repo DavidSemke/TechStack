@@ -1,15 +1,16 @@
-@use '../../../../globalVars/colors';
-@use '../../../../globalVars/break-points' as bp;
-@use '../../../../globalVars/font-sizes' as fSizes;
-@use '../../../../globalVars/icon-sizes' as iSizes;
+@use '../../../../globalSassVars/colors';
+@use '../../../../globalSassVars/break-points' as bp;
+@use '../../../../globalSassVars/font-sizes' as fSizes;
+@use '../../../../globalSassVars/icon-sizes' as iSizes;
 @use '../../../../globalMixins/text-cutoff';
 @use 'modifiers';
+@use 'vars';
 
 .blog-post-card {
     &__article {
         display: flex;
-        width: 30rem;
-        height: 20rem;
+        width: vars.$width-medium;
+        height: vars.$height-medium;
         border: 2px solid colors.$bg2;
     }
 
@@ -77,13 +78,9 @@
 }
 
 @media (max-width: bp.$bp0) {
-    .blog-post-card {
-        @include modifiers.smaller();
-    }
+    @include modifiers.smaller();
 }
 
 @media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
-    .blog-post-card {
-        @include modifiers.small();
-    }
+    @include modifiers.small();
 }

@@ -1,4 +1,4 @@
-@use '../../../globalVars/colors';
+@use '../../../globalSassVars/colors';
 
 .footer {
     display: flex;
@@ -16,6 +16,7 @@
     &__site-description {
         display: flex;
         justify-content: center;
+        text-align: center;
         margin: 0;
     }
 

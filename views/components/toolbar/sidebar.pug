@@ -2,6 +2,19 @@ include ../list/iconElementList
 include ../icon/iconElement
 
 nav.sidebar
+    +iconElement(
+        'a',
+        images.favicon, 
+        'Tech Stack',
+        {
+            'href': '/',
+            'class': [
+                'sidebar__index-link',
+                '-gap-small'
+            ]
+        }
+    )
+
     if !loginUser
         .sidebar__account-prompt.account-prompt
             .account-prompt__login

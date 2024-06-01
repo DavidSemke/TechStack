@@ -1,58 +1,59 @@
-@use '../../../../globalVars/font-sizes' as fSizes;
+@use '../../../../globalSassVars/font-sizes' as fSizes;
 @use '../../../../globalMixins/text-cutoff';
+@use 'vars';
 
 @mixin small() {
-    .blog-post-card__article {
-        height: 16rem;
-        width: 24rem;
-    }
+    .blog-post-card {
+        &__article {
+            width: vars.$width-small;
+            height: vars.$height-small;
+        }
+
+        &__stat-list {
+            padding: 0.5rem;
+        }
     
-    .blog-post-card__stat-list {
-        padding: 0.5rem;
-    }
-
-    .blog-post-card__title {
-        @include text-cutoff.cut(2);
-        font-size: fSizes.$large;
-    }
-
-    .blog-post-card__preview {
-        @include text-cutoff.cut(2);
-    }
-
-    .blog-post-card__keywords {
-        @include text-cutoff.cut(1);
+        &__title {
+            @include text-cutoff.cut(2);
+            font-size: fSizes.$large;
+        }
+    
+        &__preview {
+            @include text-cutoff.cut(2);
+        }
     }
 }
 
 @mixin smaller() {
-    .blog-post-card__article {
-        height: 12rem;
-        width: 18rem;
-    }
+    .blog-post-card {
+        &__article {
+            width: vars.$width-smaller;
+            height: vars.$height-smaller;
+        }
+
+        &__stat-list {
+            padding: 0.2rem;
     
-    .blog-post-card__stat-list {
-        padding: 0.2rem;
-
-        .icon-element-list {
-            gap: 1rem;
+            .icon-element-list {
+                gap: 1rem;
+            }
+    
+            .icon-element {
+                flex-direction: column;
+            }
+        }
+    
+        &__title {
+            @include text-cutoff.cut(3);
+            font-size: fSizes.$large;
+        }
+    
+        &__preview {
+            display: none;
         }
 
-        .icon-element {
-            flex-direction: column;
+        &__keywords-heading {
+            display: none;
         }
-    }
-
-    .blog-post-card__title {
-        @include text-cutoff.cut(2);
-        font-size: fSizes.$large;
-    }
-
-    .blog-post-card__preview {
-        @include text-cutoff.cut(2);
-    }
-
-    .blog-post-card__keywords {
-        @include text-cutoff.cut(1);
     }
 }
