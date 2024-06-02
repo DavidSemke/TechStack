@@ -1,0 +1,39 @@
+@use '../../../../globalSassVars/font-sizes' as fSizes;
+@use '../../../../globalSassVars/icon-sizes' as iSizes;
+@use '../../../../globalMixins/text-cutoff';
+
+@mixin small() {
+    .icon-element__icon {
+        height: iSizes.$small;
+        width: iSizes.$small;
+    }
+    .icon-element__label {
+        @include text-cutoff.cut(2);
+        font-size: fSizes.$small;
+    }
+}
+
+@mixin large() {
+    .icon-element__icon {
+        height: iSizes.$large;
+        width: iSizes.$large;
+    }
+
+    .icon-element__label {
+        @include text-cutoff.cut(2);
+        font-size: fSizes.$large;
+    }
+}
+
+@mixin larger() {
+    
+    .icon-element__icon {
+        height: iSizes.$larger;
+        width: iSizes.$larger;
+    }
+
+    .icon-element__label {
+        @include text-cutoff.cut(2);
+        font-size: fSizes.$larger;
+    }
+}

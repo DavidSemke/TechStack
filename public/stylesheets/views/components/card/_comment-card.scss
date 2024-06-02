@@ -1,7 +1,7 @@
 @use '../../../globalSassVars/colors';
 @use '../../../globalSassVars/font-sizes' as fSizes;
 @use '../../../globalSassVars/icon-sizes' as iSizes;
-
+@use '../../../globalSassVars/break-points' as bp;
 
 .comment-card {
     display: flex;
@@ -25,5 +25,21 @@
     &__toolbar {
         display: flex;
         gap: 3rem;
+    }
+}
+
+@media (max-width: bp.$bp0) {
+    .comment-card {
+        &__toolbar {
+            gap: 0.5rem;
+        }
+    }
+}
+
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+    .comment-card {
+        &__toolbar {
+            gap: 2rem;
+        }
     }
 }

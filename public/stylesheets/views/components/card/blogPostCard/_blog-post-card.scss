@@ -3,7 +3,7 @@
 @use '../../../../globalSassVars/icon-sizes' as iSizes;
 @use '../../../../globalSassVars/break-points' as bp;
 @use '../../../../globalMixins/text-cutoff';
-@use 'modifiers';
+@use 'modifiers' as mod;
 @use 'vars';
 
 .blog-post-card {
@@ -73,14 +73,14 @@
     }
 
     &.-small {
-        @include modifiers.small();
+        @include mod.small();
     }
 }
 
 @media (max-width: bp.$bp0) {
-    @include modifiers.smaller();
+    @include mod.smaller();
 }
 
 @media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
-    @include modifiers.small();
+    @include mod.small();
 }
