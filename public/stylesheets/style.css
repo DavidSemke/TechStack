@@ -1,3 +1,10 @@
+:root {
+  --bp0: 480px;
+  --bp1: 768px;
+  --bp2: 1024px;
+  --bp3: 1200px;
+}
+
 .blog-post-card__article {
   display: flex;
   width: 30rem;
@@ -452,9 +459,8 @@
   display: flex;
   position: fixed;
   z-index: 1;
-  height: 20rem;
-  width: 50%;
-  min-width: 40rem;
+  height: 50vh;
+  width: 60%;
   padding: 1rem;
   padding-top: calc(max(8vh, 4rem) + 1rem);
   border: 2px solid rgb(36, 36, 36);
@@ -462,9 +468,15 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .navbar-dropdown-container {
+    width: 100%;
+  }
+}
 .navbar {
   display: flex;
   align-items: center;
+  gap: 1rem;
   position: sticky;
   top: 0;
   padding: 1rem;
@@ -483,8 +495,6 @@
 }
 .navbar__center {
   flex: 2;
-  margin-left: 2rem;
-  margin-right: 2rem;
 }
 .navbar__right {
   flex: 1;
@@ -493,7 +503,33 @@
   justify-content: flex-end;
   gap: 2rem;
 }
+.navbar__search-button {
+  display: none;
+}
+.navbar.-expanded-searchbar .navbar__right {
+  display: none;
+}
+.navbar.-expanded-searchbar .navbar__left {
+  flex: 0;
+}
+.navbar.-expanded-searchbar .navbar__center {
+  display: block;
+}
+.navbar.-expanded-searchbar .navbar__search-button {
+  display: none;
+}
 
+@media (max-width: 480px) {
+  .navbar__left {
+    gap: 1rem;
+  }
+  .navbar__center {
+    display: none;
+  }
+  .navbar__search-button {
+    display: block;
+  }
+}
 @media (max-width: 768px) {
   .navbar__index-link {
     display: none;

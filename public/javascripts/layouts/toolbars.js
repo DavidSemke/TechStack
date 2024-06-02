@@ -123,10 +123,27 @@ function navbarListeners() {
         // check to see if link has been clicked
         if (!newFocus || !navbarDropdownContainer.contains(newFocus)) {
             navbarDropdownContainer.classList.add('-gone')
+            navbar.classList.remove('-expanded-searchbar')
         }
     })
     searchbarInput.addEventListener('focus', () => {
         navbarDropdownContainer.classList.remove('-gone')
+    })
+
+    const searchButton = navbar.querySelector('.navbar__search-button')
+    searchButton.addEventListener('click', () => {
+        navbar.classList.add('-expanded-searchbar')
+        searchbarInput.focus()
+    })
+
+    let mobileBreakPt = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--bp0')
+    mobileBreakPt = parseInt(mobileBreakPt, 10) + 1 + 'px'
+    
+    const mediaQuery = window.matchMedia(`(min-width: ${mobileBreakPt})`)
+    mediaQuery.addEventListener('change', () => {
+        navbar.classList.remove('-expanded-searchbar')
     })
 }
 

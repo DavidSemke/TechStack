@@ -1,11 +1,11 @@
 @use '../../../globalSassVars/colors';
-@use '../../../globalSassVars/break-points' as bp;
 @use '../../../globalSassVars/layout';
-
+@use '../../../globalSassVars/break-points' as bp;
 
 .navbar {
     display: flex;
     align-items: center;
+    gap: 1rem;
     position: sticky;
     top: 0;
     padding: 1rem;
@@ -25,8 +25,6 @@
 
     &__center {
         flex: 2;
-        margin-left: 2rem;
-        margin-right: 2rem;
     }
 
     &__right {
@@ -36,13 +34,45 @@
         justify-content: flex-end;
         gap: 2rem;
     }
+
+    &__search-button {
+        display: none;
+    }
+
+    &.-expanded-searchbar {
+        .navbar__right {
+            display: none;
+        }
+
+        .navbar__left {
+            flex: 0
+        }
+
+        .navbar__center {
+            display: block;
+        }
+
+        .navbar__search-button {
+            display: none;
+        }
+    }
 }
 
-// @media (max-width: bp.$bp0) {
-//     .blog-post-card {
-//         @include modifiers.smaller();
-//     }
-// }
+@media (max-width: bp.$bp0) {
+    .navbar {
+        &__left {
+            gap: 1rem;
+        }
+
+        &__center {
+            display: none;
+        }
+
+        &__search-button {
+            display: block;
+        }
+    }
+}
 
 @media (max-width: bp.$bp1) {
     .navbar {

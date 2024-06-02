@@ -1,5 +1,6 @@
 @use 'globalSassVars/colors';
 @use 'globalSassVars/font-sizes' as fSizes;
+@use 'globalCssVars/break-points';
 @use 'views/components/card/blogPostCard/blog-post-card';
 @use 'views/components/card/comment-card';
 @use 'views/components/form/form-input';

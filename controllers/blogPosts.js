@@ -40,7 +40,10 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
     publish_date: { $exists: true },
   }
 
-  const blogPosts = await BlogPost.find(finalQuery).lean().exec()
+  const blogPosts = await BlogPost.find(finalQuery)
+    .populate("author")
+    .lean()
+    .exec()
 
   const pugPath = path.join(
     process.cwd(),

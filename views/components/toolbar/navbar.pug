@@ -28,6 +28,18 @@ mixin navbar(isAuthorMode)
                     ]
                 }
             )
+            +iconElement(
+                'button',
+                images.searchIcon,
+                null,
+                {
+                    'class': [
+                        'navbar__search-button',
+                        '-small',
+                        '-padding-even-small'
+                    ]
+                }
+            )
         
         if !isAuthorMode
             .navbar__center 

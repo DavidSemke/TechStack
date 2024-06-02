@@ -8,10 +8,15 @@ include ../list/iconElementList
         - const defaultIcon = images.profileIcon
 
         each blogPost in blogPosts
+            - let pic = blogPost.author.profile_pic
+
+            if pic
+                - const base64 = pic.data.toString('base64')
+                - pic = `data:${pic.contentType};base64,${base64}`
             - 
                 iconElements.push({
                     'tag': 'a',
-                    'icon': blogPost.author.profile_pic || defaultIcon,
+                    'icon': pic || defaultIcon,
                     'label': blogPost.title,
                     'attrs': {
                         'href': `/blog-posts/${blogPost._id}`,
