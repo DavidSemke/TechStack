@@ -8,6 +8,10 @@
     overflow-y: auto;
     padding: 1rem;
 
+    &__index-link {
+        margin-bottom: 1rem;
+    }
+
     &__account-section, &__content-section {
         width: 100%;
     }

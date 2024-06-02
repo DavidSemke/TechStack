@@ -540,6 +540,9 @@
   overflow-y: auto;
   padding: 1rem;
 }
+.sidebar__index-link {
+  margin-bottom: 1rem;
+}
 .sidebar__account-section, .sidebar__content-section {
   width: 100%;
 }
@@ -657,6 +660,11 @@
   margin-top: 0;
 }
 
+@media (max-width: 480px) {
+  .logging-page__container {
+    width: 100%;
+  }
+}
 .page-container {
   display: flex;
   justify-content: center;
