@@ -2,6 +2,41 @@ import { formFetch } from '../utils/fetch.js'
 import { initializeTinyMCE } from '../utils/tinyMCEConfig.js'
 import { updateErrorContainer, removeErrorContainer } from '../utils/formError.js'
 
+// On smaller screen sizes, draft and preview windows do not fit
+// Buttons are used to navigate from left (draft) to right (preview)
+function blogPostFormLeftRightListeners() {
+    const page = document.querySelector('.blog-post-form-page')
+
+    const previewButton = document.querySelector(
+        '.blog-post-form-page__preview-button'
+    )
+    previewButton.addEventListener('click', () => {
+        page.classList.add('-preview-view')
+        page.classList.remove('-draft-view')
+    })
+
+    const draftButton = document.querySelector(
+        '.blog-post-form-page__draft-button'
+    )
+    draftButton.addEventListener('click', () => {
+        page.classList.add('-draft-view')
+        page.classList.remove('-preview-view')
+    })
+
+    // Undo changes caused by using the draft/preview button when the screen
+    // size surpasses the max-width in which it is available
+    let mobileBreakPt = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--bp1')
+    mobileBreakPt = parseInt(mobileBreakPt, 10) + 1 + 'px'
+    
+    const mediaQuery = window.matchMedia(`(min-width: ${mobileBreakPt})`)
+    mediaQuery.addEventListener('change', () => {
+        page.classList.remove('-draft-view')
+        page.classList.remove('-preview-view')
+    })
+}
+
 function blogPostFormTabListeners() {
     const metadata = document.querySelector(
         '.blog-post-form__metadata'
@@ -56,21 +91,21 @@ function blogPostFormSubmitListeners() {
     )
 
     const discardButton = document.querySelector(
-        '.navbar__discard-button'
+        '.blog-post-form__discard-button'
     )
     discardButton.addEventListener('click', () => {
         addPreMethod('discard')
     })
 
     const saveButton = document.querySelector(
-        '.navbar__save-button'
+        '.blog-post-form__save-button'
     )
     saveButton.addEventListener('click', () => {
         addPreMethod('save')
     })
 
     const publishButton = document.querySelector(
-        '.navbar__publish-button'
+        '.blog-post-form__publish-button'
     )
     publishButton.addEventListener('click', () => {
         addPreMethod('publish')
@@ -220,6 +255,7 @@ function blogPostFormSetup() {
     // TinyMCE init must occur before the form submit listener is set 
     // This allows the editor's submit listener to trigger first
     initializeTinyMCE('.tinymce-app')
+    blogPostFormLeftRightListeners()
     blogPostFormTabListeners()
     blogPostFormMetadataListeners()
     blogPostFormSubmitListeners()

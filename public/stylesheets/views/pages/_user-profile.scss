@@ -1,6 +1,7 @@
 @use '../../globalSassVars/colors';
 @use '../../globalSassVars/icon-sizes' as iSizes;
 @use '../../globalSassVars/font-sizes' as fSizes;
+@use '../../globalSassVars/break-points' as bp;
 
 
 .profile-page {
@@ -86,4 +87,12 @@
     &.-gone {
         display: none;
     }
+}
+
+@media (max-width: bp.$bp0) {
+    
+}
+
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+    
 }

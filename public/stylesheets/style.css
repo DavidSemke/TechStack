@@ -245,6 +245,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   width: 60%;
   aspect-ratio: 4/3;
   margin-left: auto;
@@ -314,22 +315,13 @@
   gap: 0.5rem;
 }
 .icon-element.-padding-even-slim {
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
-  padding-left: 0.1rem;
-  padding-right: 0.1rem;
+  padding: 0.1rem;
 }
 .icon-element.-padding-even-small {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0.5rem;
 }
 .icon-element.-padding-burger-small {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0.25rem 0.5rem;
 }
 .icon-element.-small .icon-element__icon {
   height: 1.5rem;
@@ -499,7 +491,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 .navbar__center {
   flex: 2;
@@ -511,14 +503,8 @@
   justify-content: flex-end;
   gap: 2rem;
 }
-.navbar__search-button {
-  display: none;
-}
 .navbar.-expanded-searchbar .navbar__right {
   display: none;
-}
-.navbar.-expanded-searchbar .navbar__left {
-  flex: 0;
 }
 .navbar.-expanded-searchbar .navbar__center {
   display: block;
@@ -527,19 +513,16 @@
   display: none;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .navbar__left {
-    gap: 1rem;
+    flex: 0;
   }
   .navbar__center {
     display: none;
   }
-  .navbar__search-button {
-    display: block;
-  }
 }
-@media (max-width: 768px) {
-  .navbar__index-link {
+@media (min-width: 769px) {
+  .navbar__search-button {
     display: none;
   }
 }
@@ -641,11 +624,6 @@
     width: 50%;
   }
 }
-@media (min-width: 769px) {
-  .sidebar__index-link {
-    display: none;
-  }
-}
 .logging-page {
   display: flex;
   flex-direction: column;
@@ -687,10 +665,8 @@
 }
 .blog-post-form-page {
   display: flex;
-  align-items: flex-start;
   width: 100%;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 1rem;
 }
 .blog-post-form-page__left {
   flex: 1;
@@ -708,20 +684,45 @@
   align-items: center;
   gap: 1rem;
 }
+.blog-post-form-page__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
 .blog-post-form-page__heading {
   font-size: 2rem;
   font-weight: bold;
   margin: 0;
+}
+.blog-post-form-page__preview-button .icon-element__icon {
+  transform: rotate(270deg);
+}
+.blog-post-form-page__draft-button .icon-element__icon {
+  transform: rotate(90deg);
 }
 .blog-post-form-page__body {
   height: 100%;
   width: 100%;
   padding: 1rem;
   border: 2px solid rgb(36, 36, 36);
+  border-bottom: none;
 }
 .blog-post-form-page__right > .blog-post-form-page__body {
   overflow-y: auto;
   overflow-wrap: break-word;
+}
+.blog-post-form-page.-draft-view .blog-post-form-page__left {
+  display: block;
+}
+.blog-post-form-page.-draft-view .blog-post-form-page__right {
+  display: none;
+}
+.blog-post-form-page.-preview-view .blog-post-form-page__left {
+  display: none;
+}
+.blog-post-form-page.-preview-view .blog-post-form-page__right {
+  display: block;
 }
 
 .blog-post-form {
@@ -740,14 +741,25 @@
   height: 100%;
 }
 
-.tinymce-app {
+.tinymce-app, .tox.tox-tinymce {
   min-height: 100%;
 }
 
-.tox.tox-tinymce {
-  min-height: 100%;
+@media (max-width: 480px) {
+  .blog-post-form__submit-button .icon-element__label {
+    display: none;
+  }
 }
-
+@media (max-width: 768px) {
+  .blog-post-form-page__right {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .blog-post-form-page__preview-button, .blog-post-form-page__draft-button {
+    display: none;
+  }
+}
 .blog-post-page {
   width: 100%;
   padding: 1rem;
@@ -803,7 +815,6 @@
   justify-content: space-between;
 }
 .blog-post__metadata-bottom {
-  display: none;
   margin-top: 1rem;
 }
 .blog-post__author-details {
@@ -906,9 +917,6 @@
   .blog-post__metadata-top .blog-post__reaction-list {
     display: none;
   }
-  .blog-post__metadata-bottom {
-    display: block;
-  }
 }
 @media (min-width: 769px) {
   .blog-post__author-details .icon-element .icon-element__icon {
@@ -921,6 +929,9 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
     font-size: 1.5rem;
+  }
+  .blog-post__metadata-bottom {
+    display: none;
   }
 }
 .index-page {

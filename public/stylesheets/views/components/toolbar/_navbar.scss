@@ -20,7 +20,7 @@
         flex: 1;
         display: flex;
         align-items: center;
-        gap: 2rem;
+        gap: 1rem;
     }
 
     &__center {
@@ -35,17 +35,9 @@
         gap: 2rem;
     }
 
-    &__search-button {
-        display: none;
-    }
-
     &.-expanded-searchbar {
         .navbar__right {
             display: none;
-        }
-
-        .navbar__left {
-            flex: 0
         }
 
         .navbar__center {
@@ -58,25 +50,21 @@
     }
 }
 
-@media (max-width: bp.$bp0) {
+@media (max-width: bp.$bp1) {
     .navbar {
         &__left {
-            gap: 1rem;
+            flex: 0;
         }
-
+        
         &__center {
             display: none;
-        }
-
-        &__search-button {
-            display: block;
         }
     }
 }
 
-@media (max-width: bp.$bp1) {
+@media (min-width: calc(bp.$bp1 + 1px)) {
     .navbar {
-        &__index-link {
+        &__search-button {
             display: none;
         }
     }

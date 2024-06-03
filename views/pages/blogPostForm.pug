@@ -4,16 +4,29 @@ include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/fragment/blogPostFragment
 include ../components/toolbar/navbar
+include ../components/icon/iconElement
 
 block navbar 
-  +navbar(false)
+  +navbar(true)
 
 block page
     - const {blogPost} = data
 
     main.blog-post-form-page
         section.blog-post-form-page__left
-            h2.blog-post-form-page__heading Draft
+            header.blog-post-form-page__header
+                h2.blog-post-form-page__heading Draft
+                +iconElement(
+                    'button',
+                    images.expandIcon,
+                    null,
+                    {
+                        'class': [
+                            'blog-post-form-page__preview-button',
+                            '-small'
+                        ]
+                    }
+                )
             .blog-post-form-page__body
                 section.blog-post-form-page__tabs
                     +buttonList(
@@ -74,6 +87,19 @@ block page
                             )
 
         section.blog-post-form-page__right
-            h2.blog-post-form-page__heading Preview
+            header.blog-post-form-page__header
+                +iconElement(
+                    'button',
+                    images.expandIcon,
+                    null,
+                    {
+                        'class': [
+                            'blog-post-form-page__draft-button',
+                            '-small'
+                        ]
+                    }
+                )
+                h2.blog-post-form-page__heading Preview
+                
             .blog-post-form-page__body
                 +blogPostFragment(blogPost)

@@ -20,38 +20,27 @@
     }
 
     &.-avatar {
-        .icon-element__icon > img {
-            border-radius: 50%;
-        }
+        @include mod.avatar();
     }
 
     &.-column {
-        flex-direction: column;
+        @include mod.column();
     }
 
     &.-gap-small {
-        gap: 0.5rem;
+        @include mod.gap-small();
     }
 
     &.-padding-even-slim {
-        padding-top: 0.1rem;
-        padding-bottom: 0.1rem;
-        padding-left: 0.1rem;
-        padding-right: 0.1rem;
+        @include mod.padding-even-slim();
     }
 
     &.-padding-even-small {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        @include mod.padding-even-small();
     }
 
     &.-padding-burger-small {
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        @include mod.padding-burger-small();
     }
 
     &.-small {

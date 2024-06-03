@@ -113,11 +113,3 @@
         width: 50%;
     }
 }
-
-@media (min-width: calc(bp.$bp1 + 1px)) {
-    .sidebar {
-        &__index-link {
-            display: none;
-        }
-    }
-}

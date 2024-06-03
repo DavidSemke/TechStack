@@ -130,12 +130,16 @@ function navbarListeners() {
         navbarDropdownContainer.classList.remove('-gone')
     })
 
+    // Add listener to search button
+    // Search button is only available on smaller screens
     const searchButton = navbar.querySelector('.navbar__search-button')
     searchButton.addEventListener('click', () => {
         navbar.classList.add('-expanded-searchbar')
         searchbarInput.focus()
     })
 
+    // Undo changes caused by using search button when the screen
+    // size surpasses the max-width in which it is available
     let mobileBreakPt = getComputedStyle(
         document.documentElement
     ).getPropertyValue('--bp0')

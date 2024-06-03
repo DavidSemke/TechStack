@@ -54,7 +54,6 @@
     }
 
     &__metadata-bottom {
-        display: none;
         margin-top: 1rem;
     }
 
@@ -158,10 +157,6 @@
                 display: none;
             }
         }
-
-        &__metadata-bottom {
-            display: block;
-        }
     }
 }
 
@@ -171,6 +166,10 @@
             .icon-element {
                 @include ie-mod.larger();
             }
+        }
+
+        &__metadata-bottom {
+            display: none;
         }
     }
 }

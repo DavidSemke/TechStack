@@ -1,13 +1,13 @@
 @use '../../globalSassVars/font-sizes' as fSizes;
 @use '../../globalSassVars/icon-sizes' as iSizes;
 @use '../../globalSassVars/colors';
+@use '../../globalSassVars/break-points' as bp;
+@use '../components/icon/icon-element/modifiers' as ie-mod;
 
 .blog-post-form-page {
     display: flex;
-    align-items: flex-start;
     width: 100%;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 1rem;
 
     &__left {
         flex: 1;
@@ -27,10 +27,29 @@
         gap: 1rem;
     }
 
+    &__header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
     &__heading {
         font-size: fSizes.$xlarge;
         font-weight: bold;
         margin: 0;
+    }
+
+    &__preview-button {
+        .icon-element__icon {
+            transform: rotate(270deg);
+        }
+    }
+
+    &__draft-button {
+        .icon-element__icon {
+            transform: rotate(90deg);
+        }
     }
 
     &__body {
@@ -38,11 +57,36 @@
         width: 100%;
         padding: 1rem;
         border: 2px solid colors.$bg2;
+        border-bottom: none;
     }
 
     &__right > &__body {
         overflow-y: auto;
         overflow-wrap: break-word;
+    }
+
+    &.-draft-view {
+        .blog-post-form-page {
+            &__left {
+                display: block;
+            }
+
+            &__right {
+                display: none;
+            }
+        }
+    }
+
+    &.-preview-view {
+        .blog-post-form-page {
+            &__left {
+                display: none;
+            }
+
+            &__right {
+                display: block;
+            }
+        }
     }
 }
 
@@ -64,10 +108,30 @@
     }
 }
 
-.tinymce-app {
+.tinymce-app, .tox.tox-tinymce {
     min-height: 100%;
 }
 
-.tox.tox-tinymce {
-    min-height: 100%;
+@media (max-width: bp.$bp0) {
+    .blog-post-form__submit-button {
+        .icon-element__label {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: bp.$bp1) {
+    .blog-post-form-page {
+        &__right {
+            display: none;
+        }
+    }
+}
+
+@media (min-width: calc(bp.$bp1 + 1px)) {
+    .blog-post-form-page {
+        &__preview-button, &__draft-button {
+            display: none;
+        }
+    }
 }

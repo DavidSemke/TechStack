@@ -2,6 +2,32 @@
 @use '../../../../globalSassVars/icon-sizes' as iSizes;
 @use '../../../../globalMixins/text-cutoff';
 
+@mixin avatar() {
+    .icon-element__icon > img {
+        border-radius: 50%;
+    }
+}
+
+@mixin column() {
+    flex-direction: column;
+}
+
+@mixin gap-small() {
+    gap: 0.5rem;
+}
+
+@mixin padding-even-slim() {
+    padding: 0.1rem;
+}
+
+@mixin padding-even-small() {
+    padding: 0.5rem;
+}
+
+@mixin padding-burger-small() {
+    padding: 0.25rem 0.5rem;
+}
+
 @mixin small() {
     .icon-element__icon {
         height: iSizes.$small;

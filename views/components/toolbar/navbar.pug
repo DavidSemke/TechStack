@@ -1,5 +1,4 @@
 include ../icon/iconElement
-include ../list/buttonList
 include ../form/searchbar
 
 mixin navbar(isAuthorMode)
@@ -16,31 +15,21 @@ mixin navbar(isAuthorMode)
                     ]
                 }
             )
-            +iconElement(
-                'a',
-                images.favicon, 
-                'Tech Stack',
-                {
-                    'href': '/',
-                    'class': [
-                        'navbar__index-link',
-                        '-gap-small'
-                    ]
-                }
-            )
-            +iconElement(
-                'button',
-                images.searchIcon,
-                null,
-                {
-                    'class': [
-                        'navbar__search-button',
-                        '-small',
-                        '-padding-even-small'
-                    ]
-                }
-            )
-        
+
+            if !isAuthorMode
+                +iconElement(
+                    'button',
+                    images.searchIcon,
+                    null,
+                    {
+                        'class': [
+                            'navbar__search-button',
+                            '-small',
+                            '-padding-even-small'
+                        ]
+                    }
+                )
+                
         if !isAuthorMode
             .navbar__center 
                 +searchbar(
@@ -51,7 +40,9 @@ mixin navbar(isAuthorMode)
                 )
         
         .navbar__right
-            if !isAuthorMode && loginUser
+            if !loginUser
+                a(href='/login' class='-button -colorful') Log in
+            else if !isAuthorMode
                 +iconElement(
                     'a',
                     images.writeIcon, 
@@ -66,30 +57,4 @@ mixin navbar(isAuthorMode)
                     }
                 )
             else 
-                a(href='/login' class='-button -colorful') Log in
-            
-            if isAuthorMode
-                +buttonList(
-                    [{
-                        'classId': 'navbar__discard-button',
-                        'label': 'Discard'
-                    },
-                    {
-                        'classId': 'navbar__save-button',
-                        'label': 'Save'
-                    },
-                    {
-                        'classId': 'navbar__publish-button',
-                        'label': 'Publish'
-                    }],
-                    {
-                        'button': { 
-                            'form': 'blog-post-form',
-                            'type': 'submit',
-                            'class': '-colorful',
-                        },
-                        'buttonList': {
-                            'class': '-gap-small'
-                        }
-                    }
-                )
+                include ../list/blogPostFormActionList
