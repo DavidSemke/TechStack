@@ -11,7 +11,6 @@
 
     &__left {
         flex: 1;
-        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -20,7 +19,6 @@
 
     &__right {
         flex: 1;
-        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -57,12 +55,10 @@
         width: 100%;
         padding: 1rem;
         border: 2px solid colors.$bg2;
-        border-bottom: none;
     }
 
     &__right > &__body {
-        overflow-y: auto;
-        overflow-wrap: break-word;
+        overflow: auto;
     }
 
     &.-draft-view {
@@ -110,6 +106,38 @@
 
 .tinymce-app, .tox.tox-tinymce {
     min-height: 100%;
+}
+
+@media (max-height: bp.$bp0) {
+    .blog-post-form-page {
+        &__left, &__right {
+            height: 20rem;
+        }
+    }
+} 
+
+@media (min-height: calc(bp.$bp0 + 1px)) and (max-height: bp.$bp1) {
+    .blog-post-form-page {
+        &__left, &__right {
+            height: 30rem;
+        }
+    }
+}
+
+@media (min-height: calc(bp.$bp1 + 1px)) and (max-height: bp.$bp2) {
+    .blog-post-form-page {
+        &__left, &__right {
+            height: 40rem;
+        }
+    }
+}
+
+@media (min-height: calc(bp.$bp2 + 1px)) {
+    .blog-post-form-page {
+        &__left, &__right {
+            height: 50rem;
+        }
+    }
 }
 
 @media (max-width: bp.$bp0) {
