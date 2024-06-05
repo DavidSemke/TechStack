@@ -68,7 +68,7 @@
     &.-draft-view {
         .blog-post-form-page {
             &__left {
-                display: block;
+                display: flex;
             }
 
             &__right {
@@ -84,7 +84,7 @@
             }
 
             &__right {
-                display: block;
+                display: flex;
             }
         }
     }

@@ -1,5 +1,4 @@
 include iconElementList
-include ../icon/iconElement
 
 mixin blogPostList(blogPosts, attrs={})
     ul.blog-post-list&attributes(attrs)
@@ -56,34 +55,41 @@ mixin blogPostList(blogPosts, attrs={})
                                         '-gap-small',
                                         '-avatar'
                                     ]
+                                },
+                                'iconElementList': {
+                                    'class': 'blog-post-item__reaction-list'
                                 }
                             }
                         )
                         .blog-post-item__actions
-                            +iconElement(
-                                'a',
-                                images.editIcon,
-                                null,
+                            +iconElementList(
+                                [{
+                                    'tag': 'a',
+                                    'icon': images.editIcon,
+                                    'label': null,
+                                    'attrs': {
+                                        'class': [
+                                            '-button'
+                                        ]
+                                    }
+                                },
                                 {
-                                    'href': `/users/${loginUser.username}/blog-posts/${blogPost._id}`,
-                                    'class': [
-                                        '-small',
-                                        '-button',
-                                        '-colorful', 
-                                        '-padding-even-slim'
-                                    ]
-                                }
-                            )
-                            +iconElement(
-                                'button',
-                                images.deleteIcon,
-                                null,
+                                    'tag': 'button',
+                                    'icon': images.deleteIcon,
+                                    'label': null,
+                                    'attrs': {
+                                        'class': [
+                                            'blog-post-item__delete-button'
+                                        ]
+                                    }
+                                }],
                                 {
-                                    'class': [
-                                        'blog-post-item__delete-button',
-                                        '-small',
-                                        '-colorful',
-                                        '-padding-even-slim'
-                                    ]
+                                    'iconElement': {
+                                        'class': [
+                                            '-small',
+                                            '-colorful', 
+                                            '-padding-even-slim'
+                                        ]
+                                    }
                                 }
                             )

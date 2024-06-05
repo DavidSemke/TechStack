@@ -1,10 +1,10 @@
-function userBlogPostsSearchbarListeners() {
-    const searchbar = document.querySelector(
+function userBlogPostsSearchbarListeners(page) {
+    const searchbar = page.querySelector(
         '.user-blog-posts-page__searchbar .searchbar__input'
     )
 
     searchbar.addEventListener('input', (event) => {
-        const blogPostItems = document.querySelectorAll('.blog-post-item')
+        const blogPostItems = page.querySelectorAll('.blog-post-item')
         const searchValue = event
             .currentTarget
             .value
@@ -31,16 +31,42 @@ function userBlogPostsSearchbarListeners() {
             }
         }
     })
+
+    searchbar.addEventListener('blur', () => {
+        page.classList.remove('-expanded-searchbar')
+    })
+
+    // Add listener to search button
+    // Search button is only available on smaller screens
+    const searchButton = page.querySelector(
+        '.user-blog-posts-page__search-button'
+    )
+    searchButton.addEventListener('click', () => {
+        page.classList.add('-expanded-searchbar')
+        searchbar.focus()
+    })
+
+    // Undo changes caused by using search button when the screen
+    // size surpasses the max-width in which it is available
+    let mobileBreakPt = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--bp0')
+    mobileBreakPt = parseInt(mobileBreakPt, 10) + 1 + 'px'
+    
+    const mediaQuery = window.matchMedia(`(min-width: ${mobileBreakPt})`)
+    mediaQuery.addEventListener('change', () => {
+        page.classList.remove('-expanded-searchbar')
+    })
 }
 
-function userBlogPostsSortSelectorListeners() {
-    const sortSelector = document.querySelector(
+function userBlogPostsSortSelectorListeners(page) {
+    const sortSelector = page.querySelector(
         '.user-blog-posts-page__sort-selector'
     )
-    const publishedList = document.querySelector(
+    const publishedList = page.querySelector(
         '.user-blog-posts__published.blog-post-list'
     )
-    const unpublishedList = document.querySelector(
+    const unpublishedList = page.querySelector(
         '.user-blog-posts__unpublished.blog-post-list'
     )
 
@@ -177,20 +203,20 @@ function compareDateStrings(a, b) {
     return result
 }
 
-function userBlogPostsTabListeners() {
-    const published = document.querySelector(
+function userBlogPostsTabListeners(page) {
+    const published = page.querySelector(
         '.user-blog-posts__published-container'
     )
-    const unpublished = document.querySelector(
+    const unpublished = page.querySelector(
         '.user-blog-posts__unpublished-container'
     )
     
-    const publishedTab = document.querySelector(
+    const publishedTab = page.querySelector(
         '.user-blog-posts__published-tab'
     )
     publishedTab.classList.add('-bold')
 
-    const unpublishedTab = document.querySelector(
+    const unpublishedTab = page.querySelector(
         '.user-blog-posts__unpublished-tab'
     )
 
@@ -212,7 +238,7 @@ function userBlogPostsTabListeners() {
     }) 
 }
 
-function userBlogPostsListListeners(blogPostList) {
+function userBlogPostsListListeners(page, blogPostList) {
     if (blogPostList === null) {
         return
     }
@@ -227,7 +253,7 @@ function userBlogPostsListListeners(blogPostList) {
     for (const item of items) {
 
         item.addEventListener('click', (event) => {
-            onItemClick(event, rightPanel)
+            onItemClick(event, page, rightPanel)
         })
 
         const deleteButton = item.querySelector(
@@ -240,7 +266,29 @@ function userBlogPostsListListeners(blogPostList) {
     }
 }
 
-function onItemClick(event, rightPanel) {
+function userBlogPostsLeftViewButtonListeners(page) {
+    // Add listener to left view button
+    // Left view button is only available on smaller screens
+    const leftViewButton = page.querySelector(
+        '.user-blog-posts-page__left-view-button'
+    )
+    leftViewButton.addEventListener('click', () => {
+        page.classList.remove('-right-view')
+    })
+
+    // Undo changes caused by using button when the screen
+    // size surpasses the max-width in which it is available
+    let mobileBreakPt = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--bp1')
+    mobileBreakPt = parseInt(mobileBreakPt, 10) + 1 + 'px'
+    const mediaQuery = window.matchMedia(`(min-width: ${mobileBreakPt})`)
+    mediaQuery.addEventListener('change', () => {
+        page.classList.remove('-right-view')
+    })
+}
+
+function onItemClick(event, page, rightPanel) {
     const itemId = event.currentTarget.id
     const blogPosts = [
         ...backendData.publishedBlogPosts,
@@ -280,6 +328,17 @@ function onItemClick(event, rightPanel) {
     fragmentContent.innerHTML = blogPost.content
 
     rightPanel.classList.remove('-hidden')
+
+    // Make sure screen width less than or equal to bp1
+    // If so, left-view-button is visible in toolbar
+    let bp1 = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--bp1')
+    bp1 = parseInt(bp1, 10)
+
+    if (screen.width <= bp1) {
+        page.classList.add('-right-view')
+    }
 }
 
 function onDeleteButtonClick(item, blogPostList) {
@@ -308,17 +367,18 @@ function onDeleteButtonClick(item, blogPostList) {
 }
 
 function userBlogPostsSetup() {
-    const userBlogPostsPage = document.querySelector(
+    const page = document.querySelector(
         '.user-blog-posts-page'
     )
 
-    if (!userBlogPostsPage) {
+    if (!page) {
         return
     }
 
-    userBlogPostsSearchbarListeners()
-    userBlogPostsSortSelectorListeners()
-    userBlogPostsTabListeners()
+    userBlogPostsSearchbarListeners(page)
+    userBlogPostsSortSelectorListeners(page)
+    userBlogPostsLeftViewButtonListeners(page)
+    userBlogPostsTabListeners(page)
 
     const publishedList = document.querySelector(
         '.user-blog-posts__published'
@@ -326,8 +386,8 @@ function userBlogPostsSetup() {
     const unpublishedList = document.querySelector(
         '.user-blog-posts__unpublished'
     )
-    userBlogPostsListListeners(publishedList)
-    userBlogPostsListListeners(unpublishedList)
+    userBlogPostsListListeners(page, publishedList)
+    userBlogPostsListListeners(page, unpublishedList)
 }
 
 export {
