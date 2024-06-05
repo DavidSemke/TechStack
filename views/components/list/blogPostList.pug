@@ -69,8 +69,10 @@ mixin blogPostList(blogPosts, attrs={})
                                     'label': null,
                                     'attrs': {
                                         'class': [
+                                            'blog-post-item__edit-button',
                                             '-button'
-                                        ]
+                                        ],
+                                        'href': `blog-posts/${blogPost._id}`
                                     }
                                 },
                                 {

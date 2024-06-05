@@ -256,6 +256,13 @@ function userBlogPostsListListeners(page, blogPostList) {
             onItemClick(event, page, rightPanel)
         })
 
+        const editButton = item.querySelector(
+            '.blog-post-item__edit-button'
+        )
+        editButton.addEventListener('click', (event) => {
+            event.stopPropagation()
+        })
+
         const deleteButton = item.querySelector(
             '.blog-post-item__delete-button'
         )

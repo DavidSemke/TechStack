@@ -240,6 +240,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   word-break: break-word;
+  text-transform: capitalize;
 }
 .blog-post-fragment__thumbnail {
   display: flex;
