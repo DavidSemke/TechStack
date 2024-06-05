@@ -11,6 +11,7 @@
         font-size: fSizes.$larger;
         font-weight: bold;
         word-break: break-word;
+        text-transform: capitalize;
     }
 
     &__thumbnail {
