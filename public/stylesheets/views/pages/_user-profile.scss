@@ -6,8 +6,11 @@
 
 .profile-page {
     width: 100%;
+    padding: 1rem;
     
     &__heading {
+        margin: 0;
+        margin-bottom: 1rem;
         text-align: center;
     }
 }
@@ -36,8 +39,8 @@
     }
 
     &__avatar {
-        height: iSizes.$xxlarge;
-        width: iSizes.$xxlarge;
+        height: iSizes.$xxxlarge;
+        width: iSizes.$xxxlarge;
 
         img {
             border-radius: 50%;
@@ -83,16 +86,28 @@
         display: flex;
         justify-content: space-around;
     }
-
-    &.-gone {
-        display: none;
-    }
 }
 
 @media (max-width: bp.$bp0) {
-    
+    .profile {
+        &__avatar {
+            height: iSizes.$xxlarge;
+            width: iSizes.$xxlarge;
+        }
+    }
 }
 
-@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
-    
+@media (max-width: bp.$bp1) {
+    .profile {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: calc(bp.$bp1 + 1px)) and (max-width: bp.$bp2) {
+    .profile {
+        &__avatar {
+            height: iSizes.$xxlarge;
+            width: iSizes.$xxlarge;
+        }
+    }
 }
