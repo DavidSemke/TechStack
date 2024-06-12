@@ -2,6 +2,9 @@
 
 [Deployed on Fly.io](https://techstack.fly.dev/)
 
+Screenshot of index page:
+![Tech Stack's index page](/images/documentation/index-page.png?raw=true)
+
 This is the codebase for the Tech Stack website. It includes both the backend and the frontend, which are not kept separate (the architecture is monolithic).
 Tech Stack is a place to read and write blog posts, and includes authentication, authorization, user profiles, blog post management, commenting, and a search system.
 
