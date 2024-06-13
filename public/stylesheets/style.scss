@@ -1,6 +1,7 @@
+@use 'globalCssVars/break-points';
 @use 'globalSassVars/colors';
 @use 'globalSassVars/font-sizes' as fSizes;
-@use 'globalCssVars/break-points';
+@use 'tinymce/prism.css';
 @use 'views/components/card/blogPostCard/blog-post-card';
 @use 'views/components/card/comment-card';
 @use 'views/components/form/form-input';
@@ -135,6 +136,13 @@ ul, ol {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
+}
+
+// style code blocks
+pre:has(> code).language-markup {
+  padding: 1rem;
+  white-space: pre-wrap;
+  background-color: colors.$bg0;
 }
 
 .-hidden {

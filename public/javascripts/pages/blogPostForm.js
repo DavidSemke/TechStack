@@ -1,5 +1,5 @@
 import { formFetch } from '../utils/fetch.js'
-import { initializeTinyMCE } from '../utils/tinyMCEConfig.js'
+import { initializeTinyMCE } from '../tinymce/tinyMCEConfig.js'
 import { updateErrorContainer, removeErrorContainer } from '../utils/formError.js'
 
 // On smaller screen sizes, draft and preview windows do not fit
