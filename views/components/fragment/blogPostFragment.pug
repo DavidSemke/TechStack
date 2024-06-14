@@ -1,4 +1,4 @@
-mixin blogPostFragment(blogPost={}, attrs={})
+mixin blogPostFragment(blogPost={}, showContent=true, attrs={})
     .blog-post-fragment&attributes(attrs)
         .blog-post-fragment__metadata
             h1.blog-post-fragment__title= blogPost.title || ''
@@ -10,4 +10,4 @@ mixin blogPostFragment(blogPost={}, attrs={})
                     img(src=dataUri)
             else
                 .blog-post-fragment__thumbnail.-empty Your thumbnail appears here
-        .blog-post-fragment__content= blogPost.content || ''
+        .blog-post-fragment__content= showContent ? (blogPost.content || '') : ''

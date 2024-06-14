@@ -11,11 +11,14 @@ function initializeTinyMCE(selector) {
     
     tinymce.init({
         selector: selector,
+        resize: false,
         license_key: 'gpl',
         plugins: 'lists link image table code help wordcount codesample',
         menubar: 'file edit view insert table tools help',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | numlist bullist | codesample',
         promotion: false,
+        skin: 'oxide-dark',
+        content_css: 'dark',
         image_file_types: 'jpeg,jpg,png,webp,gif',
         style_formats: [
             { title: 'Headings', items: [
