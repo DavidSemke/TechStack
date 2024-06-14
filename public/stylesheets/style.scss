@@ -1,7 +1,7 @@
+@use 'codeHighlighting/prism-holi-theme';
 @use 'globalCssVars/break-points';
 @use 'globalSassVars/colors';
 @use 'globalSassVars/font-sizes' as fSizes;
-@use 'tinymce/prism.css';
 @use 'views/components/card/blogPostCard/blog-post-card';
 @use 'views/components/card/comment-card';
 @use 'views/components/form/form-input';
@@ -27,7 +27,6 @@
 @use 'views/pages/index';
 @use 'views/pages/user-blog-posts';
 @use 'views/pages/user-profile';
-
 
 * {
   box-sizing: border-box;
@@ -138,11 +137,11 @@ ul, ol {
   margin: 0;
 }
 
-// style code blocks
-pre:has(> code).language-markup {
+// style code blocks/inlines
+code[class*='language-'],
+pre[class*='language-'] {
   padding: 1rem;
   white-space: pre-wrap;
-  background-color: colors.$bg0;
 }
 
 .-hidden {
