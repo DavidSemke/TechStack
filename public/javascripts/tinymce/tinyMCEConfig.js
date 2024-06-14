@@ -1,8 +1,20 @@
+import prism from 'prismjs'
+
 function initializeTinyMCE(selector) {
     const tinyMCEElement = document.querySelector(selector)
 
     if (!tinyMCEElement) {
         return
+    }
+
+    function updatePreview(editor) {
+        const preview = document.querySelector('.blog-post-fragment__content')
+        preview.innerHTML = editor.getContent()
+        const codeBlocks = preview.querySelectorAll('pre:has(> code)')
+
+        for (const block of codeBlocks) {
+            prism.highlightElement(block)
+        }
     }
 
     // Variable backendData is data provided by backend for rendering
@@ -53,14 +65,12 @@ function initializeTinyMCE(selector) {
         setup: (editor) => {
             editor.on('init', () => {
                 editor.setContent(initialContent)
-                const preview = document.querySelector('.blog-post-fragment__content')
-                preview.innerHTML = editor.getContent()
+                updatePreview(editor)
             })
     
             editor.on('change', () => {
                 editor.save()
-                const preview = document.querySelector('.blog-post-fragment__content')
-                preview.innerHTML = editor.getContent()
+                updatePreview(editor)
             })
 
             editor.on('submit', () => {
@@ -68,7 +78,7 @@ function initializeTinyMCE(selector) {
                 wordCountInput.value = editor.plugins.wordcount.getCount()
             })
         }
-    });
+    })
 }
 
 export {
