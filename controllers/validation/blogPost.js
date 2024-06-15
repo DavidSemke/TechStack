@@ -1,7 +1,7 @@
 const { body } = require("express-validator")
 const message = require("./errorMessage")
 
-const titleLength = { min: 40, max: 100 }
+const titleLength = { min: 20, max: 100 }
 const keywordsLength = { max: 100 }
 const minKeywords = 1
 const maxKeywords = 10
