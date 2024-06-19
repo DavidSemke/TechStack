@@ -88,6 +88,15 @@
     &__content {
         margin-top: 2rem;
         margin-bottom: 2rem;
+
+        ul, ol {
+            list-style-type: initial;
+            padding-left: 2rem;
+        }
+
+        img {
+            width: 75%;
+        }
     }
 
     &__post-blog-separator {
