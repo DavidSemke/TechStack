@@ -75,6 +75,10 @@
     &.-small {
         @include mod.small();
     }
+
+    &.-smaller {
+        @include mod.smaller();
+    }
 }
 
 @media (max-width: bp.$bp0) {
