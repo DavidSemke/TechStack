@@ -411,6 +411,10 @@ pre[class*=language-] {
   padding-left: 0.5rem;
   white-space: pre-wrap;
 }
+.blog-post-fragment__content ul, .blog-post-fragment__content ol {
+  list-style-type: initial;
+  padding-left: 2rem;
+}
 
 .blog-post-grid {
   display: grid;
@@ -1012,6 +1016,13 @@ pre[class*=language-] {
 .blog-post__content {
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+.blog-post__content ul, .blog-post__content ol {
+  list-style-type: initial;
+  padding-left: 2rem;
+}
+.blog-post__content img {
+  width: 75%;
 }
 .blog-post__post-blog-separator {
   padding-top: 1rem;

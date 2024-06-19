@@ -37,6 +37,12 @@ function App() {
           directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", `'nonce-${nonce}'`],
+            imgSrc: [
+              "'self' data:", 
+              "https://images.pexels.com",
+              "https://images.unsplash.com",
+              "https://*.tenor.com"
+            ]
           },
         },
       })(req, res, next)

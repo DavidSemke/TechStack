@@ -1,6 +1,7 @@
 import { formFetch } from '../utils/fetch.js'
 import { updateErrorContainer } from '../utils/formError.js'
 import { PromiseQueue } from '../utils/queue.js'
+import prism from 'prismjs'
 
 // used to queue reactions
 const reactionQueue = PromiseQueue()
@@ -474,6 +475,14 @@ function commentCreateFormListeners(commentCreateForm) {
     })
 }
 
+function highlightCodeBlocks() {
+    const codeBlocks = document.querySelectorAll('.blog-post__content pre:has(> code)')
+
+    for (const block of codeBlocks) {
+        prism.highlightElement(block)
+    }
+}
+
 function blogPostSetup() {
     const blogPostPage = document.querySelector(
         '.blog-post-page'
@@ -486,6 +495,7 @@ function blogPostSetup() {
     blogPostReactionFormListeners()
     defaultCommentCreateFormListeners()
     allCommentsReactionFormListeners()
+    highlightCodeBlocks()
 }
 
 

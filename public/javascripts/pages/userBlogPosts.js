@@ -1,3 +1,5 @@
+import prism from 'prismjs'
+
 function userBlogPostsSearchbarListeners(page) {
     const searchbar = page.querySelector(
         '.user-blog-posts-page__searchbar .searchbar__input'
@@ -334,6 +336,14 @@ function onItemClick(event, page, rightPanel) {
     )
     fragmentContent.innerHTML = blogPost.content
 
+    // Apply code highlights
+    const codeBlocks = fragmentContent.querySelectorAll('pre:has(> code)')
+
+    for (const block of codeBlocks) {
+        prism.highlightElement(block)
+    }
+
+    // Reveal fragment
     rightPanel.classList.remove('-hidden')
 
     // Make sure screen width less than or equal to bp1
