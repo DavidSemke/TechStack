@@ -206,6 +206,32 @@ pre[class*=language-] {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+.blog-post-card.-smaller .blog-post-card__article {
+  width: 18rem;
+  height: 12rem;
+}
+.blog-post-card.-smaller .blog-post-card__stat-list {
+  padding: 0.2rem;
+}
+.blog-post-card.-smaller .blog-post-card__stat-list .icon-element-list {
+  gap: 1rem;
+}
+.blog-post-card.-smaller .blog-post-card__stat-list .icon-element {
+  flex-direction: column;
+}
+.blog-post-card.-smaller .blog-post-card__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-size: 1.2rem;
+}
+.blog-post-card.-smaller .blog-post-card__preview {
+  display: none;
+}
+.blog-post-card.-smaller .blog-post-card__keywords-heading {
+  display: none;
+}
 
 @media (max-width: 480px) {
   .blog-post-card__article {
