@@ -15,7 +15,7 @@
     width: 60%;
     padding: 1rem;
     padding-top: calc(max(layout.$navbar-height, layout.$navbar-min-height) + 1rem);
-    border: 2px solid colors.$bg2;
+    border: 2px solid colors.$border;
     background-color: colors.$bg0;
     overflow: hidden;
 }

@@ -11,7 +11,7 @@
     
     &__post-heading {
         font-size: fSizes.$xlarge;
-        border-bottom: 4px solid colors.$bg2;
+        border-bottom: 4px solid colors.$border;
     }
 
     &__more-blogs {
@@ -36,7 +36,7 @@
 .blog-post {
     &__title {
         margin: 0;
-        border-bottom: 6px solid colors.$bg2;
+        border-bottom: 6px solid colors.$border;
         font-size: fSizes.$xxlarge;
         word-break: break-word;
     }
@@ -45,7 +45,7 @@
         padding-top: 1rem;
         padding-bottom: 1rem;
         margin-bottom: 2rem;
-        border-bottom: 4px solid colors.$bg2;
+        border-bottom: 4px solid colors.$border;
     }
 
     &__metadata-top {
@@ -102,8 +102,8 @@
     &__post-blog-separator {
         padding-top: 1rem;
         padding-bottom: 1rem;
-        border-top: 4px solid colors.$bg2;
-        border-bottom: 4px solid colors.$bg2;
+        border-top: 4px solid colors.$border;
+        border-bottom: 4px solid colors.$border;
     }
 }
 
