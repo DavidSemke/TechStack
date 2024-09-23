@@ -68,7 +68,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    width: 25%;
+    width: 30%;
     padding-top: calc(max(layout.$navbar-height, layout.$navbar-min-height) + 1rem);
     z-index: 10;
     background-color: colors.$bg0;
@@ -108,7 +108,7 @@
     }
 }
 
-@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
+@media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp2) {
     .sidebar-container {
         width: 50%;
     }
