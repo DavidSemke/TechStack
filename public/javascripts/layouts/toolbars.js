@@ -1,3 +1,5 @@
+import { debounce } from '../utils/debounce.js'
+
 function sidebarListeners() {
     const sidebar = document.querySelector('.sidebar-container')
 
@@ -85,7 +87,7 @@ function navbarListeners() {
     const navbarDropdownContainer = document.querySelector(
         '.navbar-dropdown-container'
     )
-    searchbarInput.addEventListener('input', () => {
+    const onInput = () => {
         const encodedWords = searchbarInput
             .value
             .split(' ')
@@ -116,7 +118,9 @@ function navbarListeners() {
             .catch(error => {
                 throw error
             })
-    })
+    }
+
+    searchbarInput.addEventListener('input', debounce(onInput, 500))
     searchbarInput.addEventListener('blur', (event) => {
         const newFocus = event.relatedTarget
         

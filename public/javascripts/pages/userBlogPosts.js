@@ -1,14 +1,14 @@
 import prism from 'prismjs'
+import { debounce } from '../utils/debounce.js'
 
 function userBlogPostsSearchbarListeners(page) {
     const searchbar = page.querySelector(
         '.user-blog-posts-page__searchbar .searchbar__input'
     )
-
-    searchbar.addEventListener('input', (event) => {
+    const onInput = (event) => {
         const blogPostItems = page.querySelectorAll('.blog-post-item')
         const searchValue = event
-            .currentTarget
+            .target
             .value
             .trim()
             .toLowerCase()
@@ -32,8 +32,9 @@ function userBlogPostsSearchbarListeners(page) {
                 }
             }
         }
-    })
+    }
 
+    searchbar.addEventListener('input', debounce(onInput, 500))
     searchbar.addEventListener('blur', () => {
         page.classList.remove('-expanded-searchbar')
     })
