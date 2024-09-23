@@ -9,7 +9,7 @@
     grid-template-rows: repeat(
         auto-fit, minmax(bpc-vars.$height-medium, 1fr)
     );
-    gap: 4rem;
+    gap: 2rem;
 
     &__cell {
         display: flex;

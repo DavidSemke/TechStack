@@ -420,7 +420,7 @@ pre[class*=language-] {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
   grid-template-rows: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 4rem;
+  gap: 2rem;
 }
 .blog-post-grid__cell {
   display: flex;
@@ -809,7 +809,7 @@ pre[class*=language-] {
 }
 .page-container {
   min-height: 100vh;
-  width: 80%;
+  width: 70%;
 }
 
 @media (max-width: 768px) {
