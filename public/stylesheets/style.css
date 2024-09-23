@@ -659,14 +659,11 @@ pre[class*=language-] {
   justify-content: center;
   gap: 2rem;
 }
-.navbar.-expanded-searchbar .navbar__right {
+.navbar.-expanded-searchbar .navbar__right, .navbar.-expanded-searchbar .navbar__left {
   display: none;
 }
 .navbar.-expanded-searchbar .navbar__center {
   display: block;
-}
-.navbar.-expanded-searchbar .navbar__search-button {
-  display: none;
 }
 
 @media (max-width: 768px) {

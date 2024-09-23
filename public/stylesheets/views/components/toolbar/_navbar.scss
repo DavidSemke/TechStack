@@ -37,16 +37,12 @@
     }
 
     &.-expanded-searchbar {
-        .navbar__right {
+        .navbar__right, .navbar__left {
             display: none;
         }
 
         .navbar__center {
             display: block;
-        }
-
-        .navbar__search-button {
-            display: none;
         }
     }
 }
