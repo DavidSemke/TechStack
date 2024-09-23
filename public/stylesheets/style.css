@@ -646,6 +646,7 @@ pre[class*=language-] {
   flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
 }
 .navbar__center {
@@ -655,7 +656,7 @@ pre[class*=language-] {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 2rem;
 }
 .navbar.-expanded-searchbar .navbar__right {
@@ -669,8 +670,8 @@ pre[class*=language-] {
 }
 
 @media (max-width: 768px) {
-  .navbar__left {
-    flex: 0;
+  .navbar__left, .navbar__right {
+    justify-content: center;
   }
   .navbar__center {
     display: none;
