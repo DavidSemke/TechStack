@@ -1,18 +1,19 @@
 {
   "name": "techstack",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "engines": {
     "node": ">=18.18.0"
   },
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "set_debug": "set DEBUG=$npm_package_name:*",
+    "set_debug": "DEBUG=$npm_package_name:*",
     "watch_node": "nodemon --ext js,pug",
     "watch_scss": "sass --no-source-map --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
     "watch_webpack": "webpack --watch",
-    "devstart": "npm run set_debug & concurrently \"npm run watch_node\" \"npm run watch_scss\" \"npm run watch_webpack\"",
-    "test": "jest"
+    "dev": "pnpm run set_debug & concurrently \"pnpm run watch_node\" \"pnpm run watch_scss\" \"pnpm run watch_webpack\"",
+    "test": "jest",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.2",
+    "concurrently": "^9.0.1",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
@@ -53,6 +55,7 @@
     "eslint-plugin-n": "^16.2.0",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
     "prettier": "3.0.3",
     "sass": "^1.69.5",
     "supertest": "^6.3.4",
