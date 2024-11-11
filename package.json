@@ -10,7 +10,7 @@
     "watch_node": "nodemon --ext js,pug",
     "watch_scss": "sass --no-source-map --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
     "watch_webpack": "webpack --watch",
-    "dev": "DEBUG=$npm_package_name:* concurrently \"pnpm run watch_node\" \"pnpm run watch_scss\" \"pnpm run watch_webpack\"",
+    "dev": "DEBUG=$npm_package_name:* concurrently \"pnpm watch_node\" \"pnpm watch_scss\" \"pnpm watch_webpack\"",
     "test": "jest",
     "preinstall": "npx only-allow pnpm"
   },
