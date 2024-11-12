@@ -19,10 +19,10 @@
     "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
     "connect-livereload": "^0.6.1",
-    "debug": "~2.6.9",
-    "dompurify": "^3.0.8",
+    "debug": "~4.3.7",
+    "dompurify": "^3.2.0",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.1.5",
@@ -30,7 +30,7 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "http-errors": "~1.6.3",
-    "jsdom": "^24.0.0",
+    "jsdom": "^25.0.1",
     "livereload": "^0.9.3",
     "memorystore": "^1.6.7",
     "mongodb-memory-server": "^9.1.6",
@@ -41,7 +41,7 @@
     "passport-local": "^1.0.0",
     "prismjs": "^1.29.0",
     "pug": "^3.0.2",
-    "tinymce": "^7.1.1"
+    "tinymce": "^7.5.0"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.2",
