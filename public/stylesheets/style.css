@@ -1353,7 +1353,8 @@ body {
   background-color: rgb(18, 18, 18);
 }
 
-button, a.-button {
+button,
+a.-button {
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   padding-left: 1rem;
@@ -1365,32 +1366,39 @@ button, a.-button {
   font-size: 1.2rem;
   text-decoration: none;
 }
-button:hover, a.-button:hover {
+button:hover,
+a.-button:hover {
   background-color: rgb(54, 54, 54);
 }
-button.-colorful, a.-button.-colorful {
+button.-colorful,
+a.-button.-colorful {
   color: #b22eff;
   border: 2px solid #b22eff;
 }
-button.-colorful:hover, a.-button.-colorful:hover {
+button.-colorful:hover,
+a.-button.-colorful:hover {
   color: white;
   background-color: #b22eff;
 }
-button.-tab, a.-button.-tab {
+button.-tab,
+a.-button.-tab {
   border-radius: 0;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
 }
-button.-error, a.-button.-error {
+button.-error,
+a.-button.-error {
   color: red;
   border: 2px solid red;
 }
-button.-error:hover, a.-button.-error:hover {
+button.-error:hover,
+a.-button.-error:hover {
   color: white;
   background-color: red;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-transform: capitalize;
 }
 
@@ -1421,7 +1429,8 @@ textarea {
   resize: none;
 }
 
-ul, ol {
+ul,
+ol {
   list-style-type: none;
   padding-left: 0;
   margin: 0;

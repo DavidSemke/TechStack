@@ -38,11 +38,11 @@ function App() {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", `'nonce-${nonce}'`],
             imgSrc: [
-              "'self' data:", 
+              "'self' data:",
               "https://images.pexels.com",
               "https://images.unsplash.com",
-              "https://*.tenor.com"
-            ]
+              "https://*.tenor.com",
+            ],
           },
         },
       })(req, res, next)
@@ -150,7 +150,7 @@ function App() {
 
   // add image locals
   app.use(async (req, res, next) => {
-    const imagesPath = path.join(process.cwd(), 'images')
+    const imagesPath = path.join(process.cwd(), "images")
     res.locals.images = await base64.imagesToBase64(imagesPath)
     next()
   })

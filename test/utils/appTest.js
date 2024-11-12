@@ -58,7 +58,7 @@ function create(router, routerPath, autologUser = null) {
 
   // add image locals
   app.use(async (req, res, next) => {
-    const imagesPath = path.join(process.cwd(), 'images')
+    const imagesPath = path.join(process.cwd(), "images")
     res.locals.images = await base64.imagesToBase64(imagesPath)
     next()
   })

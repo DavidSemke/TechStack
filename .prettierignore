@@ -1,5 +1,4 @@
-/public/**
-!/public/*.js
-/views
-**/*.json
-/test/routes
+*.css
+bundle.js
+pnpm-lock.yaml
+views

@@ -1,8 +1,8 @@
-@use '../globalSassVars/break-points' as bp;
+@use "../globalSassVars/break-points" as bp;
 
 :root {
-    --bp0: #{bp.$bp0};
-    --bp1: #{bp.$bp1};
-    --bp2: #{bp.$bp2};
-    --bp3: #{bp.$bp3};
+  --bp0: #{bp.$bp0};
+  --bp1: #{bp.$bp1};
+  --bp2: #{bp.$bp2};
+  --bp3: #{bp.$bp3};
 }

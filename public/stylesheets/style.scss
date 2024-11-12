@@ -1,32 +1,32 @@
-@use 'codeHighlighting/prism-holi-theme';
-@use 'globalCssVars/break-points';
-@use 'globalSassVars/colors';
-@use 'globalSassVars/font-sizes' as fSizes;
-@use 'views/components/card/blogPostCard/blog-post-card';
-@use 'views/components/card/comment-card';
-@use 'views/components/form/form-input';
-@use 'views/components/form/form-select';
-@use 'views/components/form/form-textarea';
-@use 'views/components/form/logging-form';
-@use 'views/components/form/searchbar';
-@use 'views/components/fragment/blog-post-fragment';
-@use 'views/components/grid/blog-post-grid';
-@use 'views/components/icon/icon-element/icon-element';
-@use 'views/components/list/blog-post-list';
-@use 'views/components/list/button-list';
-@use 'views/components/list/icon-element-list';
-@use 'views/components/toolbar/footer';
-@use 'views/components/toolbar/navbar-dropdown';
-@use 'views/components/toolbar/navbar';
-@use 'views/components/toolbar/sidebar';
-@use 'views/layouts/logging';
-@use 'views/layouts/toolbars';
-@use 'views/pages/blog-post-form';
-@use 'views/pages/blog-post';
-@use 'views/pages/error';
-@use 'views/pages/index';
-@use 'views/pages/user-blog-posts';
-@use 'views/pages/user-profile';
+@use "codeHighlighting/prism-holi-theme";
+@use "globalCssVars/break-points";
+@use "globalSassVars/colors";
+@use "globalSassVars/font-sizes" as fSizes;
+@use "views/components/card/blogPostCard/blog-post-card";
+@use "views/components/card/comment-card";
+@use "views/components/form/form-input";
+@use "views/components/form/form-select";
+@use "views/components/form/form-textarea";
+@use "views/components/form/logging-form";
+@use "views/components/form/searchbar";
+@use "views/components/fragment/blog-post-fragment";
+@use "views/components/grid/blog-post-grid";
+@use "views/components/icon/icon-element/icon-element";
+@use "views/components/list/blog-post-list";
+@use "views/components/list/button-list";
+@use "views/components/list/icon-element-list";
+@use "views/components/toolbar/footer";
+@use "views/components/toolbar/navbar-dropdown";
+@use "views/components/toolbar/navbar";
+@use "views/components/toolbar/sidebar";
+@use "views/layouts/logging";
+@use "views/layouts/toolbars";
+@use "views/pages/blog-post-form";
+@use "views/pages/blog-post";
+@use "views/pages/error";
+@use "views/pages/index";
+@use "views/pages/user-blog-posts";
+@use "views/pages/user-profile";
 
 * {
   box-sizing: border-box;
@@ -57,7 +57,8 @@ body {
   background-color: colors.$bg1;
 }
 
-button, a.-button {
+button,
+a.-button {
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   padding-left: 1rem;
@@ -68,7 +69,7 @@ button, a.-button {
   background: none;
   font-size: fSizes.$large;
   text-decoration: none;
-  
+
   &:hover {
     background-color: colors.$button;
   }
@@ -100,7 +101,8 @@ button, a.-button {
   }
 }
 
-h1, h2 {
+h1,
+h2 {
   text-transform: capitalize;
 }
 
@@ -131,15 +133,16 @@ textarea {
   resize: none;
 }
 
-ul, ol {
+ul,
+ol {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
 }
 
 // style code blocks/inlines
-code[class*='language-'],
-pre[class*='language-'] {
+code[class*="language-"],
+pre[class*="language-"] {
   padding: 1rem;
   white-space: pre-wrap;
 }

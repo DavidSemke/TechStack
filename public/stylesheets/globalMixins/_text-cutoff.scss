@@ -1,6 +1,6 @@
 @mixin cut($max-lines) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: $max-lines;
-    overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $max-lines;
+  overflow: hidden;
 }

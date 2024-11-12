@@ -1,5 +1,5 @@
 const path = require("path")
-const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = {
   entry: "./public/javascripts/root.js",
@@ -8,9 +8,11 @@ module.exports = {
     path: path.join(__dirname, "public", "javascripts"),
   },
   optimization: {
-    minimizer: [new TerserPlugin({
-      extractComments: false,
-    })],
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
+    ],
   },
   mode: "production",
 }
