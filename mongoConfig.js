@@ -1,6 +1,11 @@
 const mongoose = require("mongoose")
 
-const connecter = process.env.MONGO_DB_CONNECT
-mongoose.connect(connecter)
+let connector = process.env.DB_CONNECTOR_DEV
+
+if (process.env.NODE_ENV === "production") {
+    connector = process.env.DB_CONNECTOR_PROD
+}
+
+mongoose.connect(connector)
 const db = mongoose.connection
 db.on("error", console.error.bind(console, "mongo connection error"))
