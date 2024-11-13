@@ -2,7 +2,7 @@
 @use '../../globalSassVars/icon-sizes' as iSizes;
 @use '../../globalSassVars/font-sizes' as fSizes;
 @use '../../globalSassVars/break-points' as bp;
-@use '../components/icon/icon-element/modifiers' as ie-mod;
+@use '../components/icon/iconElement/modifiers' as ie-mod;
 @use '../components/card/blogPostCard/modifiers' as bpc-mod;
 
 .blog-post-page {

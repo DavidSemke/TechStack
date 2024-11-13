@@ -2,12 +2,6 @@
 @use '../../../../globalSassVars/icon-sizes' as iSizes;
 @use '../../../../globalMixins/text-cutoff';
 
-@mixin avatar() {
-    .icon-element__icon > img {
-        border-radius: 50%;
-    }
-}
-
 @mixin column() {
     flex-direction: column;
 }

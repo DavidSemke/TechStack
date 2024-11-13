@@ -1,0 +1,11 @@
+.img-icon-element {
+    &__icon {
+        flex: none;
+    }
+
+    &.-avatar {
+        .img-icon-element__icon > img {
+            border-radius: 50%;
+        }
+    }
+}

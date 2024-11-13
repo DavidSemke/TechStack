@@ -1,6 +1,5 @@
 @use '../../../../globalSassVars/icon-sizes' as iSizes;
 @use '../../../../globalMixins/text-cutoff';
-@use '../../../../globalSassVars/break-points' as bp;
 @use 'modifiers' as mod;
 
 .icon-element {
@@ -9,7 +8,6 @@
     gap: 1rem;
 
     &__icon {
-        flex: none;
         height: iSizes.$medium;
         width: iSizes.$medium;
     }
@@ -17,10 +15,6 @@
     &__label {
         @include text-cutoff.cut(2);
         word-break: break-word;
-    }
-
-    &.-avatar {
-        @include mod.avatar();
     }
 
     &.-column {

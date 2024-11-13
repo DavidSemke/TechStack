@@ -2,7 +2,6 @@
 @use '../../globalSassVars/icon-sizes' as iSizes;
 @use '../../globalSassVars/colors';
 @use '../../globalSassVars/break-points' as bp;
-@use '../components/icon/icon-element/modifiers' as ie-mod;
 
 .blog-post-form-page {
     display: flex;
