@@ -1,4 +1,5 @@
-import { navbarListeners, sidebarListeners } from "./layouts/toolbars.js"
+import { navbarSetup } from "./layouts/toolbars/navbar.js"
+import { sidebarSetup } from "./layouts/toolbars/sidebar.js"
 import { loggingFormSetup } from "./pages/loggingForm.js"
 import { blogPostSetup } from "./pages/blogPost.js"
 import { blogPostFormSetup } from "./pages/blogPostForm.js"
@@ -7,8 +8,8 @@ import { userBlogPostsSetup } from "./pages/userBlogPosts.js"
 import "./codeHighlighting/prismConfig.js"
 
 // layout setup
-navbarListeners()
-sidebarListeners()
+navbarSetup()
+sidebarSetup()
 
 // page setup
 loggingFormSetup()
