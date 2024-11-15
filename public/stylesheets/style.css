@@ -401,7 +401,8 @@ pre[class*=language-] {
   padding-left: 0.5rem;
   white-space: pre-wrap;
 }
-.blog-post-fragment__content ul, .blog-post-fragment__content ol {
+.blog-post-fragment__content ul,
+.blog-post-fragment__content ol {
   list-style-type: initial;
   padding-left: 2rem;
 }
@@ -657,7 +658,8 @@ pre[class*=language-] {
 .navbar__searchbar {
   width: 100%;
 }
-.navbar.-expanded-searchbar .navbar__right, .navbar.-expanded-searchbar .navbar__left {
+.navbar.-expanded-searchbar .navbar__right,
+.navbar.-expanded-searchbar .navbar__left {
   display: none;
 }
 .navbar.-expanded-searchbar .navbar__center {
@@ -1011,7 +1013,8 @@ pre[class*=language-] {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-.blog-post__content ul, .blog-post__content ol {
+.blog-post__content ul,
+.blog-post__content ol {
   list-style-type: initial;
   padding-left: 2rem;
 }
