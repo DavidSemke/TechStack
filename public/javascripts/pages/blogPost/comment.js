@@ -1,108 +1,8 @@
-import { formFetch } from "../utils/fetch.js"
-import { updateErrorContainer } from "../utils/formError.js"
-import { PromiseQueue } from "../utils/queue.js"
-import prism from "prismjs"
+import { updateReactionButtons, fetchReaction } from "./reaction.js"
+import { formFetch } from "../../utils/fetch.js"
+import { updateErrorContainer } from "../../utils/formError.js"
 
-// used to queue reactions
-const reactionQueue = PromiseQueue()
-
-function blogPostReactionFormListeners() {
-  const user = backendData.loginUser
-  const reaction = backendData.blogPost.reaction
-  let reactionId = reaction ? reaction._id : null
-  const reactionType = reaction ? reaction.reaction_type : null
-
-  const likeButtons = document.querySelectorAll(".blog-post__like-button")
-  let liked = false
-
-  if (reactionType === "Like") {
-    liked = true
-
-    for (const button of likeButtons) {
-      button.classList.add("-colorful")
-    }
-  }
-
-  const dislikeButtons = document.querySelectorAll(".blog-post__dislike-button")
-  let disliked = false
-
-  if (reactionType === "Dislike") {
-    disliked = true
-
-    for (const button of dislikeButtons) {
-      button.classList.add("-colorful")
-    }
-  }
-
-  let responsiveLike = liked
-  let responsiveDislike = disliked
-  const likeReactionForms = document.querySelectorAll(
-    ".blog-post__like-reaction-form",
-  )
-
-  for (const form of likeReactionForms) {
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault()
-
-      updateReactionButtons(
-        responsiveDislike,
-        responsiveLike,
-        likeButtons,
-        dislikeButtons,
-      )
-      responsiveDislike = false
-      responsiveLike = !responsiveLike
-
-      if (user === undefined) {
-        // No need to update variables disliked and liked
-        // They only matter if the user is logged in
-        return
-      }
-
-      reactionQueue.enqueue(async () => {
-        await fetchReaction(form, disliked, liked, reactionId, user, (data) => {
-          reactionId = data.reactionId
-        })
-        disliked = false
-        liked = !liked
-      })
-    })
-  }
-  const dislikeReactionForms = document.querySelectorAll(
-    ".blog-post__dislike-reaction-form",
-  )
-
-  for (const form of dislikeReactionForms) {
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault()
-
-      updateReactionButtons(
-        responsiveLike,
-        responsiveDislike,
-        dislikeButtons,
-        likeButtons,
-      )
-      responsiveLike = false
-      responsiveDislike = !responsiveDislike
-
-      if (user === undefined) {
-        // No need to update variables disliked and liked
-        // They only matter if the user is logged in
-        return
-      }
-
-      reactionQueue.enqueue(async () => {
-        await fetchReaction(form, liked, disliked, reactionId, user, (data) => {
-          reactionId = data.reactionId
-        })
-        liked = false
-        disliked = !disliked
-      })
-    })
-  }
-}
-
-function allCommentsReactionFormListeners() {
+function allCommentsReactionFormListeners(reactionQueue) {
   const commentCards = document.querySelectorAll(".comment-card")
   // note that blogPost comments are non-replies only
   // replies are available from the comment replied to
@@ -127,11 +27,11 @@ function allCommentsReactionFormListeners() {
       k++
     }
 
-    commentReactionFormListeners(commentCard, commentData)
+    commentReactionFormListeners(commentCard, commentData, reactionQueue)
   }
 }
 
-function commentReactionFormListeners(commentCard, commentData) {
+function commentReactionFormListeners(commentCard, commentData, reactionQueue) {
   if (commentData.replies && commentData.replies.length) {
     const viewRepliesButton = commentCard.querySelector(
       ".comment-card__view-replies-button",
@@ -272,73 +172,6 @@ function commentReactionFormListeners(commentCard, commentData) {
   })
 }
 
-function updateReactionButtons(
-  toggleReaction,
-  removeReaction,
-  primaryButtons,
-  secondaryButtons,
-) {
-  if (removeReaction) {
-    for (const button of primaryButtons) {
-      button.classList.remove("-colorful")
-
-      const label = button.querySelector(".icon-element__label")
-      label.textContent = parseInt(label.textContent) - 1
-    }
-  } else if (toggleReaction) {
-    for (const button of primaryButtons) {
-      button.classList.add("-colorful")
-
-      const label = button.querySelector(".icon-element__label")
-      label.textContent = parseInt(label.textContent) + 1
-    }
-
-    for (const button of secondaryButtons) {
-      button.classList.remove("-colorful")
-
-      const label = button.querySelector(".icon-element__label")
-      label.textContent = parseInt(label.textContent) - 1
-    }
-  } else {
-    for (const button of primaryButtons) {
-      button.classList.add("-colorful")
-
-      const label = button.querySelector(".icon-element__label")
-      label.textContent = parseInt(label.textContent) + 1
-    }
-  }
-}
-
-// If (toggleReaction && removeReaction) === false, then reactionId === null
-async function fetchReaction(
-  form,
-  toggleReaction,
-  removeReaction,
-  reactionId,
-  user,
-  onResponseJson,
-) {
-  const reactionsPath = `/users/${user.username}/reactions`
-
-  if (removeReaction) {
-    await formFetch(
-      `${reactionsPath}/${reactionId}`,
-      "delete",
-      form,
-      onResponseJson,
-    )
-  } else if (toggleReaction) {
-    await formFetch(
-      `${reactionsPath}/${reactionId}`,
-      "put",
-      form,
-      onResponseJson,
-    )
-  } else {
-    await formFetch(reactionsPath, "post", form, onResponseJson)
-  }
-}
-
 function createCommentCreateForm(replyToCard, replyToData) {
   const form = document.querySelector(".blog-post-page__comment-create-form")
   const formClone = form.cloneNode(true)
@@ -421,27 +254,7 @@ function commentCreateFormListeners(commentCreateForm) {
   })
 }
 
-function highlightCodeBlocks() {
-  const codeBlocks = document.querySelectorAll(
-    ".blog-post__content pre:has(> code)",
-  )
-
-  for (const block of codeBlocks) {
-    prism.highlightElement(block)
-  }
+export {
+  allCommentsReactionFormListeners,
+  defaultCommentCreateFormListeners
 }
-
-function blogPostSetup() {
-  const blogPostPage = document.querySelector(".blog-post-page")
-
-  if (!blogPostPage) {
-    return
-  }
-
-  blogPostReactionFormListeners()
-  defaultCommentCreateFormListeners()
-  allCommentsReactionFormListeners()
-  highlightCodeBlocks()
-}
-
-export { blogPostSetup }
