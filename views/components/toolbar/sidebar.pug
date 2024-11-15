@@ -1,3 +1,4 @@
+include ../list/blogPostLinkList
 include ../list/iconElementList
 include ../icon/imgIconElement
 include ../icon/svgIconElement
@@ -115,99 +116,15 @@ nav.sidebar
                         - const recentReads = loginUser.blog_posts_recently_read
 
                         if recentReads.length
-                            - const recentReadsIconElements = []
-
-                            each blogPost in recentReads
-                                - let type = 'svgIconElement'
-                                - let icon = 'profileIcon'
-                                - const pic = blogPost.author.profile_pic
-
-                                if pic
-                                    - const base64 = pic.data.toString('base64')
-                                    - icon = `data:${pic.contentType};base64,${base64}`
-                                    - type = 'imgIconElement'
-                                - 
-                                    recentReadsIconElements.push(
-                                        {
-                                            'type': type,
-                                            'tag': 'a',
-                                            'icon': icon,
-                                            'label': blogPost.title,
-                                            'attrs': {
-                                                'href': `/blog-posts/${blogPost._id}`,
-                                            }
-                                        }
-                                    )
-                            +iconElementList(
-                                recentReadsIconElements,
-                                {
-                                    'iconElementList': {
-                                        'class': [
-                                            '-column',
-                                            '-gap-small',
-                                            '-align-start'
-                                        ]
-                                    },
-                                    'iconElement': {
-                                        'class': [
-                                            '-gap-small',
-                                        ]
-                                    },
-                                    'imgIconElement': {
-                                        'class': [
-                                            '-avatar'
-                                        ]
-                                    }
-                                }
-                            )
+                            +blogPostLinkList(recentReads)
                         else 
                             | No recent reads available.
 
                 section.sidebar__subsection
                     h3.sidebar__subheading Suggested
                     .sidebar__content
-                        - const suggestionsIconElements = []
-
-                        each blogPost in suggestions
-                            - let type = 'svgIconElement'
-                            - let icon = 'profileIcon'
-                            - const pic = blogPost.author.profile_pic
-
-                            if pic
-                                - const base64 = pic.data.toString('base64')
-                                - icon = `data:${pic.contentType};base64,${base64}`
-                                - type = 'imgIconElement'
-                            - 
-                                suggestionsIconElements.push(
-                                    {
-                                        'type': type,
-                                        'tag': 'a',
-                                        'icon': icon,
-                                        'label': blogPost.title,
-                                        'attrs': {
-                                            'href': `/blog-posts/${blogPost._id}`,
-                                        }
-                                    }
-                                )
-                        +iconElementList(
-                            suggestionsIconElements,
-                            {
-                                'iconElementList': {
-                                    'class': [
-                                        '-column',
-                                        '-gap-small',
-                                        '-align-start'
-                                    ]
-                                },
-                                'iconElement': {
-                                    'class': [
-                                        '-gap-small',
-                                    ]
-                                },
-                                'imgIconElement': {
-                                    'class': [
-                                        '-avatar'
-                                    ]
-                                }
-                            }
-                        )
+                        //- Suggestions are from res.locals.suggestions
+                        if suggestions.length
+                            +blogPostLinkList(suggestions)
+                        else 
+                            | No suggestions available.

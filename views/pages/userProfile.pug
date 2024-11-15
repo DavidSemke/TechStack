@@ -3,9 +3,7 @@ include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/toolbar/navbar
 include ../components/list/buttonList
-include ../components/list/iconElementList
-include ../components/icon/imgIconElement
-include ../components/icon/svgIconElement
+include ../components/list/blogPostLinkList
 include ../components/icon/svg/profileIcon
 
 block navbar 
@@ -92,54 +90,8 @@ block page
                 section.profile__browser-details
                     h2.profile__heading Recent Reads
                     .profile__body
-                        - const recentReads = user.blog_posts_recently_read
-                        - const recentReadsIconElements = []
-
-                        each blogPost in recentReads
-                            - let type = 'svgIconElement'
-                            - let icon = 'profileIcon'
-                            - const pic = blogPost.author.profile_pic
-        
-                            if pic
-                                - const base64 = pic.data.toString('base64')
-                                - icon = `data:${pic.contentType};base64,${base64}`
-                                - type = 'imgIconElement'
-                            - 
-                                recentReadsIconElements.push(
-                                    {
-                                        'type': type,
-                                        'tag': 'a',
-                                        'icon': icon,
-                                        'label': blogPost.title,
-                                        'attrs': {
-                                            'href': `/blog-posts/${blogPost._id}`,
-                                        }
-                                    }
-                                )
-
-                        +iconElementList(
-                            recentReadsIconElements,
-                            {
-                                'iconElementList': {
-                                    'class': [
-                                        '-column',
-                                        '-gap-small',
-                                        '-align-start'
-                                    ]
-                                },
-                                'iconElement': {
-                                    'class': [
-                                        '-gap-small',
-                                    ]
-                                },
-                                'imgIconElement': {
-                                    'class': [
-                                        '-avatar'
-                                    ]
-                                }
-                            }
-                        )
-                
+                        +blogPostLinkList(user.blog_posts_recently_read)
+                        
                 if user.blog_posts_written.length
                     section.profile__author-details
                         - let heading = `Blog Posts Written by ${user.username}`
@@ -149,48 +101,4 @@ block page
                         
                         h2.profile__heading= heading
                         .profile__body
-                            - const blogPostsWrittenIconElements = []
-
-                            each blogPost in user.blog_posts_written
-                                - let type = 'svgIconElement'
-                                - let icon = 'profileIcon'
-                                - const pic = user.profile_pic
-            
-                                if pic
-                                    - const base64 = pic.data.toString('base64')
-                                    - icon = `data:${pic.contentType};base64,${base64}`
-                                    - type = 'imgIconElement'
-                                - 
-                                    blogPostsWrittenIconElements.push(
-                                        {   
-                                            'type': type,
-                                            'tag': 'a',
-                                            'icon': icon,
-                                            'label': blogPost.title,
-                                            'attrs': {
-                                                'href': `/blog-posts/${blogPost._id}`,
-                                            }
-                                        }
-                                    )
-                            +iconElementList(
-                                blogPostsWrittenIconElements,
-                                {
-                                    'iconElementList': {
-                                        'class': [
-                                            '-column',
-                                            '-gap-small',
-                                            '-align-start'
-                                        ]
-                                    },
-                                    'iconElement': {
-                                        'class': [
-                                            '-gap-small',
-                                        ]
-                                    },
-                                    'imgIconElement': {
-                                        'class': [
-                                            '-avatar'
-                                        ]
-                                    }
-                                }
-                            )
+                            +blogPostLinkList(user.blog_posts_written)
