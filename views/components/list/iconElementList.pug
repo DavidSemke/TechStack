@@ -1,30 +1,38 @@
-include ../icon/iconElement
-
-mixin iconElementList(elementItems, attrs={})
+mixin iconElementList(items, attrs={})
+    //- List can contain imgIconElements and svgIconElements
     ul.icon-element-list&attributes(attrs.iconElementList)
-        - let sharedClasses = null
-        
-        if attrs.iconElement
-            - sharedClasses = attrs.iconElement.class 
+        each group in ['iconElement','imgIconElement', 'svgIconElement']
+            - attrs[group] ??= {}
+            - attrs[group].class ??= []
+            - const classes = attrs[group].class
 
-            if typeof sharedClasses === 'string'
-                - sharedClasses = sharedClasses.split(' ')
+            if typeof classes === 'string'
+                - attrs[group].class = classes.split(' ')
 
-        each item in elementItems
-            li.icon-element-list__item
-                - let indepClasses = item.attrs.class
+        //- Item keys correspond to mixin params
+        //- In addition, there is item.type
+        each item in items
+            - item.label ??= null
+            - item.attrs ??= {}
+            - item.attrs.class ??= []
+            - let itemClasses = item.attrs.class
 
-                if typeof indepClasses === 'string'
-                    - indepClasses = indepClasses.split(' ')
+            if typeof itemClasses === 'string'
+                - itemClasses = itemClasses.split(' ')
+            
+            - let sharedAttrs = {}
 
-                if sharedClasses && indepClasses
-                    - item.attrs.class = [...sharedClasses, ...indepClasses]
-                
-                - item.label = item.label ?? null
-
-                +iconElement(
+            //- If item.type is not properly defined, it will not inherit attributes/classes
+            each type in ['imgIconElement', 'svgIconElement']
+                if item.type === type
+                    - sharedAttrs = {...attrs.iconElement, ...attrs[type]}
+                    - item.attrs.class = [...attrs.iconElement.class, ...attrs[type].class, ...itemClasses]
+            
+            //- Place sharedAttrs before item.attrs to allow for overriding
+            li.icon-element-list__item 
+                +#{item.type}(
                     item.tag,
                     item.icon,  
                     item.label,
-                    {...attrs.iconElement, ...item.attrs}
+                    {...sharedAttrs, ...item.attrs}
                 )

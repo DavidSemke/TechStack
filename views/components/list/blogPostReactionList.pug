@@ -1,4 +1,7 @@
-include ../icon/iconElement
+include ../icon/svgIconElement
+include ../icon/svg/likeIcon
+include ../icon/svg/dislikeIcon
+include ../icon/svg/commentIcon
 
 ul.blog-post__reaction-list
     li.blog-post__reaction-item
@@ -6,9 +9,9 @@ ul.blog-post__reaction-list
             method='post'
             enctype='multipart/form-data'
         ).blog-post__like-reaction-form
-            +iconElement(
+            +svgIconElement(
                 'button',
-                images.likeIcon,
+                'likeIcon',
                 blogPost.likes,
                 { 
                     'type': 'submit',
@@ -41,9 +44,9 @@ ul.blog-post__reaction-list
             method='post'
             enctype='multipart/form-data'
         ).blog-post__dislike-reaction-form
-            +iconElement(
+            +svgIconElement(
                 'button',
-                images.dislikeIcon,
+                'dislikeIcon',
                 blogPost.dislikes,
                 { 
                     'type': 'submit',
@@ -71,9 +74,9 @@ ul.blog-post__reaction-list
                 value='BlogPost'
             )
     li.blog-post__reaction-item
-        +iconElement(
+        +svgIconElement(
             'a',
-            images.commentIcon,
+            'commentIcon',
             blogPost.comments.length,
             { 
                 'href': '#comment-section',

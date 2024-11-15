@@ -3,6 +3,10 @@
     align-items: center;
     gap: 2rem;
 
+    &__item {
+        display: flex;
+    }
+
     &.-column {
         flex-direction: column;
     }
@@ -13,6 +17,10 @@
 
     &.-align-start {
         align-items: start;
+    }
+
+    &.-align-stretch {
+        align-items: stretch;
     }
 
     &.-gap-small {

@@ -1,5 +1,5 @@
-mixin svgIconElement(tag, iconMixinName, label=null, attrs={})
+mixin svgIconElement(tag, icon, label=null, attrs={})
     #{tag}.svg-icon-element.icon-element&attributes(attrs)
-        +#{iconMixinName}({ 'class': 'svg-icon-element__icon icon-element__icon' })
+        +#{icon}({ 'class': 'svg-icon-element__icon icon-element__icon' })
         if label !== null
             .svg-icon-element__label.icon-element__label= label

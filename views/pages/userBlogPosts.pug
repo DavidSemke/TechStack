@@ -5,6 +5,9 @@ include ../components/fragment/blogPostFragment
 include ../components/list/blogPostList
 include ../components/list/buttonList
 include ../components/toolbar/navbar
+include ../components/icon/svgIconElement
+include ../components/icon/svg/expandIcon
+include ../components/icon/svg/searchIcon
 
 block navbar 
   +navbar(false)
@@ -16,9 +19,9 @@ block page
         h1.user-blog-posts-page__heading= title
         section.user-blog-posts-page__toolbar
             .user-blog-posts-page__right-view-tools
-                +iconElement(
+                +svgIconElement(
                     'button',
-                    images.expandIcon,
+                    'expandIcon',
                     null,
                     {
                         'class': [
@@ -28,15 +31,14 @@ block page
                     }
                 )
             .user-blog-posts-page__left-view-tools
-                +iconElement(
+                +svgIconElement(
                     'button',
-                    images.searchIcon,
+                    'searchIcon',
                     null,
                     {
                         'class': [
                             'user-blog-posts-page__search-button',
                             '-small',
-                            '-padding-even-small'
                         ]
                     }
                 )

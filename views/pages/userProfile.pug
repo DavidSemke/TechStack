@@ -1,9 +1,12 @@
 extends ../layouts/toolbars
-include ../components/list/iconElementList
 include ../components/form/formInput
 include ../components/form/formTextarea
-include ../components/list/buttonList
 include ../components/toolbar/navbar
+include ../components/list/buttonList
+include ../components/list/iconElementList
+include ../components/icon/imgIconElement
+include ../components/icon/svgIconElement
+include ../components/icon/svg/profileIcon
 
 block navbar 
   +navbar(false)
@@ -15,15 +18,14 @@ block page
         h1.profile-page__heading= title
         .profile
             section.profile__primary
-                .profile__avatar
-                    
-                    if user.profile_pic
+                if user.profile_pic
+                    .profile__avatar
                         - const pic = user.profile_pic
                         - const base64 = pic.data.toString('base64')
                         - const dataUri = `data:${pic.contentType};base64,${base64}`
                         img(src=dataUri)
-                    else
-                        img(src=images.profileIcon)
+                else
+                    +profileIcon({ 'class': 'profile__avatar' })
 
                 .profile__username= user.username
             section.profile__secondary
@@ -94,15 +96,18 @@ block page
                         - const recentReadsIconElements = []
 
                         each blogPost in recentReads
-                            - let icon = images.profileIcon
+                            - let type = 'svgIconElement'
+                            - let icon = 'profileIcon'
                             - const pic = blogPost.author.profile_pic
         
                             if pic
                                 - const base64 = pic.data.toString('base64')
                                 - icon = `data:${pic.contentType};base64,${base64}`
+                                - type = 'imgIconElement'
                             - 
                                 recentReadsIconElements.push(
                                     {
+                                        'type': type,
                                         'tag': 'a',
                                         'icon': icon,
                                         'label': blogPost.title,
@@ -125,6 +130,10 @@ block page
                                 'iconElement': {
                                     'class': [
                                         '-gap-small',
+                                    ]
+                                },
+                                'imgIconElement': {
+                                    'class': [
                                         '-avatar'
                                     ]
                                 }
@@ -143,15 +152,18 @@ block page
                             - const blogPostsWrittenIconElements = []
 
                             each blogPost in user.blog_posts_written
-                                - let icon = images.profileIcon
+                                - let type = 'svgIconElement'
+                                - let icon = 'profileIcon'
                                 - const pic = user.profile_pic
             
                                 if pic
                                     - const base64 = pic.data.toString('base64')
                                     - icon = `data:${pic.contentType};base64,${base64}`
+                                    - type = 'imgIconElement'
                                 - 
                                     blogPostsWrittenIconElements.push(
-                                        {
+                                        {   
+                                            'type': type,
                                             'tag': 'a',
                                             'icon': icon,
                                             'label': blogPost.title,
@@ -173,6 +185,10 @@ block page
                                     'iconElement': {
                                         'class': [
                                             '-gap-small',
+                                        ]
+                                    },
+                                    'imgIconElement': {
+                                        'class': [
                                             '-avatar'
                                         ]
                                     }

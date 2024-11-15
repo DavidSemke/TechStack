@@ -61,6 +61,9 @@ body {
 
 button,
 a.-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   padding-left: 1rem;

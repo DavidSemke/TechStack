@@ -1,5 +1,10 @@
 include ../list/iconElementList
-include ../icon/iconElement
+include ../icon/imgIconElement
+include ../icon/svgIconElement
+include ../icon/svg/likeIcon
+include ../icon/svg/dislikeIcon
+include ../icon/svg/commentIcon
+include ../icon/svg/profileIcon
 
 mixin blogPostCard(blogPost, attrs={})
   - const thumbnail = blogPost.thumbnail
@@ -13,24 +18,27 @@ mixin blogPostCard(blogPost, attrs={})
       .blog-post-card__stat-list
         +iconElementList(
           [{
+            'type': 'svgIconElement',
             'tag': 'div',
-            'icon': images.likeIcon,
+            'icon': 'likeIcon',
             'label': blogPost.likes,
             'attrs': {
               'class': 'blog-post-card__likes',
             }
           },
           {
+            'type': 'svgIconElement',
             'tag': 'div',
-            'icon': images.dislikeIcon,
+            'icon': 'dislikeIcon',
             'label': blogPost.dislikes,
             'attrs': {
               'class': 'blog-post-card__dislikes',
             }
           },
           {
+            'type': 'svgIconElement',
             'tag': 'div',
-            'icon': images.commentIcon,
+            'icon': 'commentIcon',
             'label': blogPost.comments.length,
             'attrs': {
               'class': 'blog-post-card__total-comments',
@@ -57,23 +65,23 @@ mixin blogPostCard(blogPost, attrs={})
         .blog-post-card__overlay
           header.blog-post-card__header
             .blog-post-card__author-date
-              - let icon = images.profileIcon
-              - const { profile_pic: pic , username } = blogPost.author
+              - let iconElementType = 'svgIconElement'
+              - let icon = 'profileIcon'
+              - const classes = ['-medium', '-gap-small']
+              - const { profile_pic: pic, username } = blogPost.author
                 
                 if pic
                     - const profilePicBase64 = pic.data.toString('base64')
                     - icon = `data:${pic.contentType};base64,${profilePicBase64}`
+                    - iconElementType = 'imgIconElement'
+                    - classes.push('-avatar')
                     
-                +iconElement(
+                +#{iconElementType}(
                     'div',
                     icon,
                     username,
                     {
-                        'class': [
-                            '-avatar',
-                            '-medium',
-                            '-gap-small'
-                        ]
+                        'class': classes
                     }
                 )
               time(

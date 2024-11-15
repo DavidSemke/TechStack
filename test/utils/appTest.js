@@ -5,7 +5,6 @@ const path = require("path")
 const session = require("express-session")
 const flash = require("connect-flash")
 const passport = require("../../utils/auth")
-const base64 = require("../../utils/base64")
 
 function create(router, routerPath, autologUser = null) {
   const app = express()
@@ -53,13 +52,6 @@ function create(router, routerPath, autologUser = null) {
     res.locals.loginUser = req.user
     res.locals.suggestions = []
 
-    next()
-  })
-
-  // add image locals
-  app.use(async (req, res, next) => {
-    const imagesPath = path.join(process.cwd(), "images")
-    res.locals.images = await base64.imagesToBase64(imagesPath)
     next()
   })
 

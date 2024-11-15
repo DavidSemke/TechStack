@@ -142,15 +142,13 @@
     }
 }
 
-@media (max-width: bp.$bp0) {
+@media (max-width: bp.$bp1) {
     .blog-post-form__submit-button {
         .icon-element__label {
             display: none;
         }
     }
-}
 
-@media (max-width: bp.$bp1) {
     .blog-post-form-page {
         &__right {
             display: none;

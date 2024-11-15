@@ -1,7 +1,18 @@
+include ../icon/svgIconElement
+include ../icon/svg/searchIcon
+
 mixin searchbar(placeholder, attrs={})
     .searchbar&attributes(attrs)
-        .searchbar__icon
-            img(src=images.searchIcon)
+        +svgIconElement(
+            'div',
+            'searchIcon',
+            null,
+            {
+                'class': [
+                    '-small'
+                ]
+            }
+        )
         input.searchbar__input(
             name='content', 
             type='text', 

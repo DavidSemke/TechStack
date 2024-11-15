@@ -1,31 +1,31 @@
-include ../icon/iconElement
+include ../icon/svgIconElement
+include ../icon/svg/menuIcon
+include ../icon/svg/searchIcon
+include ../icon/svg/writeIcon
 include ../form/searchbar
 
 mixin navbar(isAuthorMode)
     nav.navbar
         .navbar__left
-            +iconElement(
+            +svgIconElement(
                 'button',
-                images.burgerIcon,
+                'menuIcon',
                 null,
                 {
                     'class': [
-                        'navbar__sidebar-button',
-                        '-padding-burger-small'
+                        'navbar__sidebar-button'
                     ]
                 }
             )
 
             if !isAuthorMode
-                +iconElement(
+                +svgIconElement(
                     'button',
-                    images.searchIcon,
+                    'searchIcon',
                     null,
                     {
                         'class': [
-                            'navbar__search-button',
-                            '-small',
-                            '-padding-even-small'
+                            'navbar__search-button'
                         ]
                     }
                 )
@@ -35,7 +35,9 @@ mixin navbar(isAuthorMode)
                 +searchbar(
                     'Search Tech Stack',
                     {
-                        'class': 'navbar__searchbar', 
+                        'class': [
+                            'navbar__searchbar',
+                        ], 
                     }
                 )
         
@@ -43,16 +45,15 @@ mixin navbar(isAuthorMode)
             if !loginUser
                 a(href='/login' class='-button -colorful') Log in
             else if !isAuthorMode
-                +iconElement(
+                +svgIconElement(
                     'a',
-                    images.writeIcon, 
+                    'writeIcon', 
                     'Write',
                     {
                         'href': `/users/${loginUser.username}/blog-posts/new-blog-post`,
                         'class': [
                             '-button',
                             '-colorful',
-                            '-gap-small'
                         ]
                     }
                 )

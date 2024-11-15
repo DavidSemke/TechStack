@@ -1,22 +1,28 @@
-include ../list/iconElementList 
+include ../list/iconElementList
+include ../icon/imgIconElement
+include ../icon/svgIconElement
+include ../icon/svg/profileIcon
 
 .navbar-dropdown
     if !blogPosts.length
         | No blog posts found.
     else
         - const iconElements = []
-        - const defaultIcon = images.profileIcon
 
         each blogPost in blogPosts
+            - let type = 'svgIconElement'
+            - let icon = 'profileIcon'
             - let pic = blogPost.author.profile_pic
 
             if pic
                 - const base64 = pic.data.toString('base64')
-                - pic = `data:${pic.contentType};base64,${base64}`
+                - icon = `data:${pic.contentType};base64,${base64}`
+                - type = 'imgIconElement'
             - 
                 iconElements.push({
+                    'type': type,
                     'tag': 'a',
-                    'icon': pic || defaultIcon,
+                    'icon': icon,
                     'label': blogPost.title,
                     'attrs': {
                         'href': `/blog-posts/${blogPost._id}`,
@@ -35,6 +41,10 @@ include ../list/iconElementList
                 'iconElement': {
                     'class': [
                         '-gap-small',
+                    ]
+                },
+                'imgIconElement': {
+                    'class': [
                         '-avatar'
                     ]
                 }

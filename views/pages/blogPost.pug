@@ -1,5 +1,7 @@
 extends ../layouts/toolbars 
-include ../components/icon/iconElement
+include ../components/icon/imgIconElement
+include ../components/icon/svgIconElement
+include ../components/icon/svg/profileIcon
 include ../components/grid/blogPostGrid
 include ../components/card/commentCard
 include ../components/form/formTextarea
@@ -20,22 +22,24 @@ block page
                         .blog-post__metadata-top
                             .blog-post__author-details
                                 - const author = blogPost.author
-                                - let profileIcon = images.profileIcon
+                                - let icon = 'profileIcon'
+                                - let iconElementType = 'svgIconElement'
+                                - const classes = []
 
                                 if author.profile_pic
                                     - const profilePic = author.profile_pic
                                     - const profilePicBase64 = profilePic.data.toString('base64')
-                                    - profileIcon = `data:${profilePic.contentType};base64,${profilePicBase64}`
+                                    - icon = `data:${profilePic.contentType};base64,${profilePicBase64}`
+                                    - iconElementType = 'imgIconElement'
+                                    - classes.push('-avatar')
 
-                                +iconElement(
+                                +#{iconElementType}(
                                     'a',
-                                    profileIcon,
+                                    icon,
                                     author.username,
                                     {
                                         'href': `/users/${author.username}`,
-                                        'class': [
-                                            '-avatar'
-                                        ]
+                                        'class': classes
                                     }
                                 )
 

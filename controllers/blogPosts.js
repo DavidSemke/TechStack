@@ -53,10 +53,7 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
     "navbarDropdown.pug",
   )
   const template = pug.compileFile(pugPath)
-  const renderedHTML = template({
-    blogPosts,
-    images: res.locals.images,
-  })
+  const renderedHTML = template({ blogPosts })
 
   res.json({ renderedHTML })
 })
@@ -162,19 +159,23 @@ exports.postComment = [
     await reactionCounter.save()
 
     const mixinPath = path.join(
-      process.cwd(),
       "views",
       "components",
       "card",
       "commentCard.pug",
     )
     const pugString = `include ${mixinPath}\n+commentCard(comment, isReply)`
-    const template = pug.compile(pugString, { filename: "commentCardTemplate" })
+    const template = pug.compile(
+      pugString, 
+      { 
+        filename: "commentCardTemplate",
+        basedir: process.cwd()
+      }
+    )
     const isReply = Boolean(replyTo)
     const renderedHTML = template({
       comment,
-      isReply,
-      images: res.locals.images,
+      isReply
     })
 
     res.json({ renderedHTML, commentData: comment })

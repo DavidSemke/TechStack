@@ -349,20 +349,10 @@ pre[class*=language-] {
 
 .searchbar {
   display: flex;
-  align-items: flex-end;
   gap: 10px;
-  padding-bottom: 0.2rem;
-  padding-top: 0.2rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 25px;
   background-color: rgb(54, 54, 54);
-}
-.searchbar__icon {
-  height: 1.5rem;
-  width: 1.5rem;
-  min-height: 1.5rem;
-  min-width: 1.5rem;
 }
 .searchbar__input {
   width: 100%;
@@ -568,6 +558,9 @@ pre[class*=language-] {
   align-items: center;
   gap: 2rem;
 }
+.icon-element-list__item {
+  display: flex;
+}
 .icon-element-list.-column {
   flex-direction: column;
 }
@@ -576,6 +569,9 @@ pre[class*=language-] {
 }
 .icon-element-list.-align-start {
   align-items: start;
+}
+.icon-element-list.-align-stretch {
+  align-items: stretch;
 }
 .icon-element-list.-gap-small {
   gap: 1rem;
@@ -633,11 +629,10 @@ pre[class*=language-] {
 }
 .navbar {
   display: flex;
-  align-items: center;
   gap: 1rem;
   position: sticky;
   top: 0;
-  padding: 1rem;
+  padding: 0.8rem;
   height: 8vh;
   min-height: 4rem;
   width: 100%;
@@ -648,19 +643,21 @@ pre[class*=language-] {
 .navbar__left {
   flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 1rem;
 }
 .navbar__center {
   flex: 2;
+  display: flex;
 }
 .navbar__right {
   flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 2rem;
+}
+.navbar__searchbar {
+  width: 100%;
 }
 .navbar.-expanded-searchbar .navbar__right, .navbar.-expanded-searchbar .navbar__left {
   display: none;
@@ -919,12 +916,10 @@ pre[class*=language-] {
     height: 60rem;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .blog-post-form__submit-button .icon-element__label {
     display: none;
   }
-}
-@media (max-width: 768px) {
   .blog-post-form-page__right {
     display: none;
   }
@@ -1358,6 +1353,9 @@ body {
 
 button,
 a.-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   padding-left: 1rem;

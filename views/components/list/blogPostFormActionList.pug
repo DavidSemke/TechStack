@@ -1,9 +1,14 @@
 include iconElementList
+include ../icon/svgIconElement
+include ../icon/svg/deleteIcon
+include ../icon/svg/saveIcon
+include ../icon/svg/publishIcon
 
 +iconElementList(
     [{
+        'type': 'svgIconElement',
         'tag': 'button',
-        'icon': images.deleteIcon,
+        'icon': 'deleteIcon',
         'label': 'Discard',
         'attrs': {
             'class': [
@@ -13,8 +18,9 @@ include iconElementList
         }
     },
     {
+        'type': 'svgIconElement',
         'tag': 'button',
-        'icon': images.saveIcon,
+        'icon': 'saveIcon',
         'label': 'Save',
         'attrs': {
             'class': [
@@ -24,8 +30,9 @@ include iconElementList
         }
     },
     {
+        'type': 'svgIconElement',
         'tag': 'button',
-        'icon': images.publishIcon,
+        'icon': 'publishIcon',
         'label': 'Publish',
         'attrs': {
             'class': [
@@ -46,7 +53,8 @@ include iconElementList
         },
         'iconElementList': {
             'class': [
-                '-gap-small'
+                '-gap-small',
+                '-align-stretch'
             ]
         }
     }

@@ -1,10 +1,14 @@
 include ../list/iconElementList
-include ../icon/iconElement
+include ../icon/imgIconElement
+include ../icon/svgIconElement
+include ../icon/svg/profileIcon
+include ../icon/svg/expandIcon
+include ../icon/svg/blogPostIcon
 
 nav.sidebar
-    +iconElement(
+    +imgIconElement(
         'a',
-        images.favicon, 
+        '/images/favicon.png', 
         'Tech Stack',
         {
             'href': '/',
@@ -29,46 +33,49 @@ nav.sidebar
         section.sidebar__account-section
             button.sidebar__expandable
                 h2.sidebar__heading Account
-                +iconElement(
+                +svgIconElement(
                     'div',
-                    images.expandIcon,
+                    'expandIcon',
                     null,
                     {
                         'class': '-small'
                     }
                 )
             .sidebar__collapsable.-gone
-                - let icon = images.profileIcon
-                
+                - let iconElementType = 'svgIconElement'
+                - let icon = 'profileIcon'
+                - const classes = ['sidebar__profile-overview', '-large']
+
                 if loginUser.profile_pic
                     - const pic = loginUser.profile_pic
                     - const base64 = pic.data.toString('base64')
                     - icon = `data:${pic.contentType};base64,${base64}`
+                    - iconElementType = 'imgIconElement'
+                    - classes.push('-avatar')
                     
-                +iconElement(
+                +#{iconElementType}(
                     'div',
                     icon,
                     loginUser.username,
                     {
-                        'class': [
-                            'sidebar__profile-overview',
-                            '-avatar',
-                            '-large'
-                        ]
+                        'class': classes
                     }
                 )
+
                 +iconElementList(
                     [{
+                        'type': 'svgIconElement',
                         'tag': 'a',
-                        'icon': images.profileIcon,
+                        'icon': 'profileIcon',
                         'label': 'Your Profile',
                         'attrs': {
                             'href': `/users/${loginUser.username}`,
                         }
                     },
                     {
+                        'type': 'svgIconElement',
                         'tag': 'a',
-                        'icon': images.blogPostIcon,
+                        'icon': 'blogPostIcon',
                         'label': 'Your Blog Posts',
                         'attrs': {
                             'href': `/users/${loginUser.username}/blog-posts`,
@@ -93,9 +100,9 @@ nav.sidebar
         section.sidebar__content-section
             button.sidebar__expandable
                 h2.sidebar__heading Content
-                +iconElement(
+                +svgIconElement(
                     'div',
-                    images.expandIcon,
+                    'expandIcon',
                     null,
                     {
                         'class': '-small'
@@ -111,15 +118,18 @@ nav.sidebar
                             - const recentReadsIconElements = []
 
                             each blogPost in recentReads
-                                - let icon = images.profileIcon
+                                - let type = 'svgIconElement'
+                                - let icon = 'profileIcon'
                                 - const pic = blogPost.author.profile_pic
 
                                 if pic
                                     - const base64 = pic.data.toString('base64')
                                     - icon = `data:${pic.contentType};base64,${base64}`
+                                    - type = 'imgIconElement'
                                 - 
                                     recentReadsIconElements.push(
                                         {
+                                            'type': type,
                                             'tag': 'a',
                                             'icon': icon,
                                             'label': blogPost.title,
@@ -141,6 +151,10 @@ nav.sidebar
                                     'iconElement': {
                                         'class': [
                                             '-gap-small',
+                                        ]
+                                    },
+                                    'imgIconElement': {
+                                        'class': [
                                             '-avatar'
                                         ]
                                     }
@@ -155,15 +169,18 @@ nav.sidebar
                         - const suggestionsIconElements = []
 
                         each blogPost in suggestions
-                            - let icon = images.profileIcon
+                            - let type = 'svgIconElement'
+                            - let icon = 'profileIcon'
                             - const pic = blogPost.author.profile_pic
 
                             if pic
                                 - const base64 = pic.data.toString('base64')
                                 - icon = `data:${pic.contentType};base64,${base64}`
+                                - type = 'imgIconElement'
                             - 
                                 suggestionsIconElements.push(
                                     {
+                                        'type': type,
                                         'tag': 'a',
                                         'icon': icon,
                                         'label': blogPost.title,
@@ -185,6 +202,10 @@ nav.sidebar
                                 'iconElement': {
                                     'class': [
                                         '-gap-small',
+                                    ]
+                                },
+                                'imgIconElement': {
+                                    'class': [
                                         '-avatar'
                                     ]
                                 }

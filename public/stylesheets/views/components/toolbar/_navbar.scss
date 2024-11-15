@@ -4,11 +4,10 @@
 
 .navbar {
     display: flex;
-    align-items: center;
     gap: 1rem;
     position: sticky;
     top: 0;
-    padding: 1rem;
+    padding: 0.8rem;
     height: layout.$navbar-height;
     min-height: layout.$navbar-min-height;
     width: 100%;
@@ -19,21 +18,24 @@
     &__left {
         flex: 1;
         display: flex;
-        align-items: center;
         justify-content: center;
         gap: 1rem;
     }
 
     &__center {
         flex: 2;
+        display: flex;
     }
 
     &__right {
         flex: 1;
         display: flex;
-        align-items: center;
         justify-content: center;
         gap: 2rem;
+    }
+
+    &__searchbar {
+        width: 100%;
     }
 
     &.-expanded-searchbar {

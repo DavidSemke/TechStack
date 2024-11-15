@@ -1,0 +1,6 @@
+mixin imgIconElement(tag, icon, label=null, attrs={})
+    #{tag}.img-icon-element.icon-element&attributes(attrs)
+        .img-icon-element__icon.icon-element__icon
+            img(src=icon)
+        if label !== null
+            .img-icon-element__label.icon-element__label= label

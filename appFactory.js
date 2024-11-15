@@ -17,15 +17,15 @@ const mongoSanitize = require("express-mongo-sanitize")
 const query = require("./utils/query")
 const BlogPost = require("./models/blogPost")
 const User = require("./models/user")
-const base64 = require("./utils/base64")
 require("./mongoConfig")
 
-const isProduction = process.env.NODE_ENV === "production"
+const isProd = process.env.NODE_ENV === "production"
+const isDev = process.env.NODE_ENV === 'development'
 
 function App() {
   const app = express()
 
-  if (isProduction) {
+  if (isProd) {
     /* Security Setup */
     app.use((req, res, next) => {
       const nonce = crypto.randomBytes(16).toString("base64")
@@ -79,39 +79,39 @@ function App() {
   app.use(passport.session())
   app.use(flash())
 
-  if (!isProduction) {
+  if (isDev) {
     /* Live Reload Setup */
     const liveReloadServer = liveReload.createServer()
     liveReloadServer.watch(path.join(__dirname, "public"))
     liveReloadServer.server.once("connection", () => {
       setTimeout(() => {
         liveReloadServer.refresh("/")
-      }, 100)
+      }, 200)
     })
 
     app.use(connectLiveReload())
 
     /* Autologin */
-    app.use(async (req, res, next) => {
-      const autologUser = await User.findOne({ username: "aaaaaa" })
-        .populate("blog_posts_recently_read")
-        .populate({
-          path: "blog_posts_recently_read",
-          populate: {
-            path: "author",
-          },
-        })
-        .lean()
-        .exec()
+    // app.use(async (req, res, next) => {
+    //   const autologUser = await User.findOne({ username: "aaaaaa" })
+    //     .populate("blog_posts_recently_read")
+    //     .populate({
+    //       path: "blog_posts_recently_read",
+    //       populate: {
+    //         path: "author",
+    //       },
+    //     })
+    //     .lean()
+    //     .exec()
 
-      req.login(autologUser, (err) => {
-        if (err) {
-          return next(err)
-        }
-      })
+    //   req.login(autologUser, (err) => {
+    //     if (err) {
+    //       return next(err)
+    //     }
+    //   })
 
-      next()
-    })
+    //   next()
+    // })
   }
 
   /* View Engine Setup */
@@ -144,13 +144,6 @@ function App() {
     )
 
     res.locals.suggestions = suggestions
-    next()
-  })
-
-  // add image locals
-  app.use(async (req, res, next) => {
-    const imagesPath = path.join(process.cwd(), "images")
-    res.locals.images = await base64.imagesToBase64(imagesPath)
     next()
   })
 

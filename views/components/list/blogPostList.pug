@@ -1,4 +1,10 @@
 include iconElementList
+include ../icon/svgIconElement
+include ../icon/svg/likeIcon
+include ../icon/svg/dislikeIcon
+include ../icon/svg/commentIcon
+include ../icon/svg/editIcon
+include ../icon/svg/deleteIcon
 
 mixin blogPostList(blogPosts, attrs={})
     ul.blog-post-list&attributes(attrs)
@@ -25,24 +31,27 @@ mixin blogPostList(blogPosts, attrs={})
                             
                         +iconElementList(
                             [{
+                                'type': 'svgIconElement',
                                 'tag': 'div',
-                                'icon': images.likeIcon,
+                                'icon': 'likeIcon',
                                 'label': likes,
                                 'attrs': {
                                     'class': 'blog-post-item__likes'
                                 }
                             },
                             {
+                                'type': 'svgIconElement',
                                 'tag': 'div',
-                                'icon': images.dislikeIcon,
+                                'icon': 'dislikeIcon',
                                 'label': dislikes,
                                 'attrs': {
                                     'class': 'blog-post-item__dislikes'
                                 }
                             },
                             {
+                                'type': 'svgIconElement',
                                 'tag': 'div',
-                                'icon': images.commentIcon,
+                                'icon': 'commentIcon',
                                 'label': totalComments,
                                 'attrs': {
                                     'class': 'blog-post-item__total-comments'
@@ -53,19 +62,24 @@ mixin blogPostList(blogPosts, attrs={})
                                     'class': [
                                         '-small',
                                         '-gap-small',
-                                        '-avatar'
                                     ]
                                 },
                                 'iconElementList': {
                                     'class': 'blog-post-item__reaction-list'
+                                },
+                                'imgIconElement': {
+                                    'class': [
+                                        '-avatar'
+                                    ]
                                 }
                             }
                         )
                         .blog-post-item__actions
                             +iconElementList(
                                 [{
+                                    'type': 'svgIconElement',
                                     'tag': 'a',
-                                    'icon': images.editIcon,
+                                    'icon': 'editIcon',
                                     'label': null,
                                     'attrs': {
                                         'class': [
@@ -76,8 +90,9 @@ mixin blogPostList(blogPosts, attrs={})
                                     }
                                 },
                                 {
+                                    'type': 'svgIconElement',
                                     'tag': 'button',
-                                    'icon': images.deleteIcon,
+                                    'icon': 'deleteIcon',
                                     'label': null,
                                     'attrs': {
                                         'class': [
