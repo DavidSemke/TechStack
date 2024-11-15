@@ -1,24 +1,19 @@
 include iconElementList
-include ../icon/imgIconElement
-include ../icon/svgIconElement
 include ../icon/svg/profileIcon
 
 mixin blogPostLinkList(blogPosts)
     - const iconElements = []
 
     each blogPost in blogPosts
-        - let type = 'svgIconElement'
         - let icon = 'profileIcon'
         - const pic = blogPost.author.profile_pic
 
         if pic
             - const base64 = pic.data.toString('base64')
             - icon = `data:${pic.contentType};base64,${base64}`
-            - type = 'imgIconElement'
         - 
             iconElements.push(
                 {
-                    'type': type,
                     'tag': 'a',
                     'icon': icon,
                     'label': blogPost.title,
@@ -41,10 +36,6 @@ mixin blogPostLinkList(blogPosts)
             'iconElement': {
                 'class': [
                     '-gap-small',
-                ]
-            },
-            'imgIconElement': {
-                'class': [
                     '-avatar'
                 ]
             }

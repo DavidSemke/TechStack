@@ -1,6 +1,5 @@
 include ../list/iconElementList
-include ../icon/imgIconElement
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/githubIcon
 include ../icon/svg/discordIcon
 include ../icon/svg/facebookIcon
@@ -9,7 +8,7 @@ include ../icon/svg/twitterIcon
 
 footer.footer
     .footer__logo-title
-        +imgIconElement(
+        +iconElement(
             'a',
             '/images/favicon.png',  
             'Tech Stack',
@@ -25,22 +24,18 @@ footer.footer
     .footer__associated-media
         +iconElementList(
             [{
-                'type': 'svgIconElement',
                 'tag': 'div',
                 'icon': 'githubIcon',
             },
             {
-                'type': 'svgIconElement',
                 'tag': 'div',
                 'icon': 'discordIcon',
             },
             {
-                'type': 'svgIconElement',
                 'tag': 'div',
                 'icon': 'facebookIcon',
             },
             {
-                'type': 'svgIconElement',
                 'tag': 'div',
                 'icon': 'twitterIcon',
             }],

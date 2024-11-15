@@ -1,4 +1,4 @@
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/menuIcon
 include ../icon/svg/searchIcon
 include ../icon/svg/writeIcon
@@ -7,7 +7,7 @@ include ../form/searchbar
 mixin navbar(isAuthorMode)
     nav.navbar
         .navbar__left
-            +svgIconElement(
+            +iconElement(
                 'button',
                 'menuIcon',
                 null,
@@ -19,7 +19,7 @@ mixin navbar(isAuthorMode)
             )
 
             if !isAuthorMode
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'searchIcon',
                     null,
@@ -45,7 +45,7 @@ mixin navbar(isAuthorMode)
             if !loginUser
                 a(href='/login' class='-button -colorful') Log in
             else if !isAuthorMode
-                +svgIconElement(
+                +iconElement(
                     'a',
                     'writeIcon', 
                     'Write',

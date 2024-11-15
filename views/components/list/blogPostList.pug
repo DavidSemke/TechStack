@@ -1,5 +1,4 @@
 include iconElementList
-include ../icon/svgIconElement
 include ../icon/svg/likeIcon
 include ../icon/svg/dislikeIcon
 include ../icon/svg/commentIcon
@@ -31,7 +30,6 @@ mixin blogPostList(blogPosts, attrs={})
                             
                         +iconElementList(
                             [{
-                                'type': 'svgIconElement',
                                 'tag': 'div',
                                 'icon': 'likeIcon',
                                 'label': likes,
@@ -40,7 +38,6 @@ mixin blogPostList(blogPosts, attrs={})
                                 }
                             },
                             {
-                                'type': 'svgIconElement',
                                 'tag': 'div',
                                 'icon': 'dislikeIcon',
                                 'label': dislikes,
@@ -49,7 +46,6 @@ mixin blogPostList(blogPosts, attrs={})
                                 }
                             },
                             {
-                                'type': 'svgIconElement',
                                 'tag': 'div',
                                 'icon': 'commentIcon',
                                 'label': totalComments,
@@ -62,22 +58,17 @@ mixin blogPostList(blogPosts, attrs={})
                                     'class': [
                                         '-small',
                                         '-gap-small',
+                                        '-avatar'
                                     ]
                                 },
                                 'iconElementList': {
                                     'class': 'blog-post-item__reaction-list'
                                 },
-                                'imgIconElement': {
-                                    'class': [
-                                        '-avatar'
-                                    ]
-                                }
                             }
                         )
                         .blog-post-item__actions
                             +iconElementList(
                                 [{
-                                    'type': 'svgIconElement',
                                     'tag': 'a',
                                     'icon': 'editIcon',
                                     'label': null,
@@ -90,7 +81,6 @@ mixin blogPostList(blogPosts, attrs={})
                                     }
                                 },
                                 {
-                                    'type': 'svgIconElement',
                                     'tag': 'button',
                                     'icon': 'deleteIcon',
                                     'label': null,

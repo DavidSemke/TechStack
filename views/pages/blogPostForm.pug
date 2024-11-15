@@ -4,7 +4,7 @@ include ../components/form/formInput
 include ../components/form/formTextarea
 include ../components/fragment/blogPostFragment
 include ../components/toolbar/navbar
-include ../components/icon/svgIconElement
+include ../components/icon/iconElement
 include ../components/icon/svg/expandIcon
 
 block navbar 
@@ -17,7 +17,7 @@ block page
         section.blog-post-form-page__left
             header.blog-post-form-page__header
                 h2.blog-post-form-page__heading Draft
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'expandIcon',
                     null,
@@ -89,7 +89,7 @@ block page
 
         section.blog-post-form-page__right
             header.blog-post-form-page__header
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'expandIcon',
                     null,

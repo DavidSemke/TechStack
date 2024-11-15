@@ -1,6 +1,5 @@
 include ../list/iconElementList
-include ../icon/imgIconElement
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/likeIcon
 include ../icon/svg/dislikeIcon
 include ../icon/svg/commentIcon
@@ -18,7 +17,6 @@ mixin blogPostCard(blogPost, attrs={})
       .blog-post-card__stat-list
         +iconElementList(
           [{
-            'type': 'svgIconElement',
             'tag': 'div',
             'icon': 'likeIcon',
             'label': blogPost.likes,
@@ -27,7 +25,6 @@ mixin blogPostCard(blogPost, attrs={})
             }
           },
           {
-            'type': 'svgIconElement',
             'tag': 'div',
             'icon': 'dislikeIcon',
             'label': blogPost.dislikes,
@@ -36,7 +33,6 @@ mixin blogPostCard(blogPost, attrs={})
             }
           },
           {
-            'type': 'svgIconElement',
             'tag': 'div',
             'icon': 'commentIcon',
             'label': blogPost.comments.length,
@@ -65,23 +61,22 @@ mixin blogPostCard(blogPost, attrs={})
         .blog-post-card__overlay
           header.blog-post-card__header
             .blog-post-card__author-date
-              - let iconElementType = 'svgIconElement'
               - let icon = 'profileIcon'
-              - const classes = ['-medium', '-gap-small']
               - const { profile_pic: pic, username } = blogPost.author
                 
                 if pic
                     - const profilePicBase64 = pic.data.toString('base64')
                     - icon = `data:${pic.contentType};base64,${profilePicBase64}`
-                    - iconElementType = 'imgIconElement'
-                    - classes.push('-avatar')
                     
-                +#{iconElementType}(
+                +iconElement(
                     'div',
                     icon,
                     username,
                     {
-                        'class': classes
+                        'class': [
+                          '-gap-small', 
+                          '-avatar'
+                        ]
                     }
                 )
               time(

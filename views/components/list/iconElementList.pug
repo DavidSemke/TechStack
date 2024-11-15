@@ -1,16 +1,14 @@
+include ../icon/iconElement
+
 mixin iconElementList(items, attrs={})
-    //- List can contain imgIconElements and svgIconElements
     ul.icon-element-list&attributes(attrs.iconElementList)
-        each group in ['iconElement','imgIconElement', 'svgIconElement']
-            - attrs[group] ??= {}
-            - attrs[group].class ??= []
-            - const classes = attrs[group].class
+        - attrs.iconElement ??= {}
+        - attrs.iconElement.class ??= []
+        - let sharedClasses = attrs.iconElement.class
 
-            if typeof classes === 'string'
-                - attrs[group].class = classes.split(' ')
-
-        //- Item keys correspond to mixin params
-        //- In addition, there is item.type
+        if typeof sharedClasses === 'string'
+            - sharedClasses = sharedClasses.split(' ')
+            
         each item in items
             - item.label ??= null
             - item.attrs ??= {}
@@ -20,19 +18,13 @@ mixin iconElementList(items, attrs={})
             if typeof itemClasses === 'string'
                 - itemClasses = itemClasses.split(' ')
             
-            - let sharedAttrs = {}
-
-            //- If item.type is not properly defined, it will not inherit attributes/classes
-            each type in ['imgIconElement', 'svgIconElement']
-                if item.type === type
-                    - sharedAttrs = {...attrs.iconElement, ...attrs[type]}
-                    - item.attrs.class = [...attrs.iconElement.class, ...attrs[type].class, ...itemClasses]
-            
-            //- Place sharedAttrs before item.attrs to allow for overriding
+            - item.attrs.class = [...sharedClasses, ...itemClasses]
+     
+            //- Place attrs.iconElement before item.attrs to allow for overriding
             li.icon-element-list__item 
-                +#{item.type}(
+                +iconElement(
                     item.tag,
                     item.icon,  
                     item.label,
-                    {...sharedAttrs, ...item.attrs}
+                    {...attrs.iconElement, ...item.attrs}
                 )

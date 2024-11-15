@@ -1,4 +1,4 @@
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/likeIcon
 include ../icon/svg/dislikeIcon
 include ../icon/svg/commentIcon
@@ -9,7 +9,7 @@ ul.blog-post__reaction-list
             method='post'
             enctype='multipart/form-data'
         ).blog-post__like-reaction-form
-            +svgIconElement(
+            +iconElement(
                 'button',
                 'likeIcon',
                 blogPost.likes,
@@ -44,7 +44,7 @@ ul.blog-post__reaction-list
             method='post'
             enctype='multipart/form-data'
         ).blog-post__dislike-reaction-form
-            +svgIconElement(
+            +iconElement(
                 'button',
                 'dislikeIcon',
                 blogPost.dislikes,
@@ -74,7 +74,7 @@ ul.blog-post__reaction-list
                 value='BlogPost'
             )
     li.blog-post__reaction-item
-        +svgIconElement(
+        +iconElement(
             'a',
             'commentIcon',
             blogPost.comments.length,

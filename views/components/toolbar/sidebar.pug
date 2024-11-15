@@ -1,13 +1,12 @@
 include ../list/blogPostLinkList
 include ../list/iconElementList
-include ../icon/imgIconElement
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/profileIcon
 include ../icon/svg/expandIcon
 include ../icon/svg/blogPostIcon
 
 nav.sidebar
-    +imgIconElement(
+    +iconElement(
         'a',
         '/images/favicon.png', 
         'Tech Stack',
@@ -34,7 +33,7 @@ nav.sidebar
         section.sidebar__account-section
             button.sidebar__expandable
                 h2.sidebar__heading Account
-                +svgIconElement(
+                +iconElement(
                     'div',
                     'expandIcon',
                     null,
@@ -43,29 +42,28 @@ nav.sidebar
                     }
                 )
             .sidebar__collapsable.-gone
-                - let iconElementType = 'svgIconElement'
                 - let icon = 'profileIcon'
-                - const classes = ['sidebar__profile-overview', '-large']
 
                 if loginUser.profile_pic
                     - const pic = loginUser.profile_pic
                     - const base64 = pic.data.toString('base64')
                     - icon = `data:${pic.contentType};base64,${base64}`
-                    - iconElementType = 'imgIconElement'
-                    - classes.push('-avatar')
                     
-                +#{iconElementType}(
+                +iconElement(
                     'div',
                     icon,
                     loginUser.username,
                     {
-                        'class': classes
+                        'class': [
+                            'sidebar__profile-overview', 
+                            '-large', 
+                            '-avatar'
+                        ]
                     }
                 )
 
                 +iconElementList(
                     [{
-                        'type': 'svgIconElement',
                         'tag': 'a',
                         'icon': 'profileIcon',
                         'label': 'Your Profile',
@@ -74,7 +72,6 @@ nav.sidebar
                         }
                     },
                     {
-                        'type': 'svgIconElement',
                         'tag': 'a',
                         'icon': 'blogPostIcon',
                         'label': 'Your Blog Posts',
@@ -101,7 +98,7 @@ nav.sidebar
         section.sidebar__content-section
             button.sidebar__expandable
                 h2.sidebar__heading Content
-                +svgIconElement(
+                +iconElement(
                     'div',
                     'expandIcon',
                     null,

@@ -92,26 +92,26 @@ function App() {
     app.use(connectLiveReload())
 
     /* Autologin */
-    // app.use(async (req, res, next) => {
-    //   const autologUser = await User.findOne({ username: "aaaaaa" })
-    //     .populate("blog_posts_recently_read")
-    //     .populate({
-    //       path: "blog_posts_recently_read",
-    //       populate: {
-    //         path: "author",
-    //       },
-    //     })
-    //     .lean()
-    //     .exec()
+    app.use(async (req, res, next) => {
+      const autologUser = await User.findOne({ username: "aaaaaa" })
+        .populate("blog_posts_recently_read")
+        .populate({
+          path: "blog_posts_recently_read",
+          populate: {
+            path: "author",
+          },
+        })
+        .lean()
+        .exec()
 
-    //   req.login(autologUser, (err) => {
-    //     if (err) {
-    //       return next(err)
-    //     }
-    //   })
+      req.login(autologUser, (err) => {
+        if (err) {
+          return next(err)
+        }
+      })
 
-    //   next()
-    // })
+      next()
+    })
   }
 
   /* View Engine Setup */

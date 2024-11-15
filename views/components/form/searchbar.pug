@@ -1,9 +1,9 @@
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/searchIcon
 
 mixin searchbar(placeholder, attrs={})
     .searchbar&attributes(attrs)
-        +svgIconElement(
+        +iconElement(
             'div',
             'searchIcon',
             null,

@@ -1,6 +1,4 @@
-include ../list/iconElementList
-include ../icon/imgIconElement
-include ../icon/svgIconElement
+include ../icon/iconElement
 include ../icon/svg/profileIcon
 include ../icon/svg/likeIcon
 include ../icon/svg/dislikeIcon
@@ -12,19 +10,15 @@ mixin commentCard(comment, isReply=false, attrs={})
             .comment-card__author-details
                 - let author = comment.author
                 - let icon = 'profileIcon'
-                - const classes = ['-gap-small']
+                - const classes = ['-gap-small', '-avatar']
                 
                 if author
-                    - let iconElementType = 'svgIconElement'
-
                     if author.profile_pic
                         - const pic = author.profile_pic
                         - const base64 = pic.data.toString('base64')
                         - icon = `data:${pic.contentType};base64,${base64}`
-                        - iconElementType = 'imgIconElement'
-                        - classes.push('-avatar')
 
-                    +#{iconElementType}(
+                    +iconElement(
                         'a',
                         icon,
                         author.username,
@@ -34,7 +28,7 @@ mixin commentCard(comment, isReply=false, attrs={})
                         }
                     )
                 else
-                    +svgIconElement(
+                    +iconElement(
                         'div',
                         icon,
                         'Anonymous',
@@ -51,7 +45,7 @@ mixin commentCard(comment, isReply=false, attrs={})
                 method='post'
                 enctype='multipart/form-data'
             ).comment-card__like-reaction-form
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'likeIcon',
                     comment.likes,
@@ -84,7 +78,7 @@ mixin commentCard(comment, isReply=false, attrs={})
                 method='post'
                 enctype='multipart/form-data'
             ).comment-card__dislike-reaction-form
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'dislikeIcon',
                     comment.dislikes,
@@ -115,7 +109,7 @@ mixin commentCard(comment, isReply=false, attrs={})
                 )
             
             if !isReply
-                +svgIconElement(
+                +iconElement(
                     'button',
                     'commentIcon',
                     comment.replies.length,

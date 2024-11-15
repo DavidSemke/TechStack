@@ -1,6 +1,5 @@
 extends ../layouts/toolbars 
-include ../components/icon/imgIconElement
-include ../components/icon/svgIconElement
+include ../components/icon/iconElement
 include ../components/icon/svg/profileIcon
 include ../components/grid/blogPostGrid
 include ../components/card/commentCard
@@ -23,23 +22,19 @@ block page
                             .blog-post__author-details
                                 - const author = blogPost.author
                                 - let icon = 'profileIcon'
-                                - let iconElementType = 'svgIconElement'
-                                - const classes = []
 
                                 if author.profile_pic
                                     - const profilePic = author.profile_pic
                                     - const profilePicBase64 = profilePic.data.toString('base64')
                                     - icon = `data:${profilePic.contentType};base64,${profilePicBase64}`
-                                    - iconElementType = 'imgIconElement'
-                                    - classes.push('-avatar')
 
-                                +#{iconElementType}(
+                                +iconElement(
                                     'a',
                                     icon,
                                     author.username,
                                     {
                                         'href': `/users/${author.username}`,
-                                        'class': classes
+                                        'class': ['-avatar']
                                     }
                                 )
 
