@@ -22,6 +22,12 @@
     padding: 0.25rem 0.5rem;
 }
 
+@mixin avatar() {
+    .icon-element__icon {
+        border-radius: 50%;
+    }
+}
+
 @mixin small() {
     .icon-element__icon {
         height: iSizes.$small;

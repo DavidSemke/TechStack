@@ -436,6 +436,8 @@ pre[class*=language-] {
   gap: 1rem;
 }
 .icon-element__icon {
+  flex: none;
+  overflow: hidden;
   height: 2rem;
   width: 2rem;
 }
@@ -445,6 +447,9 @@ pre[class*=language-] {
   -webkit-line-clamp: 2;
   overflow: hidden;
   word-break: break-word;
+}
+.icon-element.-avatar .icon-element__icon {
+  border-radius: 50%;
 }
 .icon-element.-column {
   flex-direction: column;
@@ -493,13 +498,6 @@ pre[class*=language-] {
   -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 1.5rem;
-}
-
-.img-icon-element__icon {
-  flex: none;
-}
-.img-icon-element.-avatar .img-icon-element__icon > img {
-  border-radius: 50%;
 }
 
 .blog-post-item {

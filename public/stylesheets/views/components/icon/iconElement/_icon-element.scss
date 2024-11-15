@@ -8,13 +8,20 @@
     gap: 1rem;
 
     &__icon {
+        flex: none;
+        overflow: hidden;
         height: iSizes.$medium;
         width: iSizes.$medium;
+        
     }
 
     &__label {
         @include text-cutoff.cut(2);
         word-break: break-word;
+    }
+
+    &.-avatar {
+        @include mod.avatar();
     }
 
     &.-column {
