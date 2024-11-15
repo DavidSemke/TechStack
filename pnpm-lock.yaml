@@ -93,6 +93,9 @@ importers:
       '@flydotio/dockerfile':
         specifier: ^0.5.2
         version: 0.5.2
+      '@prettier/plugin-pug':
+        specifier: ^3.2.0
+        version: 3.2.0(prettier@3.0.3)
       concurrently:
         specifier: ^9.0.1
         version: 9.0.1
@@ -465,6 +468,12 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@prettier/plugin-pug@3.2.0':
+    resolution: {integrity: sha512-SJEDgNjLpgZ2utQJGAFG96yho1hxX/tXflL24HztHYxzkPlDus2/XcvaW7WKQgMej1I+Pk6hLKp2FWv/zgzvkA==}
+    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
+    peerDependencies:
+      prettier: ^3.0.0
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -3594,6 +3603,11 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
+
+  '@prettier/plugin-pug@3.2.0(prettier@3.0.3)':
+    dependencies:
+      prettier: 3.0.3
+      pug-lexer: 5.0.1
 
   '@sinclair/typebox@0.27.8': {}
 

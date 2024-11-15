@@ -1,15 +1,8 @@
 mixin formInput(name, type, value, attrs={})
-    .form-input&attributes(attrs.formInput)
-        - const labelWords = name.split('-')
-        each word, index in labelWords
-            - labelWords[index] = word[0].toUpperCase() + word.slice(1)
+  .form-input&attributes(attrs.formInput)
+    - const labelWords = name.split("-")
+    each word, index in labelWords
+      - labelWords[index] = word[0].toUpperCase() + word.slice(1)
 
-        label.form-input__label(
-            for=name
-        )= labelWords.join(' ')
-        input.form-input__input(
-            id=name
-            name=name 
-            type=type
-            value=value
-        )&attributes(attrs.input)
+    label.form-input__label(for=name)= labelWords.join(" ")
+    input.form-input__input(id=name, name=name, type=type, value=value)&attributes(attrs.input)

@@ -1,59 +1,59 @@
-@use '../../../../globalSassVars/font-sizes' as fSizes;
-@use '../../../../globalMixins/text-cutoff';
-@use 'vars';
+@use "../../../../globalSassVars/font-sizes" as fSizes;
+@use "../../../../globalMixins/text-cutoff";
+@use "vars";
 
 @mixin small() {
-    .blog-post-card {
-        &__article {
-            width: vars.$width-small;
-            height: vars.$height-small;
-        }
-
-        &__stat-list {
-            padding: 0.5rem;
-        }
-    
-        &__title {
-            @include text-cutoff.cut(2);
-            font-size: fSizes.$large;
-        }
-    
-        &__preview {
-            @include text-cutoff.cut(2);
-        }
+  .blog-post-card {
+    &__article {
+      width: vars.$width-small;
+      height: vars.$height-small;
     }
+
+    &__stat-list {
+      padding: 0.5rem;
+    }
+
+    &__title {
+      @include text-cutoff.cut(2);
+      font-size: fSizes.$large;
+    }
+
+    &__preview {
+      @include text-cutoff.cut(2);
+    }
+  }
 }
 
 @mixin smaller() {
-    .blog-post-card {
-        &__article {
-            width: vars.$width-smaller;
-            height: vars.$height-smaller;
-        }
-
-        &__stat-list {
-            padding: 0.2rem;
-    
-            .icon-element-list {
-                gap: 1rem;
-            }
-    
-            .icon-element {
-                flex-direction: column;
-            }
-        }
-    
-        &__title {
-            @include text-cutoff.cut(3);
-            font-size: fSizes.$large;
-        }
-    
-        &__preview {
-            display: none;
-        }
-
-        &__keywords-heading {
-            display: none;
-        }
+  .blog-post-card {
+    &__article {
+      width: vars.$width-smaller;
+      height: vars.$height-smaller;
     }
+
+    &__stat-list {
+      padding: 0.2rem;
+
+      .icon-element-list {
+        gap: 1rem;
+      }
+
+      .icon-element {
+        flex-direction: column;
+      }
+    }
+
+    &__title {
+      @include text-cutoff.cut(3);
+      font-size: fSizes.$large;
+    }
+
+    &__preview {
+      display: none;
+    }
+
+    &__keywords-heading {
+      display: none;
+    }
+  }
 }

@@ -2,42 +2,25 @@ include iconElementList
 include ../icon/svg/profileIcon
 
 mixin blogPostLinkList(blogPosts)
-    - const iconElements = []
+  - const iconElements = []
 
-    each blogPost in blogPosts
-        - let icon = 'profileIcon'
-        - const pic = blogPost.author.profile_pic
+  each blogPost in blogPosts
+    - let icon = "profileIcon"
+    - const pic = blogPost.author.profile_pic
 
-        if pic
-            - const base64 = pic.data.toString('base64')
-            - icon = `data:${pic.contentType};base64,${base64}`
-        - 
-            iconElements.push(
-                {
-                    'tag': 'a',
-                    'icon': icon,
-                    'label': blogPost.title,
-                    'attrs': {
-                        'href': `/blog-posts/${blogPost._id}`,
-                    }
-                }
-            )
+    if pic
+      - const base64 = pic.data.toString("base64")
+      - icon = `data:${pic.contentType};base64,${base64}`
+    -
+      iconElements.push(
+          {
+              'tag': 'a',
+              'icon': icon,
+              'label': blogPost.title,
+              'attrs': {
+                  'href': `/blog-posts/${blogPost._id}`,
+              }
+          }
+      )
 
-    +iconElementList(
-        iconElements,
-        {
-            'iconElementList': {
-                'class': [
-                    '-column',
-                    '-gap-small',
-                    '-align-start'
-                ]
-            },
-            'iconElement': {
-                'class': [
-                    '-gap-small',
-                    '-avatar'
-                ]
-            }
-        }
-    )
+  +iconElementList(iconElements, { 'iconElementList': { 'class': [ '-column', '-gap-small', '-align-start' ] }, 'iconElement': { 'class': [ '-gap-small', '-avatar' ] } })

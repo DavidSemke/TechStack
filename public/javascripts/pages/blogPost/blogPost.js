@@ -1,9 +1,9 @@
 import prism from "prismjs"
 import { updateReactionButtons, fetchReaction } from "./reaction.js"
-import { 
-  allCommentsReactionFormListeners, 
-  defaultCommentCreateFormListeners 
-} from './comment.js'
+import {
+  allCommentsReactionFormListeners,
+  defaultCommentCreateFormListeners,
+} from "./comment.js"
 import { PromiseQueue } from "../../utils/queue.js"
 
 function blogPostReactionFormListeners(reactionQueue) {

@@ -7,84 +7,30 @@ include ../icon/svg/profileIcon
 
 mixin blogPostCard(blogPost, attrs={})
   - const thumbnail = blogPost.thumbnail
-  - const thumbnailBase64 = thumbnail.data.toString('base64')
+  - const thumbnailBase64 = thumbnail.data.toString("base64")
   - const backgroundImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
 
-  a.blog-post-card(
-    href=`/blog-posts/${blogPost._id}`
-  )&attributes(attrs)
+  a.blog-post-card(href=`/blog-posts/${blogPost._id}`)&attributes(attrs)
     article.blog-post-card__article
       .blog-post-card__stat-list
-        +iconElementList(
-          [{
-            'tag': 'div',
-            'icon': 'likeIcon',
-            'label': blogPost.likes,
-            'attrs': {
-              'class': 'blog-post-card__likes',
-            }
-          },
-          {
-            'tag': 'div',
-            'icon': 'dislikeIcon',
-            'label': blogPost.dislikes,
-            'attrs': {
-              'class': 'blog-post-card__dislikes',
-            }
-          },
-          {
-            'tag': 'div',
-            'icon': 'commentIcon',
-            'label': blogPost.comments.length,
-            'attrs': {
-              'class': 'blog-post-card__total-comments',
-            }
-          }],
-          {
-            'iconElementList': {
-              'class': [
-                '-center',
-                '-column'
-              ]
-            },
-            'iconElement': {
-              'class': [
-                '-small',
-                '-gap-small'
-              ]
-            }
-          }
-        )
+        +iconElementList([{ 'tag': 'div', 'icon': 'likeIcon', 'label': blogPost.likes, 'attrs': { 'class': 'blog-post-card__likes', } }, { 'tag': 'div', 'icon': 'dislikeIcon', 'label': blogPost.dislikes, 'attrs': { 'class': 'blog-post-card__dislikes', } }, { 'tag': 'div', 'icon': 'commentIcon', 'label': blogPost.comments.length, 'attrs': { 'class': 'blog-post-card__total-comments', } }], { 'iconElementList': { 'class': [ '-center', '-column' ] }, 'iconElement': { 'class': [ '-small', '-gap-small' ] } })
       .blog-post-card__overview(
         style=`background-image: url('${backgroundImg}');`
       )
         .blog-post-card__overlay
           header.blog-post-card__header
             .blog-post-card__author-date
-              - let icon = 'profileIcon'
+              - let icon = "profileIcon"
               - const { profile_pic: pic, username } = blogPost.author
-                
                 if pic
-                    - const profilePicBase64 = pic.data.toString('base64')
-                    - icon = `data:${pic.contentType};base64,${profilePicBase64}`
-                    
-                +iconElement(
-                    'div',
-                    icon,
-                    username,
-                    {
-                        'class': [
-                          '-gap-small', 
-                          '-avatar'
-                        ]
-                    }
-                )
-              time(
-                datetime=blogPost.publish_date
-              ).blog-post-card__date= blogPost.publish_date
+                  - const profilePicBase64 = pic.data.toString("base64")
+                  - icon = `data:${pic.contentType};base64,${profilePicBase64}`
+
+                +iconElement('div', icon, username, { 'class': [ '-gap-small', '-avatar' ] })
+              time.blog-post-card__date(datetime=blogPost.publish_date)= blogPost.publish_date
             h1.blog-post-card__title= blogPost.title
-          
+
           p.blog-post-card__preview= blogPost.preview
           .blog-post-card__keywords-container
             .blog-post-card__keywords-heading Keywords:
-            .blog-post-card__keywords= blogPost.keywords.join(' | ')
+            .blog-post-card__keywords= blogPost.keywords.join(" | ")

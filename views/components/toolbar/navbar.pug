@@ -5,57 +5,21 @@ include ../icon/svg/writeIcon
 include ../form/searchbar
 
 mixin navbar(isAuthorMode)
-    nav.navbar
-        .navbar__left
-            +iconElement(
-                'button',
-                'menuIcon',
-                null,
-                {
-                    'class': [
-                        'navbar__sidebar-button'
-                    ]
-                }
-            )
+  nav.navbar
+    .navbar__left
+      +iconElement('button', 'menuIcon', null, { 'class': [ 'navbar__sidebar-button' ] })
 
-            if !isAuthorMode
-                +iconElement(
-                    'button',
-                    'searchIcon',
-                    null,
-                    {
-                        'class': [
-                            'navbar__search-button'
-                        ]
-                    }
-                )
-                
-        if !isAuthorMode
-            .navbar__center 
-                +searchbar(
-                    'Search Tech Stack',
-                    {
-                        'class': [
-                            'navbar__searchbar',
-                        ], 
-                    }
-                )
-        
-        .navbar__right
-            if !loginUser
-                a(href='/login' class='-button -colorful') Log in
-            else if !isAuthorMode
-                +iconElement(
-                    'a',
-                    'writeIcon', 
-                    'Write',
-                    {
-                        'href': `/users/${loginUser.username}/blog-posts/new-blog-post`,
-                        'class': [
-                            '-button',
-                            '-colorful',
-                        ]
-                    }
-                )
-            else 
-                include ../list/blogPostFormActionList
+      if !isAuthorMode
+        +iconElement('button', 'searchIcon', null, { 'class': [ 'navbar__search-button' ] })
+
+    if !isAuthorMode
+      .navbar__center
+        +searchbar('Search Tech Stack', { 'class': [ 'navbar__searchbar', ], })
+
+    .navbar__right
+      if !loginUser
+        a.-button.-colorful(href="/login") Log in
+      else if !isAuthorMode
+        +iconElement('a', 'writeIcon', 'Write', { 'href': `/users/${loginUser.username}/blog-posts/new-blog-post`, 'class': [ '-button', '-colorful', ] })
+      else
+        include ../list/blogPostFormActionList

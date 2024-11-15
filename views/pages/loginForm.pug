@@ -2,7 +2,7 @@ extends ../layouts/logging
 include ../components/form/loggingForm
 
 block loggingForm
-    - const { inputs } = data
+  - const { inputs } = data
 
-    h1.logging-page__heading Log In
-    +loggingForm('/login', inputs)
+  h1.logging-page__heading Log In
+  +loggingForm('/login', inputs)

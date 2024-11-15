@@ -6,97 +6,24 @@ include ../icon/svg/editIcon
 include ../icon/svg/deleteIcon
 
 mixin blogPostList(blogPosts, attrs={})
-    ul.blog-post-list&attributes(attrs)
-        each blogPost in blogPosts
-            li.blog-post-item(id=blogPost._id)
-                article.blog-post-item__article
-                    header.blog-post-item__top 
-                        .blog-post-item__title= blogPost.title
-                        .blog-post-item__date-group
-                            .blog-post-item__published
-                                | Published: 
-                                time(
-                                    datetime=blogPost.publish_date
-                                )= blogPost.publish_date
-                            .blog-post-item__last-modified
-                                | Last modified: 
-                                time(
-                                    datetime=blogPost.last_modified_date
-                                )= blogPost.last_modified_date
-                    section.blog-post-item__bottom
-                        - const likes = blogPost.likes
-                        - const dislikes = blogPost.dislikes 
-                        - const totalComments = blogPost.comments.length
-                            
-                        +iconElementList(
-                            [{
-                                'tag': 'div',
-                                'icon': 'likeIcon',
-                                'label': likes,
-                                'attrs': {
-                                    'class': 'blog-post-item__likes'
-                                }
-                            },
-                            {
-                                'tag': 'div',
-                                'icon': 'dislikeIcon',
-                                'label': dislikes,
-                                'attrs': {
-                                    'class': 'blog-post-item__dislikes'
-                                }
-                            },
-                            {
-                                'tag': 'div',
-                                'icon': 'commentIcon',
-                                'label': totalComments,
-                                'attrs': {
-                                    'class': 'blog-post-item__total-comments'
-                                }
-                            }],
-                            {
-                                'iconElement': {
-                                    'class': [
-                                        '-small',
-                                        '-gap-small',
-                                        '-avatar'
-                                    ]
-                                },
-                                'iconElementList': {
-                                    'class': 'blog-post-item__reaction-list'
-                                },
-                            }
-                        )
-                        .blog-post-item__actions
-                            +iconElementList(
-                                [{
-                                    'tag': 'a',
-                                    'icon': 'editIcon',
-                                    'label': null,
-                                    'attrs': {
-                                        'class': [
-                                            'blog-post-item__edit-button',
-                                            '-button'
-                                        ],
-                                        'href': `blog-posts/${blogPost._id}`
-                                    }
-                                },
-                                {
-                                    'tag': 'button',
-                                    'icon': 'deleteIcon',
-                                    'label': null,
-                                    'attrs': {
-                                        'class': [
-                                            'blog-post-item__delete-button'
-                                        ]
-                                    }
-                                }],
-                                {
-                                    'iconElement': {
-                                        'class': [
-                                            '-small',
-                                            '-colorful', 
-                                            '-padding-even-slim'
-                                        ]
-                                    }
-                                }
-                            )
+  ul.blog-post-list&attributes(attrs)
+    each blogPost in blogPosts
+      li.blog-post-item(id=blogPost._id)
+        article.blog-post-item__article
+          header.blog-post-item__top
+            .blog-post-item__title= blogPost.title
+            .blog-post-item__date-group
+              .blog-post-item__published
+                | Published:
+                time(datetime=blogPost.publish_date)= blogPost.publish_date
+              .blog-post-item__last-modified
+                | Last modified:
+                time(datetime=blogPost.last_modified_date)= blogPost.last_modified_date
+          section.blog-post-item__bottom
+            - const likes = blogPost.likes
+            - const dislikes = blogPost.dislikes
+            - const totalComments = blogPost.comments.length
+
+            +iconElementList([{ 'tag': 'div', 'icon': 'likeIcon', 'label': likes, 'attrs': { 'class': 'blog-post-item__likes' } }, { 'tag': 'div', 'icon': 'dislikeIcon', 'label': dislikes, 'attrs': { 'class': 'blog-post-item__dislikes' } }, { 'tag': 'div', 'icon': 'commentIcon', 'label': totalComments, 'attrs': { 'class': 'blog-post-item__total-comments' } }], { 'iconElement': { 'class': [ '-small', '-gap-small', '-avatar' ] }, 'iconElementList': { 'class': 'blog-post-item__reaction-list' }, })
+            .blog-post-item__actions
+              +iconElementList([{ 'tag': 'a', 'icon': 'editIcon', 'label': null, 'attrs': { 'class': [ 'blog-post-item__edit-button', '-button' ], 'href': `blog-posts/${blogPost._id}` } }, { 'tag': 'button', 'icon': 'deleteIcon', 'label': null, 'attrs': { 'class': [ 'blog-post-item__delete-button' ] } }], { 'iconElement': { 'class': [ '-small', '-colorful', '-padding-even-slim' ] } })

@@ -6,122 +6,57 @@ include ../icon/svg/expandIcon
 include ../icon/svg/blogPostIcon
 
 nav.sidebar
-    +iconElement(
-        'a',
-        '/images/favicon.png', 
-        'Tech Stack',
-        {
-            'href': '/',
-            'class': [
-                'sidebar__index-link',
-                '-gap-small'
-            ]
-        }
-    )
+  +iconElement('a', '/images/favicon.png', 'Tech Stack', { 'href': '/', 'class': [ 'sidebar__index-link', '-gap-small' ] })
 
-    if !loginUser
-        .sidebar__account-prompt.account-prompt
-            .account-prompt__login
-                .account-prompt__text Log in for read history and suggestions
-                a.account-prompt__link(href='/login' class='-button -colorful') Log in
-            .account-prompt__text OR
-            .account-prompt__signup
-                .account-prompt__text Not a member?
-                a.account-prompt__link(href='/signup' class='-button -colorful') Sign Up
+  if !loginUser
+    .sidebar__account-prompt.account-prompt
+      .account-prompt__login
+        .account-prompt__text Log in for read history and suggestions
+        a.account-prompt__link.-button.-colorful(href="/login") Log in
+      .account-prompt__text OR
+      .account-prompt__signup
+        .account-prompt__text Not a member?
+        a.account-prompt__link.-button.-colorful(href="/signup") Sign Up
 
-    else 
-        section.sidebar__account-section
-            button.sidebar__expandable
-                h2.sidebar__heading Account
-                +iconElement(
-                    'div',
-                    'expandIcon',
-                    null,
-                    {
-                        'class': '-small'
-                    }
-                )
-            .sidebar__collapsable.-gone
-                - let icon = 'profileIcon'
+  else
+    section.sidebar__account-section
+      button.sidebar__expandable
+        h2.sidebar__heading Account
+        +iconElement('div', 'expandIcon', null, { 'class': '-small' })
+      .sidebar__collapsable.-gone
+        - let icon = "profileIcon"
 
-                if loginUser.profile_pic
-                    - const pic = loginUser.profile_pic
-                    - const base64 = pic.data.toString('base64')
-                    - icon = `data:${pic.contentType};base64,${base64}`
-                    
-                +iconElement(
-                    'div',
-                    icon,
-                    loginUser.username,
-                    {
-                        'class': [
-                            'sidebar__profile-overview', 
-                            '-large', 
-                            '-avatar'
-                        ]
-                    }
-                )
+        if loginUser.profile_pic
+          - const pic = loginUser.profile_pic
+          - const base64 = pic.data.toString("base64")
+          - icon = `data:${pic.contentType};base64,${base64}`
 
-                +iconElementList(
-                    [{
-                        'tag': 'a',
-                        'icon': 'profileIcon',
-                        'label': 'Your Profile',
-                        'attrs': {
-                            'href': `/users/${loginUser.username}`,
-                        }
-                    },
-                    {
-                        'tag': 'a',
-                        'icon': 'blogPostIcon',
-                        'label': 'Your Blog Posts',
-                        'attrs': {
-                            'href': `/users/${loginUser.username}/blog-posts`,
-                        }
-                    }],
-                    {
-                        'iconElementList': {
-                            'class': [
-                                '-gap-small',
-                                '-column',
-                                '-align-start'
-                            ]
-                        },
-                        'iconElement': {
-                            'class': '-gap-small'
-                        }
-                    }
-                )
-                .sidebar__logout
-                    a(href='/logout') Logout
-        
-        section.sidebar__content-section
-            button.sidebar__expandable
-                h2.sidebar__heading Content
-                +iconElement(
-                    'div',
-                    'expandIcon',
-                    null,
-                    {
-                        'class': '-small'
-                    }
-                )
-            .sidebar__collapsable.-gone
-                section.sidebar__subsection
-                    h3.sidebar__subheading Recent
-                    .sidebar__content
-                        - const recentReads = loginUser.blog_posts_recently_read
+        +iconElement('div', icon, loginUser.username, { 'class': [ 'sidebar__profile-overview', '-large', '-avatar' ] })
 
-                        if recentReads.length
-                            +blogPostLinkList(recentReads)
-                        else 
-                            | No recent reads available.
+        +iconElementList([{ 'tag': 'a', 'icon': 'profileIcon', 'label': 'Your Profile', 'attrs': { 'href': `/users/${loginUser.username}`, } }, { 'tag': 'a', 'icon': 'blogPostIcon', 'label': 'Your Blog Posts', 'attrs': { 'href': `/users/${loginUser.username}/blog-posts`, } }], { 'iconElementList': { 'class': [ '-gap-small', '-column', '-align-start' ] }, 'iconElement': { 'class': '-gap-small' } })
+        .sidebar__logout
+          a(href="/logout") Logout
 
-                section.sidebar__subsection
-                    h3.sidebar__subheading Suggested
-                    .sidebar__content
-                        //- Suggestions are from res.locals.suggestions
-                        if suggestions.length
-                            +blogPostLinkList(suggestions)
-                        else 
-                            | No suggestions available.
+    section.sidebar__content-section
+      button.sidebar__expandable
+        h2.sidebar__heading Content
+        +iconElement('div', 'expandIcon', null, { 'class': '-small' })
+      .sidebar__collapsable.-gone
+        section.sidebar__subsection
+          h3.sidebar__subheading Recent
+          .sidebar__content
+            - const recentReads = loginUser.blog_posts_recently_read
+
+            if recentReads.length
+              +blogPostLinkList(recentReads)
+            else
+              | No recent reads available.
+
+        section.sidebar__subsection
+          h3.sidebar__subheading Suggested
+          .sidebar__content
+            //- Suggestions are from res.locals.suggestions
+            if suggestions.length
+              +blogPostLinkList(suggestions)
+            else
+              | No suggestions available.

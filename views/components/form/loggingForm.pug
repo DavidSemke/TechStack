@@ -1,24 +1,7 @@
 include formInput
 
-mixin loggingForm(action, inputs) 
-    form.logging-form(
-        action=action 
-        method="post"
-    )
-        +formInput(
-            'username',
-            'text',
-            inputs.username || '',
-            {
-                'input': {'required': ''}
-            }
-        )
-        +formInput(
-            'password',
-            'password',
-            inputs.password || '',
-            {
-                'input': {'required': ''}
-            }
-        )
-        button.logging-form__submit(type='submit') Submit
+mixin loggingForm(action, inputs)
+  form.logging-form(action=action, method="post")
+    +formInput('username', 'text', inputs.username || '', { 'input': {'required': ''} })
+    +formInput('password', 'password', inputs.password || '', { 'input': {'required': ''} })
+    button.logging-form__submit(type="submit") Submit

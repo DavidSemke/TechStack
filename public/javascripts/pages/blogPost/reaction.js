@@ -67,7 +67,4 @@ async function fetchReaction(
   }
 }
 
-export {
-  updateReactionButtons,
-  fetchReaction
-}
+export { updateReactionButtons, fetchReaction }

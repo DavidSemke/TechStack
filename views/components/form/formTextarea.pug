@@ -1,9 +1,4 @@
 mixin formTextarea(name, value, attrs={})
-    .form-textarea&attributes(attrs.formTextarea)
-        label.form-textarea__label(
-            for=name
-        )= name[0].toUpperCase() + name.slice(1)
-        textarea.form-textarea__textarea(
-            id=name
-            name=name
-        )&attributes(attrs.textarea)= value
+  .form-textarea&attributes(attrs.formTextarea)
+    label.form-textarea__label(for=name)= name[0].toUpperCase() + name.slice(1)
+    textarea.form-textarea__textarea(id=name, name=name)&attributes(attrs.textarea)= value

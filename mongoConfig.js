@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 let connector = process.env.DB_CONNECTOR_DEV
 
 if (process.env.NODE_ENV === "production") {
-    connector = process.env.DB_CONNECTOR_PROD
+  connector = process.env.DB_CONNECTOR_PROD
 }
 
 mongoose.connect(connector)

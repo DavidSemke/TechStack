@@ -1,10 +1,9 @@
-@use '../../../globalSassVars/colors';
+@use "../../../globalSassVars/colors";
 
 .button-list {
-    display: flex;
+  display: flex;
 
-    &.-gap-small {
-        gap: 2rem;
-    }
-    
+  &.-gap-small {
+    gap: 2rem;
+  }
 }

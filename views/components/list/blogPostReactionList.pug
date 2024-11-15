@@ -4,88 +4,24 @@ include ../icon/svg/dislikeIcon
 include ../icon/svg/commentIcon
 
 ul.blog-post__reaction-list
-    li.blog-post__reaction-item
-        form(
-            method='post'
-            enctype='multipart/form-data'
-        ).blog-post__like-reaction-form
-            +iconElement(
-                'button',
-                'likeIcon',
-                blogPost.likes,
-                { 
-                    'type': 'submit',
-                    'class': [
-                        'blog-post__like-button',
-                        'blog-post__reaction-button',
-                        '-padding-even-small',
-                        '-column'
-                    ]
-                }
-            )
-            input(
-                name='reaction-type' 
-                type='hidden'
-                value='Like'
-            )
-            input(
-                name='content-id'
-                type='hidden'
-                value=blogPost._id
-            )
-            input(
-                name='content-type'
-                type='hidden'
-                value='BlogPost'
-            )
+  li.blog-post__reaction-item
+    form.blog-post__like-reaction-form(
+      method="post",
+      enctype="multipart/form-data"
+    )
+      +iconElement('button', 'likeIcon', blogPost.likes, { 'type': 'submit', 'class': [ 'blog-post__like-button', 'blog-post__reaction-button', '-padding-even-small', '-column' ] })
+      input(name="reaction-type", type="hidden", value="Like")
+      input(name="content-id", type="hidden", value=blogPost._id)
+      input(name="content-type", type="hidden", value="BlogPost")
 
-    li.blog-post__reaction-item
-        form(
-            method='post'
-            enctype='multipart/form-data'
-        ).blog-post__dislike-reaction-form
-            +iconElement(
-                'button',
-                'dislikeIcon',
-                blogPost.dislikes,
-                { 
-                    'type': 'submit',
-                    'class': [
-                        'blog-post__dislike-button',
-                        'blog-post__reaction-button',
-                        '-padding-even-small',
-                        '-column'
-                    ]
-                }
-            )
-            input(
-                name='reaction-type' 
-                type='hidden'
-                value='Dislike'
-            )
-            input(
-                name='content-id'
-                type='hidden'
-                value=blogPost._id
-            )
-            input(
-                name='content-type'
-                type='hidden'
-                value='BlogPost'
-            )
-    li.blog-post__reaction-item
-        +iconElement(
-            'a',
-            'commentIcon',
-            blogPost.comments.length,
-            { 
-                'href': '#comment-section',
-                'class': [
-                    'blog-post__reaction-button',
-                    '-padding-even-small',
-                    '-button',
-                    '-column'
-                ],
-                
-            }
-        )
+  li.blog-post__reaction-item
+    form.blog-post__dislike-reaction-form(
+      method="post",
+      enctype="multipart/form-data"
+    )
+      +iconElement('button', 'dislikeIcon', blogPost.dislikes, { 'type': 'submit', 'class': [ 'blog-post__dislike-button', 'blog-post__reaction-button', '-padding-even-small', '-column' ] })
+      input(name="reaction-type", type="hidden", value="Dislike")
+      input(name="content-id", type="hidden", value=blogPost._id)
+      input(name="content-type", type="hidden", value="BlogPost")
+  li.blog-post__reaction-item
+    +iconElement('a', 'commentIcon', blogPost.comments.length, { 'href': '#comment-section', 'class': [ 'blog-post__reaction-button', '-padding-even-small', '-button', '-column' ], })

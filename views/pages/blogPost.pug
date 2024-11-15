@@ -1,4 +1,4 @@
-extends ../layouts/toolbars 
+extends ../layouts/toolbars
 include ../components/icon/iconElement
 include ../components/icon/svg/profileIcon
 include ../components/grid/blogPostGrid
@@ -6,87 +6,65 @@ include ../components/card/commentCard
 include ../components/form/formTextarea
 include ../components/toolbar/navbar
 
-block navbar 
+block navbar
   +navbar(false)
 
 block page
-    - const {title, blogPost} = data
+  - const { title, blogPost } = data
 
-    .blog-post-page
-        main.blog-post
-            article.blog-post__article
-                header.blog-post__header
-                    h1.blog-post__title= title
-                    .blog-post__metadata
-                        .blog-post__metadata-top
-                            .blog-post__author-details
-                                - const author = blogPost.author
-                                - let icon = 'profileIcon'
+  .blog-post-page
+    main.blog-post
+      article.blog-post__article
+        header.blog-post__header
+          h1.blog-post__title= title
+          .blog-post__metadata
+            .blog-post__metadata-top
+              .blog-post__author-details
+                - const author = blogPost.author
+                - let icon = "profileIcon"
 
-                                if author.profile_pic
-                                    - const profilePic = author.profile_pic
-                                    - const profilePicBase64 = profilePic.data.toString('base64')
-                                    - icon = `data:${profilePic.contentType};base64,${profilePicBase64}`
+                if author.profile_pic
+                  - const profilePic = author.profile_pic
+                  - const profilePicBase64 = profilePic.data.toString("base64")
+                  - icon = `data:${profilePic.contentType};base64,${profilePicBase64}`
 
-                                +iconElement(
-                                    'a',
-                                    icon,
-                                    author.username,
-                                    {
-                                        'href': `/users/${author.username}`,
-                                        'class': ['-avatar']
-                                    }
-                                )
+                +iconElement('a', icon, author.username, { 'href': `/users/${author.username}`, 'class': ['-avatar'] })
 
-                            include ../components/list/blogPostReactionList
-                            .blog-post__date
-                                | Published on 
-                                time(
-                                    datetime=blogPost.publish_date
-                                )= blogPost.publish_date
-                        .blog-post__metadata-bottom
-                            include ../components/list/blogPostReactionList
+              include ../components/list/blogPostReactionList
+              .blog-post__date
+                | Published on
+                time(datetime=blogPost.publish_date)= blogPost.publish_date
+            .blog-post__metadata-bottom
+              include ../components/list/blogPostReactionList
 
-                - const thumbnail = blogPost.thumbnail
-                - const thumbnailBase64 = thumbnail.data.toString('base64')
-                - thumbnailImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
-                
-                .blog-post__thumbnail
-                    img(src=thumbnailImg)
-                .blog-post__content!= blogPost.content
-                .blog-post__post-blog-separator
-                    include ../components/list/blogPostReactionList
-        
-        if suggestions
-            section.blog-post-page__more-blogs
-                h2.blog-post-page__post-heading More Blogs
-                +blogPostGrid(
-                    suggestions.slice(0, 2)
-                )
-        section#comment-section.blog-post-page__comment-section
-            h2.blog-post-page__post-heading Comments
-            form(
-                method='post'
-                enctype='multipart/form-data'
-            ).blog-post-page__comment-create-form
-                +formTextarea(
-                    'content',
-                    '',
-                    [],
-                    {
-                        'textarea': {
-                            'rows': '2',
-                            'placeholder': 'Add a comment...',
-                        }
-                    }
-                )
-                button(type='submit') Submit
+        - const thumbnail = blogPost.thumbnail
+        - const thumbnailBase64 = thumbnail.data.toString("base64")
+        - thumbnailImg = `data:${thumbnail.contentType};base64,${thumbnailBase64}`
 
-            each comment in blogPost.comments
-                section.blog-post-page__comment-string
-                    +commentCard(comment)
-                
-                    if comment.replies.length
-                        .blog-post-page__reply-container.-gone
-                            each reply in comment.replies
-                                +commentCard(reply, true)
+        .blog-post__thumbnail
+          img(src=thumbnailImg)
+        .blog-post__content!= blogPost.content
+        .blog-post__post-blog-separator
+          include ../components/list/blogPostReactionList
+
+    if suggestions
+      section.blog-post-page__more-blogs
+        h2.blog-post-page__post-heading More Blogs
+        +blogPostGrid(suggestions.slice(0, 2))
+    section#comment-section.blog-post-page__comment-section
+      h2.blog-post-page__post-heading Comments
+      form.blog-post-page__comment-create-form(
+        method="post",
+        enctype="multipart/form-data"
+      )
+        +formTextarea('content', '', [], { 'textarea': { 'rows': '2', 'placeholder': 'Add a comment...', } })
+        button(type="submit") Submit
+
+      each comment in blogPost.comments
+        section.blog-post-page__comment-string
+          +commentCard(comment)
+
+          if comment.replies.length
+            .blog-post-page__reply-container.-gone
+              each reply in comment.replies
+                +commentCard(reply, true)

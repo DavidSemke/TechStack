@@ -254,7 +254,4 @@ function commentCreateFormListeners(commentCreateForm) {
   })
 }
 
-export {
-  allCommentsReactionFormListeners,
-  defaultCommentCreateFormListeners
-}
+export { allCommentsReactionFormListeners, defaultCommentCreateFormListeners }

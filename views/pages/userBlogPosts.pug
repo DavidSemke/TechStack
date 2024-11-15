@@ -9,95 +9,35 @@ include ../components/icon/iconElement
 include ../components/icon/svg/expandIcon
 include ../components/icon/svg/searchIcon
 
-block navbar 
+block navbar
   +navbar(false)
 
 block page
-    - const {title, publishedBlogPosts, unpublishedBlogPosts} = data
+  - const { title, publishedBlogPosts, unpublishedBlogPosts } = data
 
-    main.user-blog-posts-page
-        h1.user-blog-posts-page__heading= title
-        section.user-blog-posts-page__toolbar
-            .user-blog-posts-page__right-view-tools
-                +iconElement(
-                    'button',
-                    'expandIcon',
-                    null,
-                    {
-                        'class': [
-                            'user-blog-posts-page__left-view-button',
-                            '-small'
-                        ]
-                    }
-                )
-            .user-blog-posts-page__left-view-tools
-                +iconElement(
-                    'button',
-                    'searchIcon',
-                    null,
-                    {
-                        'class': [
-                            'user-blog-posts-page__search-button',
-                            '-small',
-                        ]
-                    }
-                )
-                +searchbar(
-                    'Search Blog Posts',
-                    {'class': 'user-blog-posts-page__searchbar'}
-                )
-                +formSelect(
-                    'sort-by',
-                    [
-                        'dislikes',
-                        'last-mod-date', 
-                        'likes',
-                        'publish-date', 
-                        'title', 
-                        'total-comments'
-                    ],
-                    'title',
-                    {
-                        'select': { 
-                            'class': 'user-blog-posts-page__sort-selector'
-                        },
-                        'formSelect': {
-                            'class': 'user-blog-posts-page__sort-form'
-                        }
-                    }
-                )
-        .user-blog-posts
-            section.user-blog-posts__left 
-                section.user-blog-posts__tabs
-                    +buttonList(
-                        [{
-                            'classId': 'user-blog-posts__published-tab',
-                            'label': 'Published'
-                        },
-                        {
-                            'classId': 'user-blog-posts__unpublished-tab',
-                            'label': 'Unpublished'
-                        }],
-                        {
-                            'button': {'class': ['-tab']}
-                        }
-                    )
-                section.user-blog-posts__tab-container
-                    .user-blog-posts__published-container
-                        if !publishedBlogPosts.length
-                            p You have no blog posts here.
-                        else
-                            +blogPostList(
-                                publishedBlogPosts,
-                                {'class': 'user-blog-posts__published'}
-                            )
-                    .user-blog-posts__unpublished-container.-gone
-                        if !unpublishedBlogPosts.length
-                            p You have no blog posts here.
-                        else
-                            +blogPostList(
-                                unpublishedBlogPosts,
-                                {'class': ['user-blog-posts__unpublished']}
-                            )
-            section.user-blog-posts__right.-hidden
-                +blogPostFragment()
+  main.user-blog-posts-page
+    h1.user-blog-posts-page__heading= title
+    section.user-blog-posts-page__toolbar
+      .user-blog-posts-page__right-view-tools
+        +iconElement('button', 'expandIcon', null, { 'class': [ 'user-blog-posts-page__left-view-button', '-small' ] })
+      .user-blog-posts-page__left-view-tools
+        +iconElement('button', 'searchIcon', null, { 'class': [ 'user-blog-posts-page__search-button', '-small', ] })
+        +searchbar('Search Blog Posts', {'class': 'user-blog-posts-page__searchbar'})
+        +formSelect('sort-by', [ 'dislikes', 'last-mod-date', 'likes', 'publish-date', 'title', 'total-comments' ], 'title', { 'select': { 'class': 'user-blog-posts-page__sort-selector' }, 'formSelect': { 'class': 'user-blog-posts-page__sort-form' } })
+    .user-blog-posts
+      section.user-blog-posts__left
+        section.user-blog-posts__tabs
+          +buttonList([{ 'classId': 'user-blog-posts__published-tab', 'label': 'Published' }, { 'classId': 'user-blog-posts__unpublished-tab', 'label': 'Unpublished' }], { 'button': {'class': ['-tab']} })
+        section.user-blog-posts__tab-container
+          .user-blog-posts__published-container
+            if !publishedBlogPosts.length
+              p You have no blog posts here.
+            else
+              +blogPostList(publishedBlogPosts, {'class': 'user-blog-posts__published'})
+          .user-blog-posts__unpublished-container.-gone
+            if !unpublishedBlogPosts.length
+              p You have no blog posts here.
+            else
+              +blogPostList(unpublishedBlogPosts, {'class': ['user-blog-posts__unpublished']})
+      section.user-blog-posts__right.-hidden
+        +blogPostFragment

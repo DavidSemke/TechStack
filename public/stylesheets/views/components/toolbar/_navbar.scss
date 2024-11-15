@@ -1,70 +1,72 @@
-@use '../../../globalSassVars/colors';
-@use '../../../globalSassVars/layout';
-@use '../../../globalSassVars/break-points' as bp;
+@use "../../../globalSassVars/colors";
+@use "../../../globalSassVars/layout";
+@use "../../../globalSassVars/break-points" as bp;
 
 .navbar {
+  display: flex;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  padding: 0.8rem;
+  height: layout.$navbar-height;
+  min-height: layout.$navbar-min-height;
+  width: 100%;
+  z-index: 100;
+  border-bottom: 2px solid colors.$border;
+  background-color: colors.$bg0;
+
+  &__left {
+    flex: 1;
     display: flex;
+    justify-content: center;
     gap: 1rem;
-    position: sticky;
-    top: 0;
-    padding: 0.8rem;
-    height: layout.$navbar-height;
-    min-height: layout.$navbar-min-height;
+  }
+
+  &__center {
+    flex: 2;
+    display: flex;
+  }
+
+  &__right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  &__searchbar {
     width: 100%;
-    z-index: 100;
-    border-bottom: 2px solid colors.$border;
-    background-color: colors.$bg0;
+  }
 
-    &__left {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
+  &.-expanded-searchbar {
+    .navbar__right,
+    .navbar__left {
+      display: none;
     }
 
-    &__center {
-        flex: 2;
-        display: flex;
+    .navbar__center {
+      display: block;
     }
-
-    &__right {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-    }
-
-    &__searchbar {
-        width: 100%;
-    }
-
-    &.-expanded-searchbar {
-        .navbar__right, .navbar__left {
-            display: none;
-        }
-
-        .navbar__center {
-            display: block;
-        }
-    }
+  }
 }
 
 @media (max-width: bp.$bp1) {
-    .navbar {
-        &__left, &__right {
-            justify-content: center;
-        }
-        
-        &__center {
-            display: none;
-        }
+  .navbar {
+    &__left,
+    &__right {
+      justify-content: center;
     }
+
+    &__center {
+      display: none;
+    }
+  }
 }
 
 @media (min-width: calc(bp.$bp1 + 1px)) {
-    .navbar {
-        &__search-button {
-            display: none;
-        }
+  .navbar {
+    &__search-button {
+      display: none;
     }
+  }
 }

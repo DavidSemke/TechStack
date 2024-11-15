@@ -1,29 +1,29 @@
 .icon-element-list {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  &__item {
     display: flex;
-    align-items: center;
-    gap: 2rem;
+  }
 
-    &__item {
-        display: flex;
-    }
+  &.-column {
+    flex-direction: column;
+  }
 
-    &.-column {
-        flex-direction: column;
-    }
+  &.-center {
+    justify-content: center;
+  }
 
-    &.-center {
-        justify-content: center;
-    }
+  &.-align-start {
+    align-items: start;
+  }
 
-    &.-align-start {
-        align-items: start;
-    }
+  &.-align-stretch {
+    align-items: stretch;
+  }
 
-    &.-align-stretch {
-        align-items: stretch;
-    }
-
-    &.-gap-small {
-        gap: 1rem;
-    }
+  &.-gap-small {
+    gap: 1rem;
+  }
 }

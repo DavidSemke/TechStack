@@ -1,13 +1,13 @@
 mixin blogPostFragment(blogPost={}, showContent=true, attrs={})
-    .blog-post-fragment&attributes(attrs)
-        .blog-post-fragment__metadata
-            h1.blog-post-fragment__title= blogPost.title || ''
-            if blogPost.thumbnail
-                - const pic = blogPost.thumbnail
-                - const base64 = pic.data.toString('base64')
-                - const dataUri = `data:${pic.contentType};base64,${base64}`
-                .blog-post-fragment__thumbnail
-                    img(src=dataUri)
-            else
-                .blog-post-fragment__thumbnail.-empty Your thumbnail appears here
-        .blog-post-fragment__content= showContent ? (blogPost.content || '') : ''
+  .blog-post-fragment&attributes(attrs)
+    .blog-post-fragment__metadata
+      h1.blog-post-fragment__title= blogPost.title || ""
+      if blogPost.thumbnail
+        - const pic = blogPost.thumbnail
+        - const base64 = pic.data.toString("base64")
+        - const dataUri = `data:${pic.contentType};base64,${base64}`
+        .blog-post-fragment__thumbnail
+          img(src=dataUri)
+      else
+        .blog-post-fragment__thumbnail.-empty Your thumbnail appears here
+    .blog-post-fragment__content= showContent ? blogPost.content || "" : ""

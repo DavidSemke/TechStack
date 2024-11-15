@@ -1,7 +1,7 @@
 include ../list/blogPostLinkList
 
 .navbar-dropdown
-    if blogPosts.length
-        +blogPostLinkList(blogPosts)
-    else 
-        | No blog posts found.
+  if blogPosts.length
+    +blogPostLinkList(blogPosts)
+  else
+    | No blog posts found.

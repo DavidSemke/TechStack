@@ -1,32 +1,32 @@
-@use '../../../globalSassVars/colors';
+@use "../../../globalSassVars/colors";
 
 .footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  border-top: 2px solid colors.$border;
+
+  &__logo-title {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    padding: 1rem;
-    border-top: 2px solid colors.$border;
+    justify-content: center;
+  }
 
-    &__logo-title {
-        display: flex;
-        justify-content: center;
-    }
+  &__site-description {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 0;
+  }
 
-    &__site-description {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-        margin: 0;
-    }
+  &__associated-media {
+    display: flex;
+    justify-content: center;
+  }
 
-    &__associated-media {
-        display: flex;
-        justify-content: center;
-    }
-
-    &__copyright {
-        margin: 0;
-        text-align: center;
-    }
+  &__copyright {
+    margin: 0;
+    text-align: center;
+  }
 }

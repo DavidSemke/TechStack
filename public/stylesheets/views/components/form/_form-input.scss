@@ -1,11 +1,11 @@
 .form-input {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
-    &__error {
-        margin-top: 1rem;
-        color: red;
-        font-weight: bold;
-    }
+  &__error {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+  }
 }

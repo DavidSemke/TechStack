@@ -6,99 +6,68 @@ include ../components/list/buttonList
 include ../components/list/blogPostLinkList
 include ../components/icon/svg/profileIcon
 
-block navbar 
+block navbar
   +navbar(false)
 
 block page
-    - const {title, user, isLoginUserProfile} = data
-    
-    main.profile-page
-        h1.profile-page__heading= title
-        .profile
-            section.profile__primary
-                if user.profile_pic
-                    .profile__avatar
-                        - const pic = user.profile_pic
-                        - const base64 = pic.data.toString('base64')
-                        - const dataUri = `data:${pic.contentType};base64,${base64}`
-                        img(src=dataUri)
-                else
-                    +profileIcon({ 'class': 'profile__avatar' })
+  - const { title, user, isLoginUserProfile } = data
 
-                .profile__username= user.username
-            section.profile__secondary
-                .profile__secondary-content
-                    section.profile__bio
-                        h2.profile__heading Bio 
-                        p.profile__body= user.bio || 'None'
-                    section.profile__keywords
-                        h2.profile__heading Favorite Keywords
-                        
-                        - let keywords = 'None'
-                        if user.keywords && user.keywords.length
-                            - keywords = user.keywords.join(' | ')
-                        
-                        p.profile__body= keywords
-                    
-                    if isLoginUserProfile
-                        section.profile__edit
-                            button.profile__edit-button Edit Profile
-            
-                if isLoginUserProfile
-                    form.profile-form.-gone(
-                        method='post' 
-                        enctype='multipart/form-data'
-                    )
-                        +formInput(
-                            'profile-pic',
-                            'file',
-                            ''
-                        )
-                        +formInput(
-                            'username',
-                            'text',
-                            loginUser.username
-                        )
-                        +formTextarea(
-                            'bio',
-                            loginUser.bio,
-                            {
-                                'textarea': {
-                                    'rows': '5'
-                                }
-                            }
-                        )
-                        +formTextarea(
-                            'keywords',
-                            loginUser.keywords.join(' '),
-                            {
-                                'textarea': {
-                                    'rows': '2'
-                                }
-                            }
-                        )
-                        p * Keywords should be separated by spaces.
-                        .profile-form__buttons
-                            button.profile-form__submit(
-                                type='submit'
-                            ) Submit
-                            button.profile-form__cancel(
-                                type='button'
-                            ) Cancel
+  main.profile-page
+    h1.profile-page__heading= title
+    .profile
+      section.profile__primary
+        if user.profile_pic
+          .profile__avatar
+            - const pic = user.profile_pic
+            - const base64 = pic.data.toString("base64")
+            - const dataUri = `data:${pic.contentType};base64,${base64}`
+            img(src=dataUri)
+        else
+          +profileIcon({ 'class': 'profile__avatar' })
 
-            section.profile__tertiary
-                section.profile__browser-details
-                    h2.profile__heading Recent Reads
-                    .profile__body
-                        +blogPostLinkList(user.blog_posts_recently_read)
-                        
-                if user.blog_posts_written.length
-                    section.profile__author-details
-                        - let heading = `Blog Posts Written by ${user.username}`
-                        
-                        if isLoginUserProfile
-                            - heading = 'Blog Posts Written by You'
-                        
-                        h2.profile__heading= heading
-                        .profile__body
-                            +blogPostLinkList(user.blog_posts_written)
+        .profile__username= user.username
+      section.profile__secondary
+        .profile__secondary-content
+          section.profile__bio
+            h2.profile__heading Bio
+            p.profile__body= user.bio || "None"
+          section.profile__keywords
+            h2.profile__heading Favorite Keywords
+
+            - let keywords = "None"
+            if user.keywords && user.keywords.length
+              - keywords = user.keywords.join(" | ")
+
+            p.profile__body= keywords
+
+          if isLoginUserProfile
+            section.profile__edit
+              button.profile__edit-button Edit Profile
+
+        if isLoginUserProfile
+          form.profile-form.-gone(method="post", enctype="multipart/form-data")
+            +formInput('profile-pic', 'file', '')
+            +formInput('username', 'text', loginUser.username)
+            +formTextarea('bio', loginUser.bio, { 'textarea': { 'rows': '5' } })
+            +formTextarea('keywords', loginUser.keywords.join(' '), { 'textarea': { 'rows': '2' } })
+            p * Keywords should be separated by spaces.
+            .profile-form__buttons
+              button.profile-form__submit(type="submit") Submit
+              button.profile-form__cancel(type="button") Cancel
+
+      section.profile__tertiary
+        section.profile__browser-details
+          h2.profile__heading Recent Reads
+          .profile__body
+            +blogPostLinkList(user.blog_posts_recently_read)
+
+        if user.blog_posts_written.length
+          section.profile__author-details
+            - let heading = `Blog Posts Written by ${user.username}`
+
+            if isLoginUserProfile
+              - heading = "Blog Posts Written by You"
+
+            h2.profile__heading= heading
+            .profile__body
+              +blogPostLinkList(user.blog_posts_written)

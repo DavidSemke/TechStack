@@ -5,121 +5,42 @@ include ../icon/svg/dislikeIcon
 include ../icon/svg/commentIcon
 
 mixin commentCard(comment, isReply=false, attrs={})
-    article.comment-card&attributes(attrs)
-        .comment-card__author-date 
-            .comment-card__author-details
-                - let author = comment.author
-                - let icon = 'profileIcon'
-                - const classes = ['-gap-small', '-avatar']
-                
-                if author
-                    if author.profile_pic
-                        - const pic = author.profile_pic
-                        - const base64 = pic.data.toString('base64')
-                        - icon = `data:${pic.contentType};base64,${base64}`
+  article.comment-card&attributes(attrs)
+    .comment-card__author-date
+      .comment-card__author-details
+        - let author = comment.author
+        - let icon = "profileIcon"
+        - const classes = ["-gap-small", "-avatar"]
 
-                    +iconElement(
-                        'a',
-                        icon,
-                        author.username,
-                        {
-                            'href': `/users/${author.username}`,
-                            'class': classes
-                        }
-                    )
-                else
-                    +iconElement(
-                        'div',
-                        icon,
-                        'Anonymous',
-                        {
-                            'class': classes
-                        }
-                    )
-            time(
-                datetime=comment.publish_date
-            ).comment-card__date= comment.publish_date
-        p.comment-card__content= comment.content
-        .comment-card__toolbar
-            form(
-                method='post'
-                enctype='multipart/form-data'
-            ).comment-card__like-reaction-form
-                +iconElement(
-                    'button',
-                    'likeIcon',
-                    comment.likes,
-                    {
-                        'type': 'submit',
-                        'class': [
-                            `comment-card__like-button`,
-                            '-small',
-                            '-gap-small',
-                            '-padding-burger-small'
-                        ]
-                    }
-                )
-                input(
-                    name='reaction-type' 
-                    type='hidden'
-                    value='Like'
-                )
-                input(
-                    name='content-id'
-                    type='hidden'
-                    value=comment._id
-                )
-                input(
-                    name='content-type'
-                    type='hidden'
-                    value='Comment'
-                )
-            form(
-                method='post'
-                enctype='multipart/form-data'
-            ).comment-card__dislike-reaction-form
-                +iconElement(
-                    'button',
-                    'dislikeIcon',
-                    comment.dislikes,
-                    {
-                        'type': 'submit',
-                        'class': [
-                            `comment-card__dislike-button`,
-                            '-small',
-                            '-gap-small',
-                            '-padding-burger-small'
-                        ]
-                    }
-                )
-                input(
-                    name='reaction-type' 
-                    type='hidden'
-                    value='Dislike'
-                )
-                input(
-                    name='content-id'
-                    type='hidden'
-                    value=comment._id
-                )
-                input(
-                    name='content-type'
-                    type='hidden'
-                    value='Comment'
-                )
-            
-            if !isReply
-                +iconElement(
-                    'button',
-                    'commentIcon',
-                    comment.replies.length,
-                    {
-                        'class': [
-                            `comment-card__view-replies-button`,
-                            '-small',
-                            '-gap-small',
-                            '-padding-burger-small'
-                        ]
-                    }
-                )
-                button(class=`comment-card__reply-button`) Reply
+        if author
+          if author.profile_pic
+            - const pic = author.profile_pic
+            - const base64 = pic.data.toString("base64")
+            - icon = `data:${pic.contentType};base64,${base64}`
+
+          +iconElement('a', icon, author.username, { 'href': `/users/${author.username}`, 'class': classes })
+        else
+          +iconElement('div', icon, 'Anonymous', { 'class': classes })
+      time.comment-card__date(datetime=comment.publish_date)= comment.publish_date
+    p.comment-card__content= comment.content
+    .comment-card__toolbar
+      form.comment-card__like-reaction-form(
+        method="post",
+        enctype="multipart/form-data"
+      )
+        +iconElement('button', 'likeIcon', comment.likes, { 'type': 'submit', 'class': [ `comment-card__like-button`, '-small', '-gap-small', '-padding-burger-small' ] })
+        input(name="reaction-type", type="hidden", value="Like")
+        input(name="content-id", type="hidden", value=comment._id)
+        input(name="content-type", type="hidden", value="Comment")
+      form.comment-card__dislike-reaction-form(
+        method="post",
+        enctype="multipart/form-data"
+      )
+        +iconElement('button', 'dislikeIcon', comment.dislikes, { 'type': 'submit', 'class': [ `comment-card__dislike-button`, '-small', '-gap-small', '-padding-burger-small' ] })
+        input(name="reaction-type", type="hidden", value="Dislike")
+        input(name="content-id", type="hidden", value=comment._id)
+        input(name="content-type", type="hidden", value="Comment")
+
+      if !isReply
+        +iconElement('button', 'commentIcon', comment.replies.length, { 'class': [ `comment-card__view-replies-button`, '-small', '-gap-small', '-padding-burger-small' ] })
+        button.comment-card__reply-button Reply

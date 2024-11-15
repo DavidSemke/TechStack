@@ -7,100 +7,44 @@ include ../components/toolbar/navbar
 include ../components/icon/iconElement
 include ../components/icon/svg/expandIcon
 
-block navbar 
+block navbar
   +navbar(true)
 
 block page
-    - const {blogPost} = data
+  - const { blogPost } = data
 
-    main.blog-post-form-page
-        section.blog-post-form-page__left
-            header.blog-post-form-page__header
-                h2.blog-post-form-page__heading Draft
-                +iconElement(
-                    'button',
-                    'expandIcon',
-                    null,
-                    {
-                        'class': [
-                            'blog-post-form-page__preview-button',
-                            '-small'
-                        ]
-                    }
-                )
-            .blog-post-form-page__body
-                section.blog-post-form-page__tabs
-                    +buttonList(
-                        [{
-                            'classId': 'blog-post-form-page__metadata-tab',
-                            'label': 'Metadata'
-                        },
-                        {
-                            'classId': 'blog-post-form-page__content-tab',
-                            'label': 'Content'
-                        }],
-                        {
-                            'button': { 'class': '-tab' }
-                        }
-                    )
-                section.blog-post-form-page__tab-container
-                    form#blog-post-form.blog-post-form(
-                        method='post' 
-                        enctype='multipart/form-data'
-                    )
-                        .blog-post-form__metadata
-                            +formInput(
-                                'title',
-                                'text',
-                                blogPost.title || ''
-                            )
-                            +formInput(
-                                'thumbnail',
-                                'file',
-                                ''
-                            )
-                            
-                            - const keywords = blogPost.keywords
-                            +formTextarea(
-                                'keywords',
-                                keywords ? keywords.join(' ') : '',
-                                {
-                                    'textarea': {
-                                        'rows': '2'
-                                    }
-                                }
-                            )
-                            p * Keywords should be separated by spaces.
+  main.blog-post-form-page
+    section.blog-post-form-page__left
+      header.blog-post-form-page__header
+        h2.blog-post-form-page__heading Draft
+        +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__preview-button', '-small' ] })
+      .blog-post-form-page__body
+        section.blog-post-form-page__tabs
+          +buttonList([{ 'classId': 'blog-post-form-page__metadata-tab', 'label': 'Metadata' }, { 'classId': 'blog-post-form-page__content-tab', 'label': 'Content' }], { 'button': { 'class': '-tab' } })
+        section.blog-post-form-page__tab-container
+          form#blog-post-form.blog-post-form(
+            method="post",
+            enctype="multipart/form-data"
+          )
+            .blog-post-form__metadata
+              +formInput('title', 'text', blogPost.title || '')
+              +formInput('thumbnail', 'file', '')
 
-                        .blog-post-form__content.-gone
-                            +formTextarea(
-                                'content',
-                                blogPost.content || '',
-                                {
-                                    'textarea': {
-                                        'class': 'tinymce-app'
-                                    }
-                                }
-                            )
-                            input#word-count.blog-post-form__hidden(
-                                name='word-count'
-                                type='hidden'
-                            )
+              - const keywords = blogPost.keywords
+              +formTextarea('keywords', keywords ? keywords.join(' ') : '', { 'textarea': { 'rows': '2' } })
+              p * Keywords should be separated by spaces.
 
-        section.blog-post-form-page__right
-            header.blog-post-form-page__header
-                +iconElement(
-                    'button',
-                    'expandIcon',
-                    null,
-                    {
-                        'class': [
-                            'blog-post-form-page__draft-button',
-                            '-small'
-                        ]
-                    }
-                )
-                h2.blog-post-form-page__heading Preview
-                
-            .blog-post-form-page__body
-                +blogPostFragment(blogPost, false)
+            .blog-post-form__content.-gone
+              +formTextarea('content', blogPost.content || '', { 'textarea': { 'class': 'tinymce-app' } })
+              input#word-count.blog-post-form__hidden(
+                name="word-count",
+                type="hidden"
+              )
+
+    section.blog-post-form-page__right
+      header.blog-post-form-page__header
+        +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__draft-button', '-small' ] })
+        h2.blog-post-form-page__heading Preview
+
+      .blog-post-form-page__body
+        +blogPostFragment(blogPost, false)

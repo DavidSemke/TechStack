@@ -20,8 +20,8 @@ const User = require("./models/user")
 require("./mongoConfig")
 
 function App() {
-  const isProd = process.env.NODE_ENV === 'production'
-  const isDev = process.env.NODE_ENV === 'development'
+  const isProd = process.env.NODE_ENV === "production"
+  const isDev = process.env.NODE_ENV === "development"
   /* Dev env variables */
   // Init vars create one-use functions
   const autologin = true

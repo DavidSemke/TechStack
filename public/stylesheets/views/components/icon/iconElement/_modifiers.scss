@@ -1,65 +1,64 @@
-@use '../../../../globalSassVars/font-sizes' as fSizes;
-@use '../../../../globalSassVars/icon-sizes' as iSizes;
-@use '../../../../globalMixins/text-cutoff';
+@use "../../../../globalSassVars/font-sizes" as fSizes;
+@use "../../../../globalSassVars/icon-sizes" as iSizes;
+@use "../../../../globalMixins/text-cutoff";
 
 @mixin column() {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 @mixin gap-small() {
-    gap: 0.5rem;
+  gap: 0.5rem;
 }
 
 @mixin padding-even-slim() {
-    padding: 0.1rem;
+  padding: 0.1rem;
 }
 
 @mixin padding-even-small() {
-    padding: 0.5rem;
+  padding: 0.5rem;
 }
 
 @mixin padding-burger-small() {
-    padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.5rem;
 }
 
 @mixin avatar() {
-    .icon-element__icon {
-        border-radius: 50%;
-    }
+  .icon-element__icon {
+    border-radius: 50%;
+  }
 }
 
 @mixin small() {
-    .icon-element__icon {
-        height: iSizes.$small;
-        width: iSizes.$small;
-    }
-    .icon-element__label {
-        @include text-cutoff.cut(2);
-        font-size: fSizes.$small;
-    }
+  .icon-element__icon {
+    height: iSizes.$small;
+    width: iSizes.$small;
+  }
+  .icon-element__label {
+    @include text-cutoff.cut(2);
+    font-size: fSizes.$small;
+  }
 }
 
 @mixin large() {
-    .icon-element__icon {
-        height: iSizes.$large;
-        width: iSizes.$large;
-    }
+  .icon-element__icon {
+    height: iSizes.$large;
+    width: iSizes.$large;
+  }
 
-    .icon-element__label {
-        @include text-cutoff.cut(2);
-        font-size: fSizes.$large;
-    }
+  .icon-element__label {
+    @include text-cutoff.cut(2);
+    font-size: fSizes.$large;
+  }
 }
 
 @mixin larger() {
-    
-    .icon-element__icon {
-        height: iSizes.$larger;
-        width: iSizes.$larger;
-    }
+  .icon-element__icon {
+    height: iSizes.$larger;
+    width: iSizes.$larger;
+  }
 
-    .icon-element__label {
-        @include text-cutoff.cut(2);
-        font-size: fSizes.$larger;
-    }
+  .icon-element__label {
+    @include text-cutoff.cut(2);
+    font-size: fSizes.$larger;
+  }
 }

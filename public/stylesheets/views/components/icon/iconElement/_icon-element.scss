@@ -1,58 +1,57 @@
-@use '../../../../globalSassVars/icon-sizes' as iSizes;
-@use '../../../../globalMixins/text-cutoff';
-@use 'modifiers' as mod;
+@use "../../../../globalSassVars/icon-sizes" as iSizes;
+@use "../../../../globalMixins/text-cutoff";
+@use "modifiers" as mod;
 
 .icon-element {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 
-    &__icon {
-        flex: none;
-        overflow: hidden;
-        height: iSizes.$medium;
-        width: iSizes.$medium;
-        
-    }
+  &__icon {
+    flex: none;
+    overflow: hidden;
+    height: iSizes.$medium;
+    width: iSizes.$medium;
+  }
 
-    &__label {
-        @include text-cutoff.cut(2);
-        word-break: break-word;
-    }
+  &__label {
+    @include text-cutoff.cut(2);
+    word-break: break-word;
+  }
 
-    &.-avatar {
-        @include mod.avatar();
-    }
+  &.-avatar {
+    @include mod.avatar();
+  }
 
-    &.-column {
-        @include mod.column();
-    }
+  &.-column {
+    @include mod.column();
+  }
 
-    &.-gap-small {
-        @include mod.gap-small();
-    }
+  &.-gap-small {
+    @include mod.gap-small();
+  }
 
-    &.-padding-even-slim {
-        @include mod.padding-even-slim();
-    }
+  &.-padding-even-slim {
+    @include mod.padding-even-slim();
+  }
 
-    &.-padding-even-small {
-        @include mod.padding-even-small();
-    }
+  &.-padding-even-small {
+    @include mod.padding-even-small();
+  }
 
-    &.-padding-burger-small {
-        @include mod.padding-burger-small();
-    }
+  &.-padding-burger-small {
+    @include mod.padding-burger-small();
+  }
 
-    &.-small {
-        @include mod.small();
-    }
+  &.-small {
+    @include mod.small();
+  }
 
-    &.-large {
-        @include mod.large();
-    }
+  &.-large {
+    @include mod.large();
+  }
 
-    &.-larger {
-        @include mod.larger();
-    }
+  &.-larger {
+    @include mod.larger();
+  }
 }

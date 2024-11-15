@@ -5,48 +5,12 @@ include ../icon/svg/discordIcon
 include ../icon/svg/facebookIcon
 include ../icon/svg/twitterIcon
 
-
 footer.footer
-    .footer__logo-title
-        +iconElement(
-            'a',
-            '/images/favicon.png',  
-            'Tech Stack',
-            {
-                'href': '/',
-                'class': [
-                    '-gap-small'
-                ]
-            }
-        )
-    p.footer__site-description
-        | A place for reading blog posts by coders and tech enthusiasts.
-    .footer__associated-media
-        +iconElementList(
-            [{
-                'tag': 'div',
-                'icon': 'githubIcon',
-            },
-            {
-                'tag': 'div',
-                'icon': 'discordIcon',
-            },
-            {
-                'tag': 'div',
-                'icon': 'facebookIcon',
-            },
-            {
-                'tag': 'div',
-                'icon': 'twitterIcon',
-            }],
-            {
-                'iconElementList': {
-                    'class': '-gap-small'
-                },
-                'iconElement': {
-                    'class': '-small'
-                }
-            }
-        )
-    p.footer__copyright
-        | © 2024 Tech Stack. All rights reserved.
+  .footer__logo-title
+    +iconElement('a', '/images/favicon.png', 'Tech Stack', { 'href': '/', 'class': [ '-gap-small' ] })
+  p.footer__site-description
+    | A place for reading blog posts by coders and tech enthusiasts.
+  .footer__associated-media
+    +iconElementList([{ 'tag': 'div', 'icon': 'githubIcon', }, { 'tag': 'div', 'icon': 'discordIcon', }, { 'tag': 'div', 'icon': 'facebookIcon', }, { 'tag': 'div', 'icon': 'twitterIcon', }], { 'iconElementList': { 'class': '-gap-small' }, 'iconElement': { 'class': '-small' } })
+  p.footer__copyright
+    | © 2024 Tech Stack. All rights reserved.

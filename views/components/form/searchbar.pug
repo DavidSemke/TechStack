@@ -2,19 +2,10 @@ include ../icon/iconElement
 include ../icon/svg/searchIcon
 
 mixin searchbar(placeholder, attrs={})
-    .searchbar&attributes(attrs)
-        +iconElement(
-            'div',
-            'searchIcon',
-            null,
-            {
-                'class': [
-                    '-small'
-                ]
-            }
-        )
-        input.searchbar__input(
-            name='content', 
-            type='text', 
-            placeholder=placeholder
-        )
+  .searchbar&attributes(attrs)
+    +iconElement('div', 'searchIcon', null, { 'class': [ '-small' ] })
+    input.searchbar__input(
+      name="content",
+      type="text",
+      placeholder=placeholder
+    )

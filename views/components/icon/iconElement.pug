@@ -1,10 +1,10 @@
 mixin iconElement(tag, icon, label=null, attrs={})
-    #{tag}.icon-element&attributes(attrs)
-        //- If 'icon' is base64 or a path to a static file
-        if icon.startsWith('data:') || icon.startsWith('/')
-            img.icon-element__icon(src=icon)
-        //- Else 'icon' is the name of an SVG pug file
-        else 
-            +#{icon}({ 'class': 'icon-element__icon' })
-        if label !== null
-            .icon-element__label= label
+  #{tag}.icon-element&attributes(attrs)
+    //- If 'icon' is base64 or a path to a static file
+    if icon.startsWith('data:') || icon.startsWith('/')
+      img.icon-element__icon(src=icon)
+    //- Else 'icon' is the name of an SVG pug file
+    else
+      +#{icon}({ 'class': 'icon-element__icon' })
+    if label !== null
+      .icon-element__label= label

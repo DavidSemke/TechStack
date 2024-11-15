@@ -1,41 +1,32 @@
-@use '../../../globalSassVars/break-points' as bp;
-@use '../card/blogPostCard/vars' as bpc-vars;
+@use "../../../globalSassVars/break-points" as bp;
+@use "../card/blogPostCard/vars" as bpc-vars;
 
 .blog-post-grid {
-    display: grid;
-    grid-template-columns: repeat(
-        auto-fit, minmax(bpc-vars.$width-medium, 1fr)
-    );
-    grid-template-rows: repeat(
-        auto-fit, minmax(bpc-vars.$height-medium, 1fr)
-    );
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(bpc-vars.$width-medium, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(bpc-vars.$height-medium, 1fr));
+  gap: 2rem;
 
-    &__cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+  &__cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @media (max-width: bp.$bp0) {
-    .blog-post-grid {
-        grid-template-columns: repeat(
-            auto-fit, minmax(bpc-vars.$width-smaller, 1fr)
-        );
-        grid-template-rows: repeat(
-            auto-fit, minmax(bpc-vars.$height-smaller, 1fr)
-        );
-    }
+  .blog-post-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(bpc-vars.$width-smaller, 1fr)
+    );
+    grid-template-rows: repeat(auto-fit, minmax(bpc-vars.$height-smaller, 1fr));
+  }
 }
 
 @media (min-width: calc(bp.$bp0 + 1px)) and (max-width: bp.$bp1) {
-    .blog-post-grid {
-        grid-template-columns: repeat(
-            auto-fit, minmax(bpc-vars.$width-small, 1fr)
-        );
-        grid-template-rows: repeat(
-            auto-fit, minmax(bpc-vars.$height-small, 1fr)
-        );
-    }
+  .blog-post-grid {
+    grid-template-columns: repeat(auto-fit, minmax(bpc-vars.$width-small, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(bpc-vars.$height-small, 1fr));
+  }
 }

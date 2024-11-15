@@ -1,113 +1,111 @@
-@use '../../globalSassVars/colors';
-@use '../../globalSassVars/icon-sizes' as iSizes;
-@use '../../globalSassVars/font-sizes' as fSizes;
-@use '../../globalSassVars/break-points' as bp;
-
+@use "../../globalSassVars/colors";
+@use "../../globalSassVars/icon-sizes" as iSizes;
+@use "../../globalSassVars/font-sizes" as fSizes;
+@use "../../globalSassVars/break-points" as bp;
 
 .profile-page {
-    width: 100%;
-    padding: 1rem;
-    
-    &__heading {
-        margin: 0;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
+  width: 100%;
+  padding: 1rem;
+
+  &__heading {
+    margin: 0;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
 }
 
 .profile {
+  display: flex;
+  gap: 2rem;
+
+  &__primary {
+    flex: 1;
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+  }
 
-    &__primary {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        min-width: 0;
+  &__secondary {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__tertiary {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__avatar {
+    height: iSizes.$xxxlarge;
+    width: iSizes.$xxxlarge;
+
+    img {
+      border-radius: 50%;
     }
+  }
 
-    &__secondary {
-        flex: 1;
-        min-width: 0;
-    }
+  &__username {
+    font-size: fSizes.$larger;
+    font-weight: bold;
+    word-break: break-word;
+  }
 
-    &__tertiary {
-        flex: 1;
-        min-width: 0;
-    }
+  &__heading {
+    margin-bottom: 1rem;
+    font-size: fSizes.$large;
+    font-weight: bold;
+    border-bottom: 2px solid colors.$border;
+    word-break: break-word;
+  }
 
-    &__avatar {
-        height: iSizes.$xxxlarge;
-        width: iSizes.$xxxlarge;
+  &__body {
+    margin: 0;
+    margin-bottom: 2rem;
+  }
 
-        img {
-            border-radius: 50%;
-        }
-    }
+  &__edit {
+    display: flex;
+    justify-content: center;
+  }
 
-    &__username {
-        font-size: fSizes.$larger;
-        font-weight: bold;
-        word-break: break-word;
-    }
-
-    &__heading {
-        margin-bottom: 1rem;
-        font-size: fSizes.$large;
-        font-weight: bold;
-        border-bottom: 2px solid colors.$border;
-        word-break: break-word;
-    }
-
-    &__body {
-        margin: 0;
-        margin-bottom: 2rem;
-    }
-
-    &__edit {
-        display: flex;
-        justify-content: center;
-    }
-
-    &__edit-button {
-        margin-top: 1rem;
-    }
-
+  &__edit-button {
+    margin-top: 1rem;
+  }
 }
 
 .profile-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-    &__buttons {
-        display: flex;
-        justify-content: space-around;
-    }
+  &__buttons {
+    display: flex;
+    justify-content: space-around;
+  }
 }
 
 @media (max-width: bp.$bp0) {
-    .profile {
-        &__avatar {
-            height: iSizes.$xxlarge;
-            width: iSizes.$xxlarge;
-        }
+  .profile {
+    &__avatar {
+      height: iSizes.$xxlarge;
+      width: iSizes.$xxlarge;
     }
+  }
 }
 
 @media (max-width: bp.$bp1) {
-    .profile {
-        flex-direction: column;
-    }
+  .profile {
+    flex-direction: column;
+  }
 }
 
 @media (min-width: calc(bp.$bp1 + 1px)) and (max-width: bp.$bp2) {
-    .profile {
-        &__avatar {
-            height: iSizes.$xxlarge;
-            width: iSizes.$xxlarge;
-        }
+  .profile {
+    &__avatar {
+      height: iSizes.$xxlarge;
+      width: iSizes.$xxlarge;
     }
+  }
 }
