@@ -19,8 +19,13 @@ const BlogPost = require("./models/blogPost")
 const User = require("./models/user")
 require("./mongoConfig")
 
-const isProd = process.env.NODE_ENV === "production"
+const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
+
+/* Dev env variables */
+// Init vars create one-use functions
+const autologin = true
+let initAutologin = true
 
 function App() {
   const app = express()
@@ -92,26 +97,32 @@ function App() {
     app.use(connectLiveReload())
 
     /* Autologin */
-    app.use(async (req, res, next) => {
-      const autologUser = await User.findOne({ username: "aaaaaa" })
-        .populate("blog_posts_recently_read")
-        .populate({
-          path: "blog_posts_recently_read",
-          populate: {
-            path: "author",
-          },
-        })
-        .lean()
-        .exec()
+    if (autologin) {
+      app.use(async (req, res, next) => {
+        if (initAutologin) {
+          initAutologin = false
 
-      req.login(autologUser, (err) => {
-        if (err) {
-          return next(err)
+          const autologUser = await User.findOne({ username: "aaaaaa" })
+            .populate("blog_posts_recently_read")
+            .populate({
+              path: "blog_posts_recently_read",
+              populate: {
+                path: "author",
+              },
+            })
+            .lean()
+            .exec()
+
+          req.login(autologUser, (err) => {
+            if (err) {
+              return next(err)
+            }
+          })
         }
-      })
 
-      next()
-    })
+        next()
+      })
+    }
   }
 
   /* View Engine Setup */
@@ -126,24 +137,28 @@ function App() {
 
     res.locals.loginUser = req.user
 
-    // Find up to 5 public blog posts not written by current user
-    let suggestions = await BlogPost.find({
-      author: { $ne: req.user._id },
-      public_version: { $exists: false },
-      publish_date: { $exists: true },
-    })
-      .populate("author")
-      .limit(5)
-      .lean()
-      .exec()
+    if (!req.session.suggestions) {
+      // Find up to 5 public blog posts not written by current user
+      let suggestions = await BlogPost.find({
+        author: { $ne: req.user._id },
+        public_version: { $exists: false },
+        publish_date: { $exists: true },
+      })
+        .populate("author")
+        .limit(5)
+        .lean()
+        .exec()
 
-    suggestions = await Promise.all(
-      suggestions.map((suggestion) => {
-        return query.completeBlogPost(suggestion, req.user, false, false)
-      }),
-    )
+      suggestions = await Promise.all(
+        suggestions.map((suggestion) => {
+          return query.completeBlogPost(suggestion, req.user, false, false)
+        }),
+      )
 
-    res.locals.suggestions = suggestions
+      req.session.suggestions = suggestions
+    }
+
+    res.locals.suggestions = req.session.suggestions
     next()
   })
 
