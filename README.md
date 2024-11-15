@@ -22,5 +22,3 @@ Technologies used for the backend include:
 - MongoDB
 - Passport.js and sessions
 - Jest (testing routes)
-
-Numerous icons provided by [Icons8](https://icons8.com).
