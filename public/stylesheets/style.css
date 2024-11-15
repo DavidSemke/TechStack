@@ -1424,6 +1424,14 @@ label {
   font-weight: bold;
 }
 
+svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 textarea {
   margin: 0;
   font-size: 1rem;
