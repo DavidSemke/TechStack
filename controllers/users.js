@@ -496,6 +496,7 @@ exports.updateBlogPost = [
       }
       const privateUpdate = { ...privateBlogPost, ...data }
       delete privateUpdate._id
+      delete privateUpdate.public_version
 
       if (publishing) {
         privateUpdate.publish_date = Date.now()
@@ -506,6 +507,7 @@ exports.updateBlogPost = [
             _id: publicBlogPost._id,
           }
           const publicUpdate = privateUpdate
+
           
           // update public version
           await BlogPost.findOneAndUpdate(publicFilter, publicUpdate)
