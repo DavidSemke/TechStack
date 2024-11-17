@@ -1,5 +1,6 @@
-/public/**
-!/public/*.js
-/views
+/src/public/**
+!/src/public/*.js
+/src/views
+/src/test/routes
 **/*.json
-/test/routes
+pnpm-lock.yaml

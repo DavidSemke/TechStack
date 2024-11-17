@@ -132,7 +132,7 @@ describe("PUT /:username", () => {
         .field("username", loginUser.username)
         .field("bio", "")
         .field("keywords", "")
-        .attach("profile-pic", `${process.cwd()}/test/database/images/tree.abc`)
+        .attach("profile-pic", `${process.cwd()}/src/test/database/images/tree.abc`)
         .expect("Content-Type", /json/)
         .expect(400)
 
@@ -256,7 +256,7 @@ describe("POST /users/:username/blog-posts", () => {
           .field("pre-method", "publish")
           .attach(
             "thumbnail",
-            `${process.cwd()}/test/database/images/lightning.webp`,
+            `${process.cwd()}/src/test/database/images/lightning.webp`,
           )
           .expect("Content-Type", /json/)
           .expect(400)
@@ -275,7 +275,7 @@ describe("POST /users/:username/blog-posts", () => {
           .field("pre-method", "publish")
           .attach(
             "thumbnail",
-            `${process.cwd()}/test/database/images/lightning.webp`,
+            `${process.cwd()}/src/test/database/images/lightning.webp`,
           )
           .expect("Content-Type", /json/)
           .expect(400)
@@ -294,7 +294,7 @@ describe("POST /users/:username/blog-posts", () => {
           .field("pre-method", "publish")
           .attach(
             "thumbnail",
-            `${process.cwd()}/test/database/images/lightning.webp`,
+            `${process.cwd()}/src/test/database/images/lightning.webp`,
           )
           .expect("Content-Type", /json/)
           .expect(400)
@@ -311,7 +311,10 @@ describe("POST /users/:username/blog-posts", () => {
           .field("content", content)
           .field("word-count", "1000")
           .field("pre-method", "publish")
-          .attach("thumbnail", `${process.cwd()}/test/database/images/tree.abc`)
+          .attach(
+            "thumbnail", 
+            `${process.cwd()}/src/test/database/images/tree.abc`
+          )
           .expect("Content-Type", /json/)
           .expect(400)
 

@@ -47,6 +47,7 @@ exports.queryBlogPosts = asyncHandler(async (req, res, next) => {
 
   const pugPath = path.join(
     process.cwd(),
+    "src",
     "views",
     "components",
     "toolbar",
@@ -159,6 +160,7 @@ exports.postComment = [
     await reactionCounter.save()
 
     const mixinPath = path.join(
+      "src",
       "views",
       "components",
       "card",

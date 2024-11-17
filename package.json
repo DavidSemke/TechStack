@@ -6,9 +6,9 @@
   },
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node ./src/bin/www",
     "watch_node": "nodemon --ext js,pug",
-    "watch_scss": "sass --no-source-map --watch ./public/stylesheets/style.scss ./public/stylesheets/style.css",
+    "watch_scss": "sass --no-source-map --watch ./src/public/stylesheets/style.scss ./src/public/stylesheets/style.css",
     "watch_webpack": "webpack --watch",
     "dev": "DEBUG=$npm_package_name:* concurrently \"pnpm watch_node\" \"pnpm watch_scss\" \"pnpm watch_webpack\"",
     "test": "jest",

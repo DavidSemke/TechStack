@@ -10,7 +10,7 @@ function create(router, routerPath, autologUser = null) {
   const app = express()
 
   /* View Engine Setup */
-  app.set("views", path.join(process.cwd(), "views"))
+  app.set("views", path.join(process.cwd(), "src", "views"))
   app.set("view engine", "pug")
 
   /* Authentication Setup */
@@ -58,10 +58,10 @@ function create(router, routerPath, autologUser = null) {
   app.use(express.urlencoded({ extended: false }))
 
   /* Static Setup */
-  app.use(express.static(path.join(__dirname, "public")))
+  app.use(express.static(path.join(process.cwd(), "src", "public")))
   app.use(
     "/tinymce",
-    express.static(path.join(__dirname, "node_modules", "tinymce")),
+    express.static(path.join(process.cwd(), "node_modules", "tinymce")),
   )
 
   app.use(routerPath, router)

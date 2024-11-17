@@ -15,9 +15,16 @@ const filenames = [
   "smokeyBear.txt",
   "spiderInfestation.txt",
 ]
-const textPath = path.join(process.cwd(), "test", "database", "text")
+const textPath = path.join(
+  process.cwd(), 
+  "src", 
+  "test", 
+  "database", 
+  "text"
+)
 const imagePath = path.join(
   process.cwd(),
+  "src",
   "test",
   "database",
   "images",

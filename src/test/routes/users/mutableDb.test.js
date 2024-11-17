@@ -29,7 +29,7 @@ describe("PUT /:username", () => {
       .field("keywords", "one two")
       .attach(
         "profile-pic",
-        `${process.cwd()}/test/database/images/lightning.webp`,
+        `${process.cwd()}/src/test/database/images/lightning.webp`,
       )
       .expect(303)
   })
@@ -104,7 +104,7 @@ describe("POST /users/:username/blog-posts", () => {
         .field("pre-method", "publish")
         .attach(
           "thumbnail",
-          `${process.cwd()}/test/database/images/lightning.webp`,
+          `${process.cwd()}/src/test/database/images/lightning.webp`,
         )
         .expect(303)
 
@@ -283,7 +283,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
         .field("pre-method", "publish")
         .attach(
           "thumbnail",
-          `${process.cwd()}/test/database/images/lightning.webp`,
+          `${process.cwd()}/src/test/database/images/lightning.webp`,
         )
         .expect(303)
 
@@ -315,7 +315,7 @@ describe("PUT /users/:username/blog-posts/:blogPostId", () => {
         .field("pre-method", "publish")
         .attach(
           "thumbnail",
-          `${process.cwd()}/test/database/images/lightning.webp`,
+          `${process.cwd()}/src/test/database/images/lightning.webp`,
         )
         .expect(303)
 
