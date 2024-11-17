@@ -7,9 +7,9 @@ const { validationResult } = require("express-validator")
 const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const userVal = require("./validation/user")
-const blogPostVal = require("./validation/blogPost")
-const reactionVal = require("./validation/reaction")
+const userValidation = require("./validation/user")
+const blogPostValidation = require("./validation/blogPost")
+const reactionValidation = require("./validation/reaction")
 
 // Display user profile
 // Usernames are unique, and so they are used as ids
@@ -60,7 +60,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = [
   // Files processed after validation middleware
-  ...userVal.userUpdate,
+  ...userValidation.userUpdate,
 
   asyncHandler(async (req, res, next) => {
     const errors = []
@@ -126,7 +126,7 @@ exports.updateUser = [
 ]
 
 exports.postReaction = [
-  ...reactionVal.reaction,
+  ...reactionValidation.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -174,7 +174,7 @@ exports.postReaction = [
 ]
 
 exports.updateReaction = [
-  ...reactionVal.reaction,
+  ...reactionValidation.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -237,7 +237,7 @@ exports.updateReaction = [
 ]
 
 exports.deleteReaction = [
-  ...reactionVal.reaction,
+  ...reactionValidation.reaction,
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req).array()
@@ -334,7 +334,7 @@ exports.getBlogPostCreateForm = [
 // On blog post create
 exports.postBlogPost = [
   // Files processed after validation middleware
-  ...blogPostVal.blogPost,
+  ...blogPostValidation.blogPost,
 
   asyncHandler(async (req, res, next) => {
     switch (req.body["pre-method"]) {
@@ -425,7 +425,7 @@ exports.getBlogPostUpdateForm = [
 // On blog post update
 exports.updateBlogPost = [
   // Files processed after body middleware
-  ...blogPostVal.blogPost,
+  ...blogPostValidation.blogPost,
 
   asyncHandler(async (req, res, next) => {
     switch (req.body["pre-method"]) {
@@ -475,12 +475,12 @@ exports.updateBlogPost = [
       validationPaths = null,
       publishing = false,
     ) {
-      const blogPost = req.documents.blogPostId
+      const privateBlogPost = req.documents.blogPostId
 
       // Ensure user does not have to re-input image if one
       // already exists
       // Set all paths except for thumbnail
-      if (!validationPaths && blogPost.thumbnail) {
+      if (!validationPaths && privateBlogPost.thumbnail) {
         validationPaths = ["title", "keywords", "content", "word-count"]
       }
 
@@ -492,33 +492,26 @@ exports.updateBlogPost = [
       }
 
       const privateFilter = {
-        _id: blogPost._id,
+        _id: privateBlogPost._id,
       }
-      const privateUpdate = {
-        title: data.title,
-        thumbnail: data.thumbnail,
-        keywords: data.keywords,
-        content: data.content,
-      }
+      const privateUpdate = { ...privateBlogPost, ...data }
+      delete privateUpdate._id
 
       if (publishing) {
         privateUpdate.publish_date = Date.now()
-        privateUpdate.last_modified_date = Date.now()
-        let publicBlogPost = null
+        let publicBlogPost = privateBlogPost.public_version
 
-        if (blogPost.public_version) {
-          publicBlogPost = blogPost.public_version
-
+        if (publicBlogPost) {
           const publicFilter = {
-            _id: blogPost.public_version._id,
+            _id: publicBlogPost._id,
           }
           const publicUpdate = privateUpdate
-
+          
           // update public version
           await BlogPost.findOneAndUpdate(publicFilter, publicUpdate)
         } else {
           // create a public version
-          const publicBlogPostData = { ...blogPost, ...privateUpdate }
+          const publicBlogPostData = { ...privateBlogPost, ...privateUpdate }
           delete publicBlogPostData._id
 
           publicBlogPost = new BlogPost(publicBlogPostData)
