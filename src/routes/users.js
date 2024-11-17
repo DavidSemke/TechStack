@@ -1,4 +1,6 @@
-const controller = require("../controllers/users")
+const userController = require("../controllers/users/user")
+const userBlogPostController = require("../controllers/users/blogPost")
+const userReactionController = require("../controllers/users/reaction")
 const express = require("express")
 const router = express.Router()
 const upload = require("../utils/upload")
@@ -86,7 +88,7 @@ async function setReactionContent(req, res, next) {
 }
 
 // View depends on if user is loginUser
-router.get("/:username", controller.getUser)
+router.get("/:username", userController.getUser)
 
 // All other paths require auth
 router.use("/:username", utils.checkAuthorization)
@@ -95,29 +97,29 @@ router.put(
   "/:username",
   upload.single("profile-pic"),
   utils.handleMulterError,
-  controller.updateUser,
+  userController.updateUser,
 )
 
-router.get("/:username/blog-posts", controller.getBlogPosts)
+router.get("/:username/blog-posts", userBlogPostController.getBlogPosts)
 
 router.post(
   "/:username/blog-posts",
   upload.single("thumbnail"),
   utils.handleMulterError,
-  controller.postBlogPost,
+  userBlogPostController.postBlogPost,
 )
 
 router.get(
   "/:username/blog-posts/new-blog-post",
   setUsingTinyMCE,
-  controller.getBlogPostCreateForm,
+  userBlogPostController.getBlogPostCreateForm,
 )
 
 router.post(
   "/:username/reactions",
   upload.none(),
   setReactionContent,
-  controller.postReaction,
+  userReactionController.postReaction,
 )
 
 router.put(
@@ -125,7 +127,7 @@ router.put(
   upload.none(),
   setReaction,
   setReactionContent,
-  controller.updateReaction,
+  userReactionController.updateReaction,
 )
 
 router.delete(
@@ -133,14 +135,14 @@ router.delete(
   upload.none(),
   setReaction,
   setReactionContent,
-  controller.deleteReaction,
+  userReactionController.deleteReaction,
 )
 
 router.get(
   "/:username/blog-posts/:blogPostId",
   setPrivateBlogPost,
   setUsingTinyMCE,
-  controller.getBlogPostUpdateForm,
+  userBlogPostController.getBlogPostUpdateForm,
 )
 
 router.put(
@@ -148,13 +150,13 @@ router.put(
   upload.single("thumbnail"),
   utils.handleMulterError,
   setPrivateBlogPost,
-  controller.updateBlogPost,
+  userBlogPostController.updateBlogPost,
 )
 
 router.delete(
   "/:username/blog-posts/:blogPostId",
   setPrivateBlogPost,
-  controller.deletePrivateBlogPost,
+  userBlogPostController.deletePrivateBlogPost,
 )
 
 module.exports = router

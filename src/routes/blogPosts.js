@@ -1,4 +1,5 @@
-const controller = require("../controllers/blogPosts")
+const blogPostController = require("../controllers/blogPosts/blogPost")
+const blogPostCommentController = require("../controllers/blogPosts/comment")
 const express = require("express")
 const router = express.Router()
 const upload = require("../utils/upload")
@@ -25,9 +26,9 @@ router.use(
 )
 
 // this route is used for querying blog posts from navbar searchbar
-router.get("/", controller.queryBlogPosts)
+router.get("/", blogPostController.queryBlogPosts)
 
-router.get("/:blogPostId", controller.getBlogPost)
+router.get("/:blogPostId", blogPostController.getBlogPost)
 
 router.post(
   "/:blogPostId/comments",
@@ -39,7 +40,7 @@ router.post(
 
     utils.setObjectIdDocument("body", "reply-to", Comment)(req, res, next)
   },
-  controller.postComment,
+  blogPostCommentController.postComment,
 )
 
 module.exports = router

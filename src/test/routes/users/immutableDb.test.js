@@ -132,7 +132,10 @@ describe("PUT /:username", () => {
         .field("username", loginUser.username)
         .field("bio", "")
         .field("keywords", "")
-        .attach("profile-pic", `${process.cwd()}/src/test/database/images/tree.abc`)
+        .attach(
+          "profile-pic",
+          `${process.cwd()}/src/test/database/images/tree.abc`,
+        )
         .expect("Content-Type", /json/)
         .expect(400)
 
@@ -312,8 +315,8 @@ describe("POST /users/:username/blog-posts", () => {
           .field("word-count", "1000")
           .field("pre-method", "publish")
           .attach(
-            "thumbnail", 
-            `${process.cwd()}/src/test/database/images/tree.abc`
+            "thumbnail",
+            `${process.cwd()}/src/test/database/images/tree.abc`,
           )
           .expect("Content-Type", /json/)
           .expect(400)

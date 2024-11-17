@@ -43,7 +43,7 @@ function App() {
               "https://images.pexels.com",
               "https://images.unsplash.com",
               "https://*.tenor.com",
-              "https://*.imgflip.com"
+              "https://*.imgflip.com",
             ],
           },
         },
