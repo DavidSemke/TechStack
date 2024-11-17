@@ -61,6 +61,22 @@ exports.getBlogPostCreateForm = [
 
 // On blog post create
 exports.postBlogPost = [
+  
+  // TEMPORARY BLOCK - Prevent all other users from creating blog posts 
+  // in production!!!
+  asyncHandler((req, res, next) => {
+    const isProd = process.env.NODE_ENV === "production"
+
+    if (isProd && req.user.username !== 'Davsem') {
+      const err = new Error("Action forbidden")
+      err.status = 403
+
+      return next(err)
+    }
+
+    next()
+  }),
+
   // Files processed after validation middleware
   ...blogPostValidation.blogPost,
 
