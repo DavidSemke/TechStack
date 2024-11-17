@@ -8,7 +8,7 @@ const dateFormat = require("../utils/dateFormat")
 const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const commentVal = require("./validation/comment")
+const commentVal = require("../validation/comment")
 const path = require("path")
 const pug = require("pug")
 

@@ -7,9 +7,9 @@ const { validationResult } = require("express-validator")
 const query = require("../utils/query")
 const createDOMPurify = require("dompurify")
 const { JSDOM } = require("jsdom")
-const userValidation = require("./validation/user")
-const blogPostValidation = require("./validation/blogPost")
-const reactionValidation = require("./validation/reaction")
+const userValidation = require("../validation/user")
+const blogPostValidation = require("../validation/blogPost")
+const reactionValidation = require("../validation/reaction")
 
 // Display user profile
 // Usernames are unique, and so they are used as ids

@@ -1,5 +1,5 @@
 const { body } = require("express-validator")
-const User = require("../../models/user")
+const User = require("../models/user")
 const asyncHandler = require("express-async-handler")
 const message = require("./errorMessage")
 
