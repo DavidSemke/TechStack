@@ -14,37 +14,42 @@ block page
   - const { blogPost } = data
 
   main.blog-post-form-page
-    section.blog-post-form-page__left
-      header.blog-post-form-page__header
-        h2.blog-post-form-page__heading Draft
-        +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__preview-button', '-small' ] })
-      .blog-post-form-page__body
-        section.blog-post-form-page__tabs
-          +buttonList([{ 'classId': 'blog-post-form-page__metadata-tab', 'label': 'Metadata' }, { 'classId': 'blog-post-form-page__content-tab', 'label': 'Content' }], { 'button': { 'class': '-tab' } })
-        section.blog-post-form-page__tab-container
-          form#blog-post-form.blog-post-form(
-            method="post",
-            enctype="multipart/form-data"
-          )
-            .blog-post-form__metadata
-              +formInput('title', 'text', blogPost.title || '')
-              +formInput('thumbnail', 'file', '')
 
-              - const keywords = blogPost.keywords
-              +formTextarea('keywords', keywords ? keywords.join(' ') : '', { 'textarea': { 'rows': '2' } })
-              p * Keywords should be separated by spaces.
+    if loginUser.username !== 'Davsem'
+      p.blog-post-form-page__warning This app is currently only being used to showcase my blog posts. For this reason, you cannot create a blog post at this time.
 
-            .blog-post-form__content.-gone
-              +formTextarea('content', blogPost.content || '', { 'textarea': { 'class': 'tinymce-app' } })
-              input#word-count.blog-post-form__hidden(
-                name="word-count",
-                type="hidden"
-              )
+    .blog-post-form-page__after-warning 
+      section.blog-post-form-page__left
+        header.blog-post-form-page__header
+          h2.blog-post-form-page__heading Draft
+          +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__preview-button', '-small' ] })
+        .blog-post-form-page__body
+          section.blog-post-form-page__tabs
+            +buttonList([{ 'classId': 'blog-post-form-page__metadata-tab', 'label': 'Metadata' }, { 'classId': 'blog-post-form-page__content-tab', 'label': 'Content' }], { 'button': { 'class': '-tab' } })
+          section.blog-post-form-page__tab-container
+            form#blog-post-form.blog-post-form(
+              method="post",
+              enctype="multipart/form-data"
+            )
+              .blog-post-form__metadata
+                +formInput('title', 'text', blogPost.title || '')
+                +formInput('thumbnail', 'file', '')
 
-    section.blog-post-form-page__right
-      header.blog-post-form-page__header
-        +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__draft-button', '-small' ] })
-        h2.blog-post-form-page__heading Preview
+                - const keywords = blogPost.keywords
+                +formTextarea('keywords', keywords ? keywords.join(' ') : '', { 'textarea': { 'rows': '2' } })
+                p * Keywords should be separated by spaces.
 
-      .blog-post-form-page__body
-        +blogPostFragment(blogPost, false)
+              .blog-post-form__content.-gone
+                +formTextarea('content', blogPost.content || '', { 'textarea': { 'class': 'tinymce-app' } })
+                input#word-count.blog-post-form__hidden(
+                  name="word-count",
+                  type="hidden"
+                )
+
+      section.blog-post-form-page__right
+        header.blog-post-form-page__header
+          +iconElement('button', 'expandIcon', null, { 'class': [ 'blog-post-form-page__draft-button', '-small' ] })
+          h2.blog-post-form-page__heading Preview
+
+        .blog-post-form-page__body
+          +blogPostFragment(blogPost, false)
