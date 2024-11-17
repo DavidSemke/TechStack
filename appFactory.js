@@ -23,9 +23,7 @@ function App() {
   const isProd = process.env.NODE_ENV === "production"
   const isDev = process.env.NODE_ENV === "development"
   /* Dev env variables */
-  // Init vars create one-use functions
   const autologin = true
-  let initAutologin = true
 
   const app = express()
 
@@ -45,6 +43,7 @@ function App() {
               "https://images.pexels.com",
               "https://images.unsplash.com",
               "https://*.tenor.com",
+              "https://*.imgflip.com"
             ],
           },
         },
@@ -97,6 +96,8 @@ function App() {
 
     /* Autologin */
     if (autologin) {
+      let initAutologin = true
+
       app.use(async (req, res, next) => {
         if (initAutologin) {
           initAutologin = false
