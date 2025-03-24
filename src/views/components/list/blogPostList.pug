@@ -14,10 +14,10 @@ mixin blogPostList(blogPosts, attrs={})
             .blog-post-item__title= blogPost.title
             .blog-post-item__date-group
               .blog-post-item__published
-                | Published: 
+                | Published:&nbsp;
                 time(datetime=blogPost.publish_date)= blogPost.publish_date
               .blog-post-item__last-modified
-                | Last modified: 
+                | Last modified:&nbsp;
                 time(datetime=blogPost.last_modified_date)= blogPost.last_modified_date
           section.blog-post-item__bottom
             - const likes = blogPost.likes
